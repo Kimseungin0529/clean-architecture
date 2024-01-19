@@ -1,4 +1,4 @@
-package project.doongdoong;
+package com.project.doongdoong;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

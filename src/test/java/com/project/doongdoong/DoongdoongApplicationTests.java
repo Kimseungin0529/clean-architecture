@@ -1,4 +1,4 @@
-package project.doongdoong;
+package com.project.doongdoong;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
