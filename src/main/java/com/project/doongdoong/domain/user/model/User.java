@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.user.domain;
+package com.project.doongdoong.domain.user.model;
 
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.Entity;

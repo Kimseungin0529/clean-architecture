@@ -1,7 +1,7 @@
-package com.project.doongdoong.domain.diary.domain;
+package com.project.doongdoong.domain.diary.model;
 
-import com.project.doongdoong.domain.recommend.domain.Recommend;
-import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.recommend.model.Recommend;
+import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

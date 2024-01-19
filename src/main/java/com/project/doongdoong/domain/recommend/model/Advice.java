@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.recommend.domain;
+package com.project.doongdoong.domain.recommend.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

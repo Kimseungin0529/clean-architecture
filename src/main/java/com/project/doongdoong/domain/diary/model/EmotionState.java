@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.diary.domain;
+package com.project.doongdoong.domain.diary.model;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
