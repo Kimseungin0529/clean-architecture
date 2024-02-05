@@ -22,4 +22,5 @@ public class ApiResponse<T>  {
     public static <T> ApiResponse<T> of(HttpStatus status, List<String> message, T data){
         return new ApiResponse<>(status,message,data);
     }
+
 }
