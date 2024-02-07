@@ -7,12 +7,12 @@ import com.project.doongdoong.global.BlackAccessToken;
 import com.project.doongdoong.global.JwtProvider;
 import com.project.doongdoong.global.RefreshToken;
 import com.project.doongdoong.global.dto.request.LogoutDto;
-import com.project.doongdoong.global.dto.request.OAuthTokenInfo;
-import com.project.doongdoong.global.dto.reponse.TokenInfo;
+import com.project.doongdoong.global.dto.request.OAuthTokenDto;
+import com.project.doongdoong.global.dto.request.ReissueDto;
+import com.project.doongdoong.global.dto.response.TokenDto;
 import com.project.doongdoong.global.exception.CustomException;
 import com.project.doongdoong.global.repositoty.BlackAccessTokenRepository;
 import com.project.doongdoong.global.repositoty.RefreshTokenRepository;
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -32,7 +32,7 @@ public class UserService {
 
 
     @Transactional
-    public TokenInfo checkRegistration(OAuthTokenInfo oAuthTokenInfo) {
+    public TokenDto checkRegistration(OAuthTokenDto oAuthTokenInfo) {
 
         /**
          * 받아온 act, rft이 카카오 로그인을 통해 받아온 토큰이 맞는지 확인이 필요할까?
@@ -73,7 +73,7 @@ public class UserService {
         }else{
             log.info("blackAccessToken 존재 X");
         }
-        TokenInfo tokenInfoResponse = jwtProvider.generateToken(email, "ROLE_USER", socialType.getText());
+        TokenDto tokenInfoResponse = jwtProvider.generateToken(email, "ROLE_USER", socialType.getText());
         /**
          * rft을 저장하는데 다시 로그인하는 경우, 기존 rft이 존재한다면 닷
          */
@@ -93,9 +93,23 @@ public class UserService {
     }
 
     @Transactional
-    public String reissue(String authorization){
+    public TokenDto reissue(ReissueDto reissueTokenDto){
+        String refreshToken = reissueTokenDto.getRefreshToken();
+        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
+        
+        if(findRefreshToken.isPresent()) { // rft이 존재한다면
+            String token = findRefreshToken.get().getRefreshToken().substring(7);
+            String email = jwtProvider.extractEmail(token);
+            String socialType = jwtProvider.extractSocialType(token);
+            String role = jwtProvider.extractRole(token);
+            String accessToken = jwtProvider.createAccessToken(email, socialType, role); // act 갱신
 
-        return null;
+            return TokenDto.builder()
+                    .accessToken(accessToken)
+                    .build();
+        }else{
+            throw new CustomException.InvalidRequestException(HttpStatus.NOT_FOUND, "refreshToken이 존재하지 않아 토큰 갱신에 실패했습니다.");
+        }
     }
 
     @Transactional

@@ -4,8 +4,9 @@ import com.project.doongdoong.domain.user.service.UserService;
 import com.project.doongdoong.global.common.ApiResponse;
 import com.project.doongdoong.global.common.ErrorResponse;
 import com.project.doongdoong.global.dto.request.LogoutDto;
-import com.project.doongdoong.global.dto.request.OAuthTokenInfo;
-import com.project.doongdoong.global.dto.reponse.TokenInfo;
+import com.project.doongdoong.global.dto.request.OAuthTokenDto;
+import com.project.doongdoong.global.dto.request.ReissueDto;
+import com.project.doongdoong.global.dto.response.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
@@ -97,8 +98,8 @@ public class UserController {
         }
     )
     @PostMapping("/login-oauth")
-    public ApiResponse<?> userSignIn(@Valid @RequestBody OAuthTokenInfo oAuthTokenInfo){
-        TokenInfo tokenInfoResponse = userService.checkRegistration(oAuthTokenInfo);
+    public ApiResponse<?> userSignIn(@Valid @RequestBody OAuthTokenDto oAuthTokenInfo){
+        TokenDto tokenInfoResponse = userService.checkRegistration(oAuthTokenInfo);
 
         return ApiResponse.of(HttpStatus.OK, null, tokenInfoResponse);
     }
@@ -181,6 +182,72 @@ public class UserController {
 
         return ApiResponse.of(HttpStatus.OK, null, "logout success");
     }
+
+    @Operation(summary = "토큰 재발급 API")
+    @io.swagger.v3.oas.annotations.parameters.RequestBody(
+            content = @Content(
+                    examples = {
+                            @ExampleObject(value = "{\n" +
+                                    " \"refreshToken\": \"Bearer.XXXXXXXXX.XXXXXXXXX.XXXXXXXXXXXXX\"\n " +
+                                    "}")
+                    }
+            )
+    )
+    @ApiResponses(value = {
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "400",
+                    description = "잘못된 입력 형식이 존재합니다. 각 필드는 빈 칸 X",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(value = "{\n" +
+                                            "  \"errorCode\": \"400\",\n" +
+                                            "  \"message\": \"잘못된 입력 형식이 존재합니다.\", \n" +
+                                            "  \"detail\": [ \n" +
+                                            "        \"refreshToken이 비어 있습니다.\"\n" +
+                                            "   ]" +
+                                            "}")
+                            }
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "404",
+                    description = "\"rft이 존재하지 않습니다.\"",
+                    content = @Content(
+                            schema = @Schema(implementation = ErrorResponse.class),
+                            examples = {
+                                    @ExampleObject(value = "{\n" +
+                                            "  \"errorCode\": \"403\",\n" +
+                                            "  \"message\": \"refreshToken이 존재하지 않아 토큰 갱신에 실패했습니다.\",\n" +
+                                            "  \"detail\": null\n" +
+                                            "}")
+                            }
+                    )
+            ),
+            @io.swagger.v3.oas.annotations.responses.ApiResponse(
+                    responseCode = "200",
+                    description = "토큰 재발급 성공",
+                    content = @Content(
+                            examples = {
+                                    @ExampleObject(value = "{\n" +
+                                            "    \"code\": 200,\n" + "    \"state\": \"OK\",\n" + "    \"message\": null,\n" +
+                                            "    \"data\": {\n" +
+                                            "        \"accessToken\": \"Bearer XXXXXXXXXXXXX.XXXXXXXXXXXXXXXXXXXXXXXXXX.XXXXXXXXXXXXXXX\",\n" +
+                                            "        \"refreshToken\": null\n" +
+                                            "    }\n" +
+                                            "}")
+                            }
+                    )
+            )
+    }
+    )
+    @PostMapping("/reissue")
+    public ApiResponse<?> userReissue(@Valid @RequestBody ReissueDto reissueDto){
+        TokenDto reissuedToken = userService.reissue(reissueDto);
+
+        return ApiResponse.of(HttpStatus.OK, null, reissuedToken);
+    }
+
     @Operation(summary = "jwt 테스트 API")
     @GetMapping("/jwt-test")
     public ApiResponse<?> test(){

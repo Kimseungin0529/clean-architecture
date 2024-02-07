@@ -1,21 +1,15 @@
 package com.project.doongdoong.global;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.doongdoong.global.common.ApiResponse;
-import com.project.doongdoong.global.common.ErrorResponse;
-import com.project.doongdoong.global.dto.reponse.TokenInfo;
-import com.project.doongdoong.global.exception.CustomException;
+import com.project.doongdoong.global.dto.response.TokenDto;
 import com.project.doongdoong.global.repositoty.BlackAccessTokenRepository;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SecurityException;
 import jakarta.annotation.PostConstruct;
-import jakarta.servlet.http.HttpServletResponse;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
@@ -23,9 +17,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
-import org.springframework.util.StringUtils;
 
-import java.io.IOException;
 import java.security.Key;
 import java.util.Arrays;
 import java.util.Collection;
@@ -34,7 +26,7 @@ import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Slf4j
-@Component
+@Component @Getter
 @RequiredArgsConstructor
 public class JwtProvider {
 
@@ -42,7 +34,7 @@ public class JwtProvider {
     private String secretKey;
     private Key key;
 
-    private final long ACCESS_TOKEN_VALIDATION_TIME = 30 * 60 * 1000L; // 30분
+    private final long ACCESS_TOKEN_VALIDATION_TIME = 20 * 1000L; // 30분
     private final long REFRESH_TOKEN_VALIDATION_TIME = 1000L * 60L * 60L * 24L * 14; // 2주
     public final static String BEARER_PREFIX = "Bearer ";
 
@@ -59,14 +51,14 @@ public class JwtProvider {
 
 
 
-    public TokenInfo generateToken(String email, String role, String socialType) {
+    public TokenDto generateToken(String email, String role, String socialType) {
         // refreshToken과 accessToken을 생성한다.
         String refreshToken = createRefreshToken(email, socialType, role);
         String accessToken = createAccessToken(email, socialType, role);
 
         /*// 토큰을 Redis에 저장한다.
         tokenService.saveTokenInfo(email, refreshToken, accessToken);*/
-        return new TokenInfo(accessToken, refreshToken);
+        return new TokenDto(accessToken, refreshToken);
     }
 
     public String createRefreshToken(String email, String socialType, String role) {
@@ -121,7 +113,7 @@ public class JwtProvider {
         }
     }
 
-    public boolean validateToken(String token) {  // 토큰의 유효성 검증을 수행
+    /*public boolean validateToken(String token) {  // 토큰의 유효성 검증을 수행
         try {
             boolean result = Jwts.parserBuilder()
                     .setSigningKey(key)
@@ -132,9 +124,9 @@ public class JwtProvider {
             return true;
         } catch (SecurityException | MalformedJwtException e) {
             log.info("잘못된 JWT 서명입니다.");
-        }/* catch (ExpiredJwtException e) {
+        }*//* catch (ExpiredJwtException e) {
             log.info("만료된 JWT 토큰입니다."); // 만료된 토큰이라면 rft이 있는 경우, 재발급해주기
-        }*/ catch (UnsupportedJwtException e) {
+        }*//* catch (UnsupportedJwtException e) {
             log.info("지원되지 않는 JWT 토큰입니다.");
         } catch (IllegalArgumentException e) {
             log.info("JWT 토큰이 잘못되었습니다.");
@@ -142,7 +134,7 @@ public class JwtProvider {
             log.info("새로운 JWT 토큰 오류입니다.");
         }
         return false;
-    }
+    }*/
 
     // 토큰에서 Email을 추출한다.
     public String extractEmail(String token) {

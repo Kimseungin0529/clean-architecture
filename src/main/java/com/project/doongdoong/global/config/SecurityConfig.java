@@ -1,6 +1,7 @@
 package com.project.doongdoong.global.config;
 
 import com.project.doongdoong.global.fliter.JwtAuthFilter;
+import com.project.doongdoong.global.fliter.JwtExceptionHandlerFilter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
@@ -17,6 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 public class SecurityConfig {
 
     private final JwtAuthFilter jwtAuthFilter;
+    //private final JwtExceptionHandlerFilter jwtExceptionHandlerFilter;
     //private final JwtExceptionFilter jwtExceptionFilter;
     /*private final CustomOAuth2UserService customOAuth2UserService;
     private final MyAuthenticationSuccessHandler oAuth2LoginSuccessHandler;
@@ -37,13 +39,14 @@ public class SecurityConfig {
                         auth
                                 .requestMatchers("/").permitAll()
                                 .requestMatchers("/api/v1/ping").permitAll() // 통신 test용 url
-                                .requestMatchers("/api/v1/login-oauth").permitAll()
+                                .requestMatchers("/api/v1/login-oauth", "/api/v1/reissue").permitAll()
                                 .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                                 /* .requestMatchers("/token/**").permitAll() // 토근 발급 경로 허용
                                  .requestMatchers("/kakao/callback").permitAll()
                                  .requestMatchers("/", "/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()*/
                                 .anyRequest().authenticated()
                 )
+                //.addFilterBefore(jwtExceptionHandlerFilter, jwtAuthFilter.getClass())
                 .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
                 /*.oauth2Login(oauth2 -> oauth2.

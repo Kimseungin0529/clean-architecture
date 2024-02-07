@@ -9,11 +9,14 @@ import io.swagger.v3.oas.models.responses.ApiResponse;
 import io.swagger.v3.oas.models.responses.ApiResponses;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
+import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.customizers.GlobalOpenApiCustomizer;
 import org.springdoc.core.models.GroupedOpenApi;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+
+import java.util.Collections;
 
 @Configuration
 public class SwaggerConfig {
@@ -49,6 +52,9 @@ public class SwaggerConfig {
                 .components(new Components().addSecuritySchemes("JWT", bearerAuth))
                 // API 마다 Security 인증 컴포넌트 설정
                 .addSecurityItem(addSecurityItem)
+                .servers(Collections.singletonList(
+                                new Server().url("http://13.124.95.110"))
+                )
                 .info(info);
     }
 

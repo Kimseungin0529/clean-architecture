@@ -9,17 +9,17 @@ import java.util.List;
 public class ApiResponse<T>  {
     private int code;
     private HttpStatus state;
-    private List<String> message;
+    private String message;
     private T data;
 
-    public ApiResponse(HttpStatus status, List<String> message, T data) {
+    public ApiResponse(HttpStatus status, String message, T data) {
         this.code = status.value();
         this.state = status;
         this.message = message;
         this.data = data;
     }
 
-    public static <T> ApiResponse<T> of(HttpStatus status, List<String> message, T data){
+    public static <T> ApiResponse<T> of(HttpStatus status, String message, T data){
         return new ApiResponse<>(status,message,data);
     }
 

@@ -2,12 +2,11 @@ package com.project.doongdoong.global.dto.request;
 
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
 
 @Getter
-public class OAuthTokenInfo {
+public class OAuthTokenDto {
     @NotBlank(message = "access_tokne이 존재하지 않습니다.")
     private String accessToken;
 
