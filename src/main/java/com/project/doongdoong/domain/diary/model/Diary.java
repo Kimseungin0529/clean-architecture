@@ -20,10 +20,6 @@ public class Diary extends BaseEntity {
     @JoinColumn(name = "user_id", nullable = false, updatable = false)
     private User user;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "recommend_id")
-    private Recommend recommend;
-
     @Column(nullable = false)
     private String title;
 
