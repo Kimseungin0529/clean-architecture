@@ -67,6 +67,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             setErrorResponse(response, HttpStatus.UNAUTHORIZED, "JWT 토큰이 잘못되었습니다.");
         } catch (Exception e) {
             log.info("새로운 JWT 토큰 오류입니다.");
+            log.info("예외 메세지 = {}",e.getMessage());
             setErrorResponse(response, HttpStatus.UNAUTHORIZED,  "새로운 JWT 토큰 오류입니다.");
         }
 

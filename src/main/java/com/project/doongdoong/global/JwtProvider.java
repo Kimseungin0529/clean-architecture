@@ -34,7 +34,7 @@ public class JwtProvider {
     private String secretKey;
     private Key key;
 
-    private final long ACCESS_TOKEN_VALIDATION_TIME = 20 * 1000L; // 30분
+    private final long ACCESS_TOKEN_VALIDATION_TIME = 30 * 60 * 1000L; // 30분
     private final long REFRESH_TOKEN_VALIDATION_TIME = 1000L * 60L * 60L * 24L * 14; // 2주
     public final static String BEARER_PREFIX = "Bearer ";
 
