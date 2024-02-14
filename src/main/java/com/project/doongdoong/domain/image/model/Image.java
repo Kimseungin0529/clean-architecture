@@ -1,10 +1,8 @@
 package com.project.doongdoong.domain.image.model;
 
+import com.project.doongdoong.domain.diary.model.Diary;
 import com.project.doongdoong.global.common.BaseEntity;
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -18,6 +16,9 @@ public class Image extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long imageId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    private Diary diary;
 
     private String originName; // 이미지 파일의 본래 이름
 
@@ -45,7 +46,7 @@ public class Image extends BaseEntity {
 
     // 이미지 파일의 이름을 저장하기 위한 이름으로 변환하는 메소드
     public String getFileName(String originName) {
-        return UUID.randomUUID() + "." + extractExtension(originName);
+        return UUID.randomUUID()  + extractExtension(originName);
     }
 
 }

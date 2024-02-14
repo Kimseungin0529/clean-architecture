@@ -107,15 +107,6 @@ public class UserController {
 
 
     @Operation(summary = "로그아웃 API")
-    @io.swagger.v3.oas.annotations.parameters.RequestBody(
-            content = @Content(
-                    examples = {
-                            @ExampleObject(value = "{\n" +
-                                    " \"refreshToken\": \"Bearer.XXXXXXXXX.XXXXXXXXX.XXXXXXXXXXXXX\"\n " +
-                                    "}")
-                    }
-            )
-    )
     @ApiResponses(value = {
             @io.swagger.v3.oas.annotations.responses.ApiResponse(
                     responseCode = "400_1",
@@ -176,8 +167,18 @@ public class UserController {
     }
     )
     @PostMapping("/logout-oauth")
-    public ApiResponse<?> userLogout(@Valid @RequestBody LogoutDto logoutDto,
-                                     @RequestHeader("Authorization") String accessToken){
+    public ApiResponse<?> userLogout(
+            @io.swagger.v3.oas.annotations.parameters.RequestBody(
+                    content = @Content(
+                            examples = {
+                                    @ExampleObject(value = "{\n" +
+                                            " \"refreshToken\": \"Bearer.XXXXXXXXX.XXXXXXXXX.XXXXXXXXXXXXX\"\n " +
+                                            "}")
+                            }
+                    )
+            )
+                                    @Valid @RequestBody LogoutDto logoutDto,
+                                    @RequestHeader("Authorization") String accessToken){
         userService.logout(logoutDto, accessToken);
 
         return ApiResponse.of(HttpStatus.OK, null, "logout success");
