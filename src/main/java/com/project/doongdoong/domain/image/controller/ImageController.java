@@ -18,6 +18,7 @@ import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 
@@ -65,7 +66,7 @@ public class ImageController {
     public ApiResponse<ImagesResponseDto> saveImages(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
-                            mediaType = "multipart/form-data",
+                            mediaType = MediaType.MULTIPART_FORM_DATA_VALUE,
                             schema = @Schema(implementation = ImageSaveRequestDto.class)
                     )
             )
@@ -137,7 +138,7 @@ public class ImageController {
     public ApiResponse<String> deleteImages(
             @io.swagger.v3.oas.annotations.parameters.RequestBody(
                     content = @Content(
-                            mediaType = "application/json",
+                            mediaType = MediaType.APPLICATION_JSON_VALUE,
                             schema = @Schema(implementation = ImageDeleteRequestDto.class),
                             examples = {
                                     @ExampleObject(value = "{\n" +

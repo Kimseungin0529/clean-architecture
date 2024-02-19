@@ -8,6 +8,8 @@ import com.project.doongdoong.global.dto.request.OAuthTokenDto;
 import com.project.doongdoong.global.dto.request.ReissueDto;
 import com.project.doongdoong.global.dto.response.TokenDto;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.Parameter;
+import io.swagger.v3.oas.annotations.enums.ParameterIn;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.ExampleObject;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -178,7 +180,8 @@ public class UserController {
                     )
             )
                                     @Valid @RequestBody LogoutDto logoutDto,
-                                    @RequestHeader("Authorization") String accessToken){
+            //@Parameter(description = "Authorization token", required = true,schema = @Schema(type = "string"), in = ParameterIn.HEADER)
+            @RequestHeader("Authorization") String accessToken){
         userService.logout(logoutDto, accessToken);
 
         return ApiResponse.of(HttpStatus.OK, null, "logout success");

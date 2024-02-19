@@ -16,7 +16,9 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 
+import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 public class SwaggerConfig {
@@ -47,14 +49,19 @@ public class SwaggerConfig {
         SecurityRequirement addSecurityItem = new SecurityRequirement();
         addSecurityItem.addList("JWT");
 
+        //List<Server> servers = new List<>();
+        List<Server> servers = Collections.emptyList();
+        //servers.add(new Server().url("http://13.124.95.110:8080")
+
         return new OpenAPI()
                 // Security 인증 컴포넌트 설정
                 .components(new Components().addSecuritySchemes("JWT", bearerAuth))
                 // API 마다 Security 인증 컴포넌트 설정
                 .addSecurityItem(addSecurityItem)
-                .servers(Collections.singletonList(
-                                new Server().url("http://13.124.95.110"))
-                )
+                .servers(Arrays.asList(
+                        new Server().url("http://13.124.95.110:8080"),
+                        new Server().url("http://localhost:8080")
+                ))
                 .info(info);
     }
 
