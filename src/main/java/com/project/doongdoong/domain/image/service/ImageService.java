@@ -26,6 +26,8 @@ import java.util.List;
 @Transactional(readOnly = true)
 public class ImageService {
 
+    private final String KEY = "image/";
+
     @Value("${cloud.aws.bucket}")
     private String bucketName;
     private final AmazonS3Client amazonS3Client;
@@ -47,7 +49,8 @@ public class ImageService {
     public ImageDetailResponseDto saveImage(MultipartFile multipartFile) {
         String originalName = multipartFile.getOriginalFilename();
         Image image = new Image(originalName);
-        String filename = image.getStoredName();
+        String filename = KEY + image.getStoredName();
+
 
         try {
             ObjectMetadata objectMetadata = new ObjectMetadata();
