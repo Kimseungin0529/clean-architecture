@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.user.model;
 
+import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -17,7 +18,8 @@ import java.util.List;
 public class User extends BaseEntity implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long userId;
+    @Column(name = "user_id")
+    private Long id;
 
     private String username;
 
@@ -31,6 +33,9 @@ public class User extends BaseEntity implements UserDetails {
 
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Analysis> analysisList = new ArrayList<>();
 
     @Builder
     public User(String nickname, String email, SocialType socialType) {
