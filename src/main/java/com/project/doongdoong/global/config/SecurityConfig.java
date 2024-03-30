@@ -38,7 +38,7 @@
                     .authorizeHttpRequests(auth ->
                             auth
                                     .requestMatchers("/").permitAll()
-                                    .requestMatchers("/api/v1/ping").permitAll() // 통신 test용 url
+                                    .requestMatchers("/api/v1/ping", "/api/v1/flask/test").permitAll() // 통신 test용 url
                                     .requestMatchers("/api/v1/login-oauth", "/api/v1/reissue").permitAll()
                                     .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
                                     /* .requestMatchers("/token/**").permitAll() // 토근 발급 경로 허용

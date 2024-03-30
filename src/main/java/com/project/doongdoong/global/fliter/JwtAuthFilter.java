@@ -1,9 +1,6 @@
 package com.project.doongdoong.global.fliter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.doongdoong.domain.user.model.User;
-import com.project.doongdoong.domain.user.repository.UserRepository;
-import com.project.doongdoong.domain.user.service.UserService;
 import com.project.doongdoong.global.JwtProvider;
 import com.project.doongdoong.global.common.ApiResponse;
 import io.jsonwebtoken.*;
@@ -116,7 +113,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         return true;
         /*try {
 
-        }*/ /*catch (SecurityException | MalformedJwtException e) {
+        } catch (SecurityException | MalformedJwtException e) {
             setErrorResponse(response, HttpStatus.UNAUTHORIZED, "만료된 토큰입니다.");
         } catch (ExpiredJwtException e) {
             setErrorResponse(response, HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."); // 만료된 토큰이라면 rft이 있는 경우, 재발급해주기

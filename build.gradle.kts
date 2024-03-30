@@ -41,6 +41,7 @@ dependencies {
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2") // webmvc-ui는 json 형식을 보여주기 위함.
 
 	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE") // amazon cloud 사용
+	implementation ("org.springframework.boot:spring-boot-starter-webflux") // webflux, 모바일 사용
 
 
 	compileOnly("org.projectlombok:lombok")

@@ -37,7 +37,7 @@ public class SwaggerConfig {
                 .contact(new Contact() // 연락처
                         .name("김승진")
                         .email("whffkaos007@naver.com"));
-        //.url("https://devbksheen.tistory.com/"));
+
         // Security 스키마 설정
         SecurityScheme bearerAuth = new SecurityScheme()
                 .type(SecurityScheme.Type.HTTP)
@@ -48,10 +48,6 @@ public class SwaggerConfig {
         // Security 요청 설정
         SecurityRequirement addSecurityItem = new SecurityRequirement();
         addSecurityItem.addList("JWT");
-
-        //List<Server> servers = new List<>();
-        List<Server> servers = Collections.emptyList();
-        //servers.add(new Server().url("http://13.124.95.110:8080")
 
         return new OpenAPI()
                 // Security 인증 컴포넌트 설정
