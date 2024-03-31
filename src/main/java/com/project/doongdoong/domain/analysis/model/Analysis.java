@@ -1,11 +1,17 @@
 package com.project.doongdoong.domain.analysis.model;
 
+import com.project.doongdoong.domain.questionanser.model.QuestionAnswer;
 import com.project.doongdoong.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.List;
+
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
@@ -23,4 +29,9 @@ public class Analysis {
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @OneToMany(cascade = ALL ,orphanRemoval = true, mappedBy = "analysis")
+    private List<QuestionAnswer> questionAnswerList = new ArrayList<>();
+
+
 }
