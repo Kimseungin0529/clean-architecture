@@ -1,6 +1,5 @@
 package com.project.doongdoong.domain.voice.model;
 
-import com.project.doongdoong.domain.diary.model.Diary;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -16,9 +15,6 @@ public class Voice extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long voiceId;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    private Diary diary;
 
     private String originName; // 음성 파일의 본래 이름
 

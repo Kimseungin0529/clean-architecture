@@ -3,13 +3,12 @@ package com.project.doongdoong.domain.questionanser.model;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.lang.reflect.Array;
 import java.util.*;
 import java.util.stream.Collectors;
 
 @Getter
 @RequiredArgsConstructor
-public enum QuestionGenerator {
+public enum QuestionContent {
 
     FIXED_QUESTION1("오늘 느낀 감정에 대해 말해줘.", 1, true),
     FIXED_QUESTION2("행복한 사람인 거 같아? 이유도 함께 말해줘.",2, true),
@@ -26,25 +25,24 @@ public enum QuestionGenerator {
     private final boolean isFixedQuestion;
     private static final int QUESTION_SIZE = 2;
 
-    public static List<String> provideQuestions(){
+    public static List<QuestionContent> provideQuestions(){
 
-        List<String> fixedQuestions = selectFixedQuestions();
-        List<String> unfixedQuestions = selectUnFixedQuestions();
-        List<String> allQuestions = combineLists(fixedQuestions, unfixedQuestions);
+        List<QuestionContent> fixedQuestions = selectFixedQuestions();
+        List<QuestionContent> unfixedQuestions = selectUnFixedQuestions();
+        List<QuestionContent> allQuestions = combineLists(fixedQuestions, unfixedQuestions);
 
         return allQuestions;
     }
-    private static List<String> combineLists(List<String> list1, List<String> list2) {
-        List<String> combinedList = new ArrayList<>();
+    private static List<QuestionContent> combineLists(List<QuestionContent> list1, List<QuestionContent> list2) {
+        List<QuestionContent> combinedList = new ArrayList<>();
         combinedList.addAll(list1);
         combinedList.addAll(list2);
         return combinedList;
     }
 
-    private static List<String> selectUnFixedQuestions() {
-        List<String> unFixedQuestions = Arrays.stream(values())
+    private static List<QuestionContent> selectUnFixedQuestions() {
+        List<QuestionContent> unFixedQuestions = Arrays.stream(values())
                 .filter(questionGenerator -> !questionGenerator.isFixedQuestion)
-                .map(questionGenerator -> questionGenerator.getText())
                 .collect(Collectors.toList());
         Random random = new Random();
 
@@ -54,10 +52,9 @@ public enum QuestionGenerator {
         return unFixedQuestions;
     }
 
-    private static List<String> selectFixedQuestions() {
-        List<String> fixedQuestions = Arrays.stream(values())
+    private static List<QuestionContent> selectFixedQuestions() {
+        List<QuestionContent> fixedQuestions = Arrays.stream(values())
                 .filter(questionGenerator -> questionGenerator.isFixedQuestion)
-                .map(questionGenerator -> questionGenerator.getText())
                 .collect(Collectors.toList());
         Random random = new Random();
 
