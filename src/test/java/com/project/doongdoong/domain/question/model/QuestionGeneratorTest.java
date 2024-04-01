@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.questionanser.model;
+package com.project.doongdoong.domain.question.model;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;

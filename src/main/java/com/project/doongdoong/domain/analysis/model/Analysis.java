@@ -1,10 +1,9 @@
 package com.project.doongdoong.domain.analysis.model;
 
-import com.project.doongdoong.domain.questionanser.model.QuestionAnswer;
+import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,7 +30,7 @@ public class Analysis {
     private User user;
 
     @OneToMany(cascade = ALL ,orphanRemoval = true, mappedBy = "analysis")
-    private List<QuestionAnswer> questionAnswerList = new ArrayList<>();
+    private List<Question> questionList = new ArrayList<>();
 
 
 }

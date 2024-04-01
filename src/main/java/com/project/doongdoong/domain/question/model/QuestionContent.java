@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.questionanser.model;
+package com.project.doongdoong.domain.question.model;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

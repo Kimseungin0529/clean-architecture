@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.questionanser.model;
+package com.project.doongdoong.domain.question.model;
 
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.global.common.BaseEntity;
@@ -13,7 +13,7 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class QuestionAnswer extends BaseEntity {
+public class Question extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
     @Column(name = "question_id")
@@ -26,7 +26,7 @@ public class QuestionAnswer extends BaseEntity {
     private String answer;
 
     @Builder
-    public QuestionAnswer(String question) {
+    public Question(String question) {
         this.question = question;
     }
 
