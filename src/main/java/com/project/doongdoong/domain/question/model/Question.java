@@ -17,12 +17,15 @@ public class Question extends BaseEntity {
     @Column(name = "question_id")
     private Long id;
 
+    /*@Column(nullable = false, updatable = false)
+    private String content;*/
     @Column(nullable = false, updatable = false)
-    private String content;
+    @Enumerated(EnumType.STRING)
+    private QuestionContent questionContent;
 
     @Builder
-    public Question(String content) {
-        this.content = content;
+    public Question(QuestionContent questionContent) {
+        this.questionContent = questionContent;
     }
 
 

@@ -23,9 +23,26 @@ public enum QuestionContent {
     private final String text;
     private final int number;
     private final boolean isFixedQuestion;
-    private static final int QUESTION_SIZE = 2;
 
-    public static List<QuestionContent> provideQuestions(){
+
+
+    public static QuestionContent provideFixedQuestion(){
+        Random random = new Random();
+        List<QuestionContent> fixedQuestionContents = Arrays.stream(values())
+                .filter(question -> question.isFixedQuestion)
+                .collect(Collectors.toList());
+
+        return fixedQuestionContents.get(random.nextInt(fixedQuestionContents.size()));
+    }
+    public static QuestionContent provideUnFixedQuestion(){
+        Random random = new Random();
+        List<QuestionContent> unFixedQuestionContents = Arrays.stream(values())
+                .filter(question -> !question.isFixedQuestion)
+                .collect(Collectors.toList());
+
+        return unFixedQuestionContents.get(random.nextInt(unFixedQuestionContents.size()));
+    }
+    /*public static List<QuestionContent> provideQuestions(){
 
         List<QuestionContent> fixedQuestions = selectFixedQuestions();
         List<QuestionContent> unfixedQuestions = selectUnFixedQuestions();
@@ -63,5 +80,5 @@ public enum QuestionContent {
         }
         return fixedQuestions;
     }
-
+*/
 }
