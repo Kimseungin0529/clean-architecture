@@ -8,7 +8,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,7 +22,7 @@ public class QuestionServiceImp implements QuestionService {
 
     @Override
     public Question createFixedQuestion() {
-        QuestionContent questionContent = QuestionContent.provideFixedQuestion();
+        QuestionContent questionContent = QuestionContent.provideFixedQuestionContent();
 
         Question question = Question.builder()
                 .questionContent(questionContent)
@@ -36,7 +35,7 @@ public class QuestionServiceImp implements QuestionService {
 
     @Override
     public Question createUnFixedQuestion() {
-        QuestionContent questionContent = QuestionContent.provideUnFixedQuestion();
+        QuestionContent questionContent = QuestionContent.provideUnFixedQuestionContent();
 
         Question question = Question.builder()
                 .questionContent(questionContent)

@@ -26,21 +26,32 @@ public enum QuestionContent {
 
 
 
-    public static QuestionContent provideFixedQuestion(){
+    public static QuestionContent provideFixedQuestionContent(){
         Random random = new Random();
-        List<QuestionContent> fixedQuestionContents = Arrays.stream(values())
-                .filter(question -> question.isFixedQuestion)
-                .collect(Collectors.toList());
+        List<QuestionContent> fixedQuestionContents = getFixedQuestionContents();
 
         return fixedQuestionContents.get(random.nextInt(fixedQuestionContents.size()));
     }
-    public static QuestionContent provideUnFixedQuestion(){
+
+    public static List<QuestionContent> getFixedQuestionContents() {
+        List<QuestionContent> fixedQuestionContents = Arrays.stream(values())
+                .filter(question -> question.isFixedQuestion)
+                .collect(Collectors.toList());
+        return fixedQuestionContents;
+    }
+
+    public static QuestionContent provideUnFixedQuestionContent(){
         Random random = new Random();
+        List<QuestionContent> unFixedQuestionContents = getUnFixedQuestionContents();
+
+        return unFixedQuestionContents.get(random.nextInt(unFixedQuestionContents.size()));
+    }
+
+    public static List<QuestionContent> getUnFixedQuestionContents() {
         List<QuestionContent> unFixedQuestionContents = Arrays.stream(values())
                 .filter(question -> !question.isFixedQuestion)
                 .collect(Collectors.toList());
-
-        return unFixedQuestionContents.get(random.nextInt(unFixedQuestionContents.size()));
+        return unFixedQuestionContents;
     }
     /*public static List<QuestionContent> provideQuestions(){
 
