@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.analysis.model;
 
+import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.user.model.User;
 import jakarta.persistence.*;
@@ -30,7 +31,7 @@ public class Analysis {
     private User user;
 
     @OneToMany(cascade = ALL ,orphanRemoval = true, mappedBy = "analysis")
-    private List<Question> questionList = new ArrayList<>();
+    private List<Answer> answers = new ArrayList<>();
 
 
 }

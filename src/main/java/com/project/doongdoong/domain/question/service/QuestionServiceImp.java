@@ -15,7 +15,7 @@ public class QuestionServiceImp implements QuestionService {
     public Question createQuestion(String content) {
 
         Question question = Question.builder()
-                .question(content)
+                .content(content)
                 .build();
 
         return null;
