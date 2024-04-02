@@ -5,7 +5,8 @@ public interface ErrorType {
     int getCode();
 
     enum BadRequest implements ErrorType {
-        BAD_REQUEST_DEFAULT(0);
+        BAD_REQUEST_DEFAULT(0),
+        FILE_EMPTY(1);
 
         private final int errorCode;
 
@@ -57,7 +58,9 @@ public interface ErrorType {
     enum NotFound implements ErrorType {
         NOT_FOUND_DEFAULT(4000),
         USER_PROVIDER_NOT_FOUND(4001),
-        REFRESH_TOKEN_NOT_FOUND(4002)
+        REFRESH_TOKEN_NOT_FOUND(4002),
+        IMAGE_URL_NOT_FOUND(4003),
+        VOICE_URL_NOT_FOUND(4004)
         ;
 
         private final int errorCode;
@@ -89,7 +92,9 @@ public interface ErrorType {
     }
 
     enum ServerError implements ErrorType {
-        SERVER_ERROR_DEFAULT(5000)
+        SERVER_ERROR_DEFAULT(5000),
+        FILE_UPLOAD_FAIL(5001),
+        FILE_DELETE_FAIL(5002)
         ;
 
         private final int errorCode;

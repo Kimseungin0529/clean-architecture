@@ -3,6 +3,10 @@ package com.project.doongdoong.domain.voice.service;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.project.doongdoong.domain.image.exception.FileDeleteException;
+import com.project.doongdoong.domain.image.exception.FileEmptyException;
+import com.project.doongdoong.domain.image.exception.FileUploadException;
+import com.project.doongdoong.domain.voice.exception.VoiceUrlNotFoundException;
 import org.apache.commons.io.FilenameUtils;
 import com.project.doongdoong.domain.voice.dto.request.VoiceSaveRequestDto;
 import com.project.doongdoong.domain.voice.dto.response.VoiceDetailResponseDto;
@@ -37,7 +41,7 @@ public class VoiceService {
         VoicesResponseDto resultList = new VoicesResponseDto();
         for(MultipartFile multipartFile : saveDto.getVoices()) {
             if(multipartFile.isEmpty()){
-                throw new CustomException.InvalidRequestException(HttpStatus.BAD_REQUEST, "비어 있는 음성 파일이 있습니다.");
+                new FileEmptyException();
             }
             VoiceDetailResponseDto detailResponseDto = saveVoice(multipartFile);
             resultList.getVoicesResponse().add(detailResponseDto);
@@ -62,8 +66,8 @@ public class VoiceService {
             String accessUrl = amazonS3Client.getUrl(bucketName, filename).toString();
             voice.changeAccessUrl(accessUrl);
         } catch(SdkClientException | IOException e) {
-            throw new CustomException.ServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "음성 파일 저장 오류가 발생했습니다." +
-                    " 에러 : " + e.getMessage());
+            log.error("음성 파일 업로드 오류 -> {}", e.getMessage());
+            new FileUploadException();
         }
         log.info("음성 파일 저장 종료");
 
@@ -84,15 +88,14 @@ public class VoiceService {
     }
 
     public void deleteVoice(String imageUrl) {
-        Voice voice = voiceRepository.findByAccessUrl(imageUrl).
-                orElseThrow(() -> new CustomException.NotFoundException(HttpStatus.NOT_FOUND, "해당 url은 존재하지 않습니다."));
+        Voice voice = voiceRepository.findByAccessUrl(imageUrl).orElseThrow(() -> new VoiceUrlNotFoundException());
         try{
             voiceRepository.delete(voice);
             amazonS3Client.deleteObject(bucketName, voice.getStoredName());
         }
         catch(SdkClientException e) {
-            throw new CustomException.ServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "음성 파일 삭제 오류가 발생했습니다." +
-                    " 에러 : " + e.getMessage());
+            log.error("음성 파일 삭제 오류 -> {}", e.getMessage());
+            new FileDeleteException();
         }
     }
 

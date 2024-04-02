@@ -1,12 +1,15 @@
 package com.project.doongdoong.domain.image.service;
 
-import com.amazonaws.AmazonServiceException;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.project.doongdoong.domain.image.dto.request.ImageSaveRequestDto;
 import com.project.doongdoong.domain.image.dto.response.ImageDetailResponseDto;
 import com.project.doongdoong.domain.image.dto.response.ImagesResponseDto;
+import com.project.doongdoong.domain.image.exception.FileDeleteException;
+import com.project.doongdoong.domain.image.exception.FileEmptyException;
+import com.project.doongdoong.domain.image.exception.FileUploadException;
+import com.project.doongdoong.domain.image.exception.ImageUrlNotFoundException;
 import com.project.doongdoong.domain.image.model.Image;
 import com.project.doongdoong.domain.image.repository.ImageRepository;
 import com.project.doongdoong.global.exception.CustomException;
@@ -38,7 +41,7 @@ public class ImageService {
         ImagesResponseDto resultList = new ImagesResponseDto();
         for(MultipartFile multipartFile : saveDto.getImages()) {
             if(multipartFile.isEmpty()){
-                throw new CustomException.InvalidRequestException(HttpStatus.BAD_REQUEST, "비어 있는 파일이 있습니다.");
+                new FileEmptyException();
             }
             ImageDetailResponseDto detailResponseDto = saveImage(multipartFile);
             resultList.getImagesResponse().add(detailResponseDto);
@@ -61,8 +64,8 @@ public class ImageService {
             String accessUrl = amazonS3Client.getUrl(bucketName, filename).toString();
             image.changeAccessUrl(accessUrl);
         } catch(SdkClientException | IOException e) {
-            throw new CustomException.ServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지를 저장 오류가 발생했습니다." +
-                    " 에러 : " + e.getMessage());
+            log.error("파일 업로드 과정 실패  {}", e.getMessage());
+            new FileUploadException();
         }
 
         imageRepository.save(image);
@@ -72,14 +75,14 @@ public class ImageService {
 
     public void deleteImage(String imageUrl) {
         Image image = imageRepository.findByAccessUrl(imageUrl).
-                orElseThrow(() -> new CustomException.NotFoundException(HttpStatus.NOT_FOUND, "해당 url은 존재하지 않습니다."));
+                orElseThrow(() -> new ImageUrlNotFoundException());
         try{
             imageRepository.delete(image);
             amazonS3Client.deleteObject(bucketName, image.getStoredName());
         }
         catch(SdkClientException e) {
-            throw new CustomException.ServerErrorException(HttpStatus.INTERNAL_SERVER_ERROR, "이미지 삭제 오류가 발생했습니다." +
-                    " 에러 : " + e.getMessage());
+            log.error("이미지 삭제 오류 발생 -> {}", e.getMessage());
+            new FileDeleteException();
         }
     }
 
