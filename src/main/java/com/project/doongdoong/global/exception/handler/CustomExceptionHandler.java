@@ -2,6 +2,7 @@ package com.project.doongdoong.global.exception.handler;
 
 import com.project.doongdoong.global.common.ErrorResponse;
 import com.project.doongdoong.global.exception.CustomException;
+import com.project.doongdoong.global.exception.ErrorType;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.support.DefaultMessageSourceResolvable;
 import org.springframework.web.bind.MethodArgumentNotValidException;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static com.project.doongdoong.global.exception.ErrorType.BadRequest.BAD_REQUEST_DEFAULT;
 import static org.springframework.http.HttpStatus.*;
 import static org.springframework.http.HttpStatus.INTERNAL_SERVER_ERROR;
 
@@ -31,7 +33,7 @@ public class CustomExceptionHandler {
                 .map(DefaultMessageSourceResolvable::getDefaultMessage)
                 .collect(Collectors.toList());
 
-        return new ErrorResponse(new CustomException(BAD_REQUEST, "잘못된 입력 형식이 존재합니다."), errors);
+        return new ErrorResponse(new CustomException(BAD_REQUEST_DEFAULT, "잘못된 입력 형식이 존재합니다."), errors);
     }
 
     /*

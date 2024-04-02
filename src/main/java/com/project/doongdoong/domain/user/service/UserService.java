@@ -1,5 +1,8 @@
 package com.project.doongdoong.domain.user.service;
 
+import com.project.doongdoong.domain.user.exeception.RefreshTokenNoutFoundException;
+import com.project.doongdoong.domain.user.exeception.TokenInfoFobiddenException;
+import com.project.doongdoong.domain.user.exeception.UserProviderNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
@@ -48,7 +51,7 @@ public class UserService {
         String nickname = oAuthTokenInfo.getNickname();
         SocialType socialType = SocialType.customValueOf(oAuthTokenInfo.getSocailType());
         if(socialType == null){
-            throw new CustomException.InvalidRequestException(HttpStatus.BAD_REQUEST, "해당 소셜 타입은 존재하지 않습니다. 대문자");
+            new UserProviderNotFoundException();
         }
 
         Optional<User> findUser = userRepository.findBySocialTypeAndEmail(socialType, email);
@@ -108,8 +111,10 @@ public class UserService {
                     .accessToken(accessToken)
                     .build();
         }else{
-            throw new CustomException.InvalidRequestException(HttpStatus.NOT_FOUND, "refreshToken이 존재하지 않아 토큰 갱신에 실패했습니다.");
+            new RefreshTokenNoutFoundException();
         }
+
+        return null;
     }
 
     @Transactional
@@ -121,10 +126,10 @@ public class UserService {
         String accessEmail = jwtProvider.extractEmail(accessToken.substring(7));
         String accessSocailType = jwtProvider.extractSocialType(accessToken.substring(7));
         if (!accessEmail.equals(email)){
-            throw new CustomException.ForbiddenException(HttpStatus.FORBIDDEN, "act과 rft 간 이메일 정보가 일치하지 않습니다.");
+            new TokenInfoFobiddenException();
         }
         if (!accessSocailType.equals(socialType)){
-            throw new CustomException.ForbiddenException(HttpStatus.FORBIDDEN, "act과 rft 간 소셜 타입 정보가 일치하지 않습니다.");
+            new TokenInfoFobiddenException();
         }
 
         log.info("단계1");

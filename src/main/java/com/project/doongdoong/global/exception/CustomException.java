@@ -1,53 +1,52 @@
 package com.project.doongdoong.global.exception;
 
 import lombok.Getter;
-import org.springframework.http.HttpStatus;
 
 @Getter
 public class CustomException extends RuntimeException{
-    int errorCode; // http 번호
-    String codeMassage; // http 간편 설명
-    String detail; // 자세한 예외 메세지
+    int errorCode;
+    ErrorType errorType;
+    String detail;
 
-    public CustomException(HttpStatus status, String detail){
-        this.errorCode = status.value();
-        this.codeMassage = status.getReasonPhrase();
+    public CustomException(ErrorType errorType, String detail) {
+        this.errorCode = errorType.getCode();
+        this.errorType = errorType;
         this.detail = detail;
     }
 
-    public static class InvalidRequestException extends CustomException {
-        public InvalidRequestException(HttpStatus status, String detail) {
-            super(status, detail);
+    public abstract static class InvalidRequestException extends CustomException {
+        public InvalidRequestException(ErrorType.BadRequest errorType, String detail) {
+            super(errorType, detail);
         }
     }
 
-    public static class UnauthorizedException extends CustomException {
-        public UnauthorizedException(HttpStatus status, String detail) {
-            super(status, detail);
+    public abstract static class UnauthorizedException extends CustomException {
+        public UnauthorizedException(ErrorType.Unauthorized errorType, String detail) {
+            super(errorType, detail);
         }
     }
 
-    public static class ForbiddenException extends CustomException {
-        public ForbiddenException(HttpStatus status, String detail) {
-            super(status, detail);
+    public abstract static class ForbiddenException extends CustomException {
+        public ForbiddenException(ErrorType.Forbidden errorType, String detail) {
+            super(errorType, detail);
         }
     }
 
-    public static class NotFoundException extends CustomException {
-        public NotFoundException(HttpStatus status, String detail) {
-            super(status, detail);
+    public abstract static class NotFoundException extends CustomException {
+        public NotFoundException(ErrorType.NotFound errorType, String detail) {
+            super(errorType, detail);
         }
     }
 
-    public static class ConflictException extends CustomException {
-        public ConflictException(HttpStatus status, String detail) {
-            super(status, detail);
+    public abstract static class ConflictException extends CustomException {
+        public ConflictException(ErrorType.Conflict errorType, String detail) {
+            super(errorType, detail);
         }
     }
 
-    public static class ServerErrorException extends CustomException {
-        public ServerErrorException(HttpStatus status, String detail) {
-            super(status, detail);
+    public abstract static class ServerErrorException extends CustomException {
+        public ServerErrorException(ErrorType errorType, String detail) {
+            super(errorType, detail);
         }
     }
 }
