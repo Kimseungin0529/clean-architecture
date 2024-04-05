@@ -1,11 +1,16 @@
 package com.project.doongdoong.domain.analysis.service;
 
-import com.project.doongdoong.domain.analysis.repository.AnalsisRepository;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.project.doongdoong.domain.analysis.dto.AnalysisCreateResponseDto;
+import com.project.doongdoong.domain.analysis.model.Analysis;
 
-@Service
-@RequiredArgsConstructor
-public class AnalysisService {
-    private AnalsisRepository analsisRepository;
+import java.util.List;
+
+public interface AnalysisService {
+
+    public AnalysisCreateResponseDto createAnalysis();
+
+    public Analysis getAnalysis();
+
+    public List<Analysis> getAnalysisList();
+
 }

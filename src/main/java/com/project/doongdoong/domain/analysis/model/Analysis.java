@@ -5,6 +5,7 @@ import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.user.model.User;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -24,6 +25,7 @@ public class Analysis {
     @Column(name = "analsis_id")
     private Long id;
 
+    @Column(updatable = false)
     private long feelingState;
 
     @ManyToOne(fetch = LAZY)
@@ -31,7 +33,17 @@ public class Analysis {
     private User user;
 
     @OneToMany(cascade = ALL ,orphanRemoval = true, mappedBy = "analysis")
+    private List<Question> questions = new ArrayList<>();
+
+    @OneToMany(cascade = ALL ,orphanRemoval = true, mappedBy = "analysis")
     private List<Answer> answers = new ArrayList<>();
+
+    @Builder
+    public Analysis(User user, List<Question> questions){
+        this.feelingState = 0;
+        this.questions = questions;
+        this.user = user;
+    }
 
 
 }
