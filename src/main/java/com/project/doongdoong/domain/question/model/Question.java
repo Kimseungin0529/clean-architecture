@@ -32,6 +32,11 @@ public class Question extends BaseEntity {
         this.questionContent = questionContent;
     }
 
+    public void connectAnalysis(Analysis analysis){
+        this.analysis = analysis;
+        analysis.getQuestions().add(this);
+    }
+
 
 
 

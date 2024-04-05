@@ -27,6 +27,8 @@ public class AnalysisServiceImp implements AnalysisService{
                 .questions(questions)
                 .build();
 
+        questions.stream().forEach(question -> question.connectAnalysis(analysis)); // 연관관계 편의 메서드
+
         analsisRepository.save(analysis);
 
         return AnalysisCreateResponseDto.builder()
