@@ -53,10 +53,6 @@ public class AnalysisServiceImp implements AnalysisService{
         Analysis findAnalysis = analsisRepository.findById(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
 
 
-        for(Question question : findAnalysis.getQuestions()){
-            log.info("question.getQuestionContent().getText() = {}", question.getQuestionContent().getText());
-        }
-
         return AnaylsisResponseDto.builder()
                 .anaylisId(findAnalysis.getId())
                 .feelingState(findAnalysis.getFeelingState())
@@ -70,7 +66,11 @@ public class AnalysisServiceImp implements AnalysisService{
     }
 
     @Override
-    public List<AnaylsisResponseDto> getAnalysisList() {
+    public List<AnaylsisResponseDto> getAnalysisList(/*사용자 정보 필요*/) {
+        // 사용자 찾기 로직
+        // 사용자 토대로 모든 분석 객체 가져오기(페이징 조건은 추후 고려 )
+        //
+
         return null;
     }
 
