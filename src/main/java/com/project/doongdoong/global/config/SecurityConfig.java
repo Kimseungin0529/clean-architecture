@@ -1,7 +1,6 @@
     package com.project.doongdoong.global.config;
 
     import com.project.doongdoong.global.fliter.JwtAuthFilter;
-    import com.project.doongdoong.global.fliter.JwtExceptionHandlerFilter;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
     import org.springframework.context.annotation.Bean;

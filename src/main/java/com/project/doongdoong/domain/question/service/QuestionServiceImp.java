@@ -1,5 +1,8 @@
 package com.project.doongdoong.domain.question.service;
 
+import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
+import com.project.doongdoong.domain.analysis.model.Analysis;
+import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.question.repository.QuestionRepository;
@@ -49,13 +52,14 @@ public class QuestionServiceImp implements QuestionService {
     @Transactional
     @Override
     public List<Question> createQuestions() {
+
         Set<Question> fixedQuestionList = getFixedQuestionList(FIXED_QUESTION_SIZE);
         Set<Question> unFixedQuestionList = getUnFixedQuestionList(UNFIXED_QUESTION_SIZE);
 
         List<Question> mergedQuestionList = new ArrayList<>(fixedQuestionList);
         mergedQuestionList.addAll(unFixedQuestionList);
 
-        questionRepository.saveAll(mergedQuestionList);
+        //questionRepository.saveAll(mergedQuestionList);
 
         return mergedQuestionList;
 

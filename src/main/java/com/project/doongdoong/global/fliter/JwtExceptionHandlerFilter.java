@@ -15,6 +15,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+/*
 
 //@Component
 public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
@@ -50,4 +51,4 @@ public class JwtExceptionHandlerFilter extends OncePerRequestFilter {
         }
     }
 
-}
+}*/

@@ -45,6 +45,4 @@ public class Analysis {
         this.user = user;
     }
 
-
-
 }

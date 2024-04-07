@@ -60,7 +60,8 @@ public interface ErrorType {
         USER_PROVIDER_NOT_FOUND(4001),
         REFRESH_TOKEN_NOT_FOUND(4002),
         IMAGE_URL_NOT_FOUND(4003),
-        VOICE_URL_NOT_FOUND(4004)
+        VOICE_URL_NOT_FOUND(4004),
+        ANALYSIS_NOT_FOUND(4005)
         ;
 
         private final int errorCode;
