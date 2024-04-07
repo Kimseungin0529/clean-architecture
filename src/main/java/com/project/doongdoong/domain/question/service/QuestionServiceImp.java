@@ -1,8 +1,5 @@
 package com.project.doongdoong.domain.question.service;
 
-import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
-import com.project.doongdoong.domain.analysis.model.Analysis;
-import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.question.repository.QuestionRepository;
@@ -11,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -69,7 +67,7 @@ public class QuestionServiceImp implements QuestionService {
         Set<Question> questions = new HashSet<>();
         while(questions.size() < FIXED_QUESTION_SIZE){
             Question fixedQuestion = createFixedQuestion();
-            questions.add(fixedQuestion);
+            addIfNotDuplicateQuestionContent(questions, fixedQuestion);
         }
         return questions;
     }
@@ -78,9 +76,18 @@ public class QuestionServiceImp implements QuestionService {
         Set<Question> questions = new HashSet<>();
         while(questions.size() < UNFIXED_QUESTION_SIZE){
             Question unFixedQuestion = createUnFixedQuestion();
-            questions.add(unFixedQuestion);
+            addIfNotDuplicateQuestionContent(questions, unFixedQuestion);
         }
         return questions;
+    }
+
+    private void addIfNotDuplicateQuestionContent(Set<Question> questions, Question now) {
+        List<QuestionContent> questionContents = questions.stream()
+                .map(question -> question.getQuestionContent())
+                .collect(Collectors.toList());
+        if(!questionContents.contains(now.getQuestionContent())) {
+            questions.add(now);
+        }
     }
 
 }
