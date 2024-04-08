@@ -17,11 +17,10 @@
     public class SecurityConfig {
 
         private final JwtAuthFilter jwtAuthFilter;
-        //private final JwtExceptionHandlerFilter jwtExceptionHandlerFilter;
-        //private final JwtExceptionFilter jwtExceptionFilter;
-        /*private final CustomOAuth2UserService customOAuth2UserService;
-        private final MyAuthenticationSuccessHandler oAuth2LoginSuccessHandler;
-        private final MyAuthenticationFailureHandler oAuth2LoginFailureHandler;*/
+        private final static String[] ALLOW_REQUEST = {
+                "/", "/api/v1/ping", "/api/v1/login-oauth", "/api/v1/reissue",
+                "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
+        };
         @Bean
         public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
 
@@ -36,16 +35,8 @@
                      */
                     .authorizeHttpRequests(auth ->
                             auth
-                                    .requestMatchers("/").permitAll()
-                                    .requestMatchers("/api/v1/ping", "/api/v1/flask/test").permitAll() // 통신 test용 url
-                                    .requestMatchers("/api/v1/login-oauth", "/api/v1/reissue").permitAll()
-                                    .requestMatchers("/api-docs/**", "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                                    /* .requestMatchers("/token/**").permitAll() // 토근 발급 경로 허용
-                                     .requestMatchers("/kakao/callback").permitAll()
-                                     .requestMatchers("/", "/css/**","/images/**","/js/**","/favicon.ico","/h2-console/**").permitAll()*/
                                     .anyRequest().authenticated()
                     )
-                    //.addFilterBefore(jwtExceptionHandlerFilter, jwtAuthFilter.getClass())
                     .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
                     .build();
                     /*.oauth2Login(oauth2 -> oauth2.
