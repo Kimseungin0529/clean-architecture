@@ -13,6 +13,9 @@ public class OAuthTokenDto {
     @NotBlank(message = "refresh_tokne이 존재하지 않습니다.")
     private String refreshToken;
 
+    @NotBlank(message = "소셜 id이가 존재하지 않습니다.")
+    private String socialId;
+
     @NotBlank(message = "닉네임이 공백입니다.")
     private String nickname;
 

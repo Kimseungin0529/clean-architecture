@@ -15,13 +15,13 @@ import java.util.List;
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class User extends BaseEntity implements UserDetails {
+public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
     private Long id;
 
-    private String username;
+    private String socailId;
 
     private String nickname;
 
@@ -37,46 +37,20 @@ public class User extends BaseEntity implements UserDetails {
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Analysis> analysisList = new ArrayList<>();
 
+    // 권한 추가
+
     @Builder
-    public User(String nickname, String email, SocialType socialType) {
+    public User(String socailId, String nickname, String email, SocialType socialType) {
+        this.socailId = socailId;
         this.nickname = nickname;
         this.email = email;
         this.socialType = socialType;
     }
 
-    @Override
-    public Collection<? extends GrantedAuthority> getAuthorities() {
-        return this.roles.stream()
-                .map(SimpleGrantedAuthority::new).toList();
+    public void changeEmail(String email){
+        this.email = email;
     }
-
-    @Override
-    public String getPassword() {
-        return null;
+    public void changeNickname(String nickname){
+        this.nickname = nickname;
     }
-
-    @Override
-    public boolean isAccountNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isAccountNonLocked() {
-        return false;
-    }
-
-    @Override
-    public boolean isCredentialsNonExpired() {
-        return false;
-    }
-
-    @Override
-    public boolean isEnabled() {
-        return false;
-    }
-
-    // private String socialId; // 로그인한 소셜 타입의 식별자 값 (일반 로그인인 경우 null)
-    // 앱에서 SDK 인증으로 이미 검증된 상태로 소셜 token값만 받음. OAuth 라이브러리를 사용하지 못해 직접 id 값을 꺼낼 수 가 없음.
-    // 보안 상, 매우 부족해 보이지만 일단 이메일과 socialType으로만 사용자 검증하자.
-
 }

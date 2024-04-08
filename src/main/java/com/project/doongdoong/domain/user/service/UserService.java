@@ -13,13 +13,10 @@ import com.project.doongdoong.global.dto.request.LogoutDto;
 import com.project.doongdoong.global.dto.request.OAuthTokenDto;
 import com.project.doongdoong.global.dto.request.ReissueDto;
 import com.project.doongdoong.global.dto.response.TokenDto;
-import com.project.doongdoong.global.exception.CustomException;
 import com.project.doongdoong.global.repositoty.BlackAccessTokenRepository;
 import com.project.doongdoong.global.repositoty.RefreshTokenRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,16 +35,7 @@ public class UserService {
     @Transactional
     public TokenDto checkRegistration(OAuthTokenDto oAuthTokenInfo) {
 
-        /**
-         * 받아온 act, rft이 카카오 로그인을 통해 받아온 토큰이 맞는지 확인이 필요할까?
-         * 필요하다면 검증 로직 추가해야 함.
-         * -> 필요한 거 같다. 해당 메소드를 호출하는 API(소셜 로그인)는 이미 client에서 검증이 된 상태로 서버한테 넘어온다.
-         * 해당 API는 서버에서 인증할 수 없으므로 security 설정에서 인증 허용해야 접근 가능하다.
-         * 또한 클라이언트 측에서 제공한 토큰이 직접 카카오(OAuth)한테 검증받은 토큰인지 알 수 없다.
-         * 현재 생각난 방안은 해당 토큰으로 카카오 API를 호출하여 성공하면 서버 자체 jwt를 제공해주고 실패하면 jwt를 발급하지 않는 방법을 사용하거나
-         * 이를 보완해줄 security 설정이 필요해 보인다.
-         */
-
+        String socialId = oAuthTokenInfo.getSocialId();
         String email = oAuthTokenInfo.getEmail();
         String nickname = oAuthTokenInfo.getNickname();
         SocialType socialType = SocialType.customValueOf(oAuthTokenInfo.getSocailType());
@@ -55,20 +43,12 @@ public class UserService {
             new UserProviderNotFoundException();
         }
 
-        Optional<User> findUser = userRepository.findBySocialTypeAndEmail(socialType, email);
-        if(findUser.isEmpty()){ // 만약 없다면 사용자 정보 DB에 저장
-            User user = User
-                    .builder()
-                    .email(email)
-                    .nickname(nickname)
-                    .socialType(socialType)
-                    .build();
+        User user = userRepository.findBySocialTypeAndSocialId(socialType, socialId)
+                .orElse(toEntity(socialId, email, nickname, socialType));
 
-            userRepository.save(user);
-            log.info("사용자 정보 DB 저장");
-        }else{
-            log.info("이미 존재하므로 DB 저장 X");
-        }
+        checkChange(email, nickname, user);
+        userRepository.save(user); // 기존 회원 정보가 없는 경우에는 영속화 필요
+
         Optional<BlackAccessToken> blackAccessToken = blackAccessTokenRepository.findByOtherKey(email + " " + socialType.getText());
         log.info("blackAccessToken db에서 조회하기");
         if(blackAccessToken.isPresent()){ //
@@ -94,6 +74,23 @@ public class UserService {
         log.info("새로운 RefreshToken 저장");
 
         return tokenInfoResponse;
+    }
+
+    private void checkChange(String email, String nickname, User user) {
+        if (!user.getEmail().equals(email) || !user.getNickname().equals(nickname)) {
+            user.changeEmail(email);
+            user.changeNickname(nickname);
+        }
+    }
+
+    private User toEntity(String socialId, String email, String nickname, SocialType socialType) {
+        return User
+                .builder()
+                .socailId(socialId)
+                .email(email)
+                .nickname(nickname)
+                .socialType(socialType)
+                .build();
     }
 
     @Transactional
