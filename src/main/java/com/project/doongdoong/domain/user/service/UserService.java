@@ -1,8 +1,8 @@
 package com.project.doongdoong.domain.user.service;
 
 import com.project.doongdoong.domain.user.exeception.RefreshTokenNoutFoundException;
+import com.project.doongdoong.domain.user.exeception.SocialTypeNotFoundException;
 import com.project.doongdoong.domain.user.exeception.TokenInfoFobiddenException;
-import com.project.doongdoong.domain.user.exeception.UserProviderNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
@@ -41,9 +41,10 @@ public class UserService {
         String nickname = oAuthTokenInfo.getNickname();
         SocialType socialType = SocialType.customValueOf(oAuthTokenInfo.getSocailType());
         if(socialType == null){
-            new UserProviderNotFoundException();
+            new SocialTypeNotFoundException();
         }
-
+        log.info("socialType = {}", socialType);
+        log.info("socialId = {}", socialId);
         User user = userRepository.findBySocialTypeAndSocialId(socialType, socialId)
                 .orElse(toEntity(socialId, email, nickname, socialType));
         checkChange(email, nickname, user); // 기존 회원 정보와 달라졌는지 확인
@@ -57,7 +58,7 @@ public class UserService {
             log.info("blackAccessToken 존재해서 삭제");
         }
 
-        TokenDto tokenInfoResponse = jwtProvider.generateToken(email, socialType.getText(), user.getRoles());
+        TokenDto tokenInfoResponse = jwtProvider.generateToken(socialId, socialType.getText(), user.getRoles());
 
         RefreshToken refresh = RefreshToken.of(user.getSocialId(), user.getSocialType().getText(), tokenInfoResponse.getRefreshToken());
         Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByUniqueId(refresh.getUniqueId());

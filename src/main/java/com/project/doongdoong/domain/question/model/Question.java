@@ -34,7 +34,7 @@ public class Question extends BaseEntity {
 
     public void connectAnalysis(Analysis analysis){
         this.analysis = analysis;
-        //analysis.getQuestions().add(this);
+        //analysis.getQuestions().add(this); // 무한 참조(heap space)로 인해 주석 처리. 원인을 못 찾음...
     }
 
 

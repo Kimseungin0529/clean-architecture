@@ -57,11 +57,12 @@ public interface ErrorType {
 
     enum NotFound implements ErrorType {
         NOT_FOUND_DEFAULT(4000),
-        USER_PROVIDER_NOT_FOUND(4001),
+        SOCIAL_TYPE_NOT_FOUND(4001),
         REFRESH_TOKEN_NOT_FOUND(4002),
         IMAGE_URL_NOT_FOUND(4003),
         VOICE_URL_NOT_FOUND(4004),
-        ANALYSIS_NOT_FOUND(4005)
+        ANALYSIS_NOT_FOUND(4005),
+        USER_NOT_FOUND(4006)
         ;
 
         private final int errorCode;

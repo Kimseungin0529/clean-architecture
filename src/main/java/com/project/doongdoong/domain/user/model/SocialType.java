@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.user.model;
 
+import com.project.doongdoong.domain.user.exeception.SocialTypeNotFoundException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -12,8 +13,6 @@ public enum SocialType {
     private final String text;
     public static SocialType customValueOf(String socialType){
         SocialType type = null;
-        log.info("socialType = {}", socialType);
-        log.info("KAKAO = {}", KAKAO.getText());
 
         if(socialType.equals(KAKAO.getText())){
             type = KAKAO;
@@ -21,6 +20,8 @@ public enum SocialType {
             type = NAVER;
         }else if (socialType.equals(GOOGLE.getText())) {
             type = GOOGLE;
+        }else{
+            new SocialTypeNotFoundException();
         }
         return type;
     }

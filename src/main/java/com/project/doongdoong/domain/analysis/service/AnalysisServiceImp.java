@@ -8,12 +8,15 @@ import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.repository.QuestionRepository;
 import com.project.doongdoong.domain.question.service.QuestionService;
+import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
+import com.project.doongdoong.domain.user.model.SocialType;
+import com.project.doongdoong.domain.user.model.User;
+import com.project.doongdoong.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Iterator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -21,27 +24,30 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class AnalysisServiceImp implements AnalysisService{
+    private final UserRepository userRepository;
     private final AnalysisRepository analsisRepository;
     private final QuestionRepository questionRepository;
     private final QuestionService questionService;
 
     @Transactional
     @Override //        추가적으로 사용자 정보가 있어야 함.
-    public AnalysisCreateResponseDto createAnalysis() {
-        // 사용자 찾기 로직 필요
+    public AnalysisCreateResponseDto createAnalysis(String uniqueValue) {
+        String[] values = uniqueValue.split("_"); // 사용자 찾기
+        User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
+                .orElseThrow(() -> new UserNotFoundException());
+
         List<Question> questions = questionService.createQuestions();
         Analysis analysis = Analysis.builder()
-                //.user(null)
+                .user(user)
                 .questions(questions)
                 .build();
 
         for(int i=0; i<questions.size(); i++){
             Question question = questions.get(i);
             question.connectAnalysis(analysis);
-        } // ConcurrentModificationException 으로 인해 for문 사용 /
+        } // ConcurrentModificationException 으로 인해 for문 사용
 
         analsisRepository.save(analysis);
-        questionRepository.saveAll(questions);
 
         return AnalysisCreateResponseDto.builder()
                 .analysisId(analysis.getId())

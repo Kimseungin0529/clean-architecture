@@ -3,6 +3,7 @@ package com.project.doongdoong.domain.analysis.controller;
 import com.project.doongdoong.domain.analysis.dto.AnalysisCreateResponseDto;
 import com.project.doongdoong.domain.analysis.dto.AnaylsisResponseDto;
 import com.project.doongdoong.domain.analysis.service.AnalysisService;
+import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,9 +18,9 @@ public class AnalysisController {
     private final AnalysisService analysisService;
 
     @PostMapping
-    public ApiResponse<AnalysisCreateResponseDto> createAnaysis(){
+    public ApiResponse<AnalysisCreateResponseDto> createAnaysis(@CurrentUser String uniqueValue){
 
-        return ApiResponse.of(HttpStatus.OK, null, analysisService.createAnalysis());
+        return ApiResponse.of(HttpStatus.OK, null, analysisService.createAnalysis(uniqueValue));
     }
 
 

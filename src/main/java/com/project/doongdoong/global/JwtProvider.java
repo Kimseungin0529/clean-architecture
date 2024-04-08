@@ -106,7 +106,7 @@ public class JwtProvider {
         // UserDetails 객체를 만들어서 Authentication 리턴
         // password가 없는데 이렇게 작성하면 보안 문제가 발생할 거 같음. 나중에 확인해 보자.
         log.info("claims.getSubject() = {}",claims.getSubject());
-        UserDetails principal = new User(claims.getSubject(), "", authorities);
+        UserDetails principal = new User(claims.getSubject() + "_" +claims.get("socialType", String.class), "", authorities);
         return new UsernamePasswordAuthenticationToken(principal, "", authorities);
     }
     public Claims parseClaims(String accessToken) {
