@@ -15,4 +15,5 @@ public interface RefreshTokenRepository extends CrudRepository<RefreshToken, Str
     // accessToken으로 RefreshToken을 찾아온다.
     Optional<RefreshToken> findByRefreshToken(String refreshToken);
 
+    Optional<RefreshToken> findByUniqueId(String uniqueId);
 }

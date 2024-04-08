@@ -35,6 +35,7 @@ public class UserService {
     @Transactional
     public TokenDto checkRegistration(OAuthTokenDto oAuthTokenInfo) {
 
+        log.info("시작은 하냐? 시작은 하냐?시작은 하냐?시작은 하냐?");
         String socialId = oAuthTokenInfo.getSocialId();
         String email = oAuthTokenInfo.getEmail();
         String nickname = oAuthTokenInfo.getNickname();
@@ -45,33 +46,25 @@ public class UserService {
 
         User user = userRepository.findBySocialTypeAndSocialId(socialType, socialId)
                 .orElse(toEntity(socialId, email, nickname, socialType));
+        checkChange(email, nickname, user); // 기존 회원 정보와 달라졌는지 확인
+        user.checkRoles(); // 새롭게 생성된 경우 사용자 권한 제공
+        userRepository.save(user); // 새롭게 생성된 경우에는 영속화 필요
 
-        checkChange(email, nickname, user);
-        userRepository.save(user); // 기존 회원 정보가 없는 경우에는 영속화 필요
-
-        Optional<BlackAccessToken> blackAccessToken = blackAccessTokenRepository.findByOtherKey(email + " " + socialType.getText());
-        log.info("blackAccessToken db에서 조회하기");
-        if(blackAccessToken.isPresent()){ //
+        Optional<BlackAccessToken> blackAccessToken =
+                blackAccessTokenRepository.findById(BlackAccessToken.findUniqueId(socialId,socialType.getText()));
+        if(blackAccessToken.isPresent()) {
             blackAccessTokenRepository.delete(blackAccessToken.get());
             log.info("blackAccessToken 존재해서 삭제");
-        }else{
-            log.info("blackAccessToken 존재 X");
         }
-        TokenDto tokenInfoResponse = jwtProvider.generateToken(email, "ROLE_USER", socialType.getText());
-        /**
-         * rft을 저장하는데 다시 로그인하는 경우, 기존 rft이 존재한다면 닷
-         */
-        RefreshToken refresh = RefreshToken.of(email, tokenInfoResponse.getRefreshToken(), socialType.getText());
-        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findById(refresh.getId());
 
-        if(findRefreshToken.isPresent() && findRefreshToken.get().getSocialType().equals(socialType.getText())){ // 기존 rft이 존재한다면 삭제하고 새롭게 저장
-            refreshTokenRepository.delete(findRefreshToken.get());
-            log.info("기존 RefreshToken 삭제");
-        }else{
-            log.info("기존 RefreshToken 존재 X");
+        TokenDto tokenInfoResponse = jwtProvider.generateToken(email, socialType.getText(), user.getRoles());
+
+        RefreshToken refresh = RefreshToken.of(user.getSocialId(), user.getSocialType().getText(), tokenInfoResponse.getRefreshToken());
+        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByUniqueId(refresh.getUniqueId());
+        if(findRefreshToken.isPresent()){ // 기존 rft이 존재한다면 삭제하고 새롭게 저장
+            refreshTokenRepository.delete(findRefreshToken.get()); log.info("기존 RefreshToken 삭제");
         }
-        refreshTokenRepository.save(refresh);
-        log.info("새로운 RefreshToken 저장");
+        refreshTokenRepository.save(refresh); log.info("새로운 RefreshToken 저장");
 
         return tokenInfoResponse;
     }
@@ -86,7 +79,7 @@ public class UserService {
     private User toEntity(String socialId, String email, String nickname, SocialType socialType) {
         return User
                 .builder()
-                .socailId(socialId)
+                .socialId(socialId)
                 .email(email)
                 .nickname(nickname)
                 .socialType(socialType)
@@ -100,10 +93,10 @@ public class UserService {
         
         if(findRefreshToken.isPresent()) { // rft이 존재한다면
             String token = findRefreshToken.get().getRefreshToken().substring(7);
-            String email = jwtProvider.extractEmail(token);
+            String socialId = jwtProvider.extractSocialId(token);
             String socialType = jwtProvider.extractSocialType(token);
             String role = jwtProvider.extractRole(token);
-            String accessToken = jwtProvider.createAccessToken(email, socialType, role); // act 갱신
+            String accessToken = jwtProvider.createAccessToken(socialId, socialType, role); // act 갱신
 
             return TokenDto.builder()
                     .accessToken(accessToken)
@@ -118,32 +111,23 @@ public class UserService {
     @Transactional
     public void logout(LogoutDto tokenInfoDto, String accessToken) {
         String socialType = jwtProvider.extractSocialType(accessToken.substring(7));
-        String email = jwtProvider.extractEmail(accessToken.substring(7));
+        String socialId = jwtProvider.extractSocialId(accessToken.substring(7));
         Optional<RefreshToken> refreshToken = refreshTokenRepository.findByRefreshToken(tokenInfoDto.getRefreshToken());
+        if(refreshToken.isPresent()){       // blackAccessToken으로 이미 접근 권한을 막았지만 더 안전한 보안으로 rft도 삭제
+            refreshTokenRepository.delete(refreshToken.get()); // rft이 존재한다면 삭제
+        }
 
-        String accessEmail = jwtProvider.extractEmail(accessToken.substring(7));
+        String accessSocialId = jwtProvider.extractSocialId(accessToken.substring(7));
         String accessSocailType = jwtProvider.extractSocialType(accessToken.substring(7));
-        if (!accessEmail.equals(email)){
+        if (!accessSocialId.equals(socialId)){
             new TokenInfoFobiddenException();
         }
         if (!accessSocailType.equals(socialType)){
             new TokenInfoFobiddenException();
         }
 
-        log.info("단계1");
-        BlackAccessToken blackAccessToken = BlackAccessToken.of(email, accessToken, socialType);
+        BlackAccessToken blackAccessToken = BlackAccessToken.of(socialId, socialType, accessToken);
         blackAccessTokenRepository.save(blackAccessToken); // blackAccessToken 저장 -> 해당 act은 만료기간 남았더라도 접근 불가
-        log.info("단계2 -> blackToken 생성");
-        if(refreshToken.isPresent()){       // blackAccessToken으로 이미 접근 권한을 막았지만 더 안전한 보안으로 rft도 삭제
-            refreshTokenRepository.delete(refreshToken.get()); // rft이 존재한다면 삭제
-            log.info("로그아웃으로 인해 기존 refreshToken 삭제");
-        }
-        else{
-            /**
-             * 인증되지 않은 사용자라는 예외처리 필요
-             */
-        }
-        log.info("로그아웃 메소드 종료");
     }
     /*public boolean checkBlackToken(HttpServletRequest request){
         String accessToken = request.getHeader("Authorization");

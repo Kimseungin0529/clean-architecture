@@ -22,16 +22,26 @@ public class RefreshToken implements Serializable {
     private String id;
 
     @Indexed
+    private String uniqueId;
+
+    @Indexed
     private String refreshToken;
+
+    private boolean isLogout;
     // 권한 필드가 추후 필요하면 추가
 
-    private String socialType;
+    public static RefreshToken of(String socialId, String socialType, String refreshToken){
+        String uniqueId = findUniqueId(socialId, socialType);
 
-    public static RefreshToken of(String id, String refreshToken, String socialType){
         return RefreshToken.builder()
-                .id(id)
-                .socialType(socialType)
+                .uniqueId(uniqueId)
                 .refreshToken(refreshToken)
+                .isLogout(false)
                 .build();
+    }
+
+    private static String findUniqueId(String socialId, String socialType) {
+        String uniqueId = socialId + "_" + socialType;
+        return uniqueId;
     }
 }

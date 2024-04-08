@@ -19,10 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Component;
 
 import java.security.Key;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Date;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Slf4j
@@ -51,18 +48,24 @@ public class JwtProvider {
 
 
 
-    public TokenDto generateToken(String email, String role, String socialType) {
+    public TokenDto generateToken(String socialId, String socialType, List<String> roles) {
+        List<SimpleGrantedAuthority> authorities = roles.stream()
+                .map(SimpleGrantedAuthority::new)
+                .collect(Collectors.toList());
+        String role = authorities.stream().map(GrantedAuthority::getAuthority).collect(Collectors.joining(","));
+
         // refreshToken과 accessToken을 생성한다.
-        String refreshToken = createRefreshToken(email, socialType, role);
-        String accessToken = createAccessToken(email, socialType, role);
+        String refreshToken = createRefreshToken(socialId, socialType, role);
+        String accessToken = createAccessToken(socialId, socialType, role);
 
         /*// 토큰을 Redis에 저장한다.
         tokenService.saveTokenInfo(email, refreshToken, accessToken);*/
         return new TokenDto(accessToken, refreshToken);
     }
 
-    public String createRefreshToken(String email, String socialType, String role) {
-        Claims claims = Jwts.claims().setSubject(email);
+    public String createRefreshToken(String socialId, String socialType, String role) {
+
+        Claims claims = Jwts.claims().setSubject(socialId);
         claims.put("socialType",socialType); // 새로운 클레임 객체를 생성하고, 이메일과 역할(권한)을 셋팅
         claims.put("role",role);
 
@@ -73,8 +76,9 @@ public class JwtProvider {
                 .compact();
     }
 
-    public String createAccessToken(String email,String socialType, String role) {
-        Claims claims = Jwts.claims().setSubject(email);
+    public String createAccessToken(String socialId,String socialType,  String role) {
+
+        Claims claims = Jwts.claims().setSubject(socialId);
         claims.put("socialType",socialType); // 새로운 클레임 객체를 생성하고, 이메일과 역할(권한)을 셋팅
         claims.put("role",role);
 
@@ -113,31 +117,8 @@ public class JwtProvider {
         }
     }
 
-    /*public boolean validateToken(String token) {  // 토큰의 유효성 검증을 수행
-        try {
-            boolean result = Jwts.parserBuilder()
-                    .setSigningKey(key)
-                    .build()
-                    .parseClaimsJws(token)
-                    .getBody().getExpiration()
-                    .after(new Date());
-            return true;
-        } catch (SecurityException | MalformedJwtException e) {
-            log.info("잘못된 JWT 서명입니다.");
-        }*//* catch (ExpiredJwtException e) {
-            log.info("만료된 JWT 토큰입니다."); // 만료된 토큰이라면 rft이 있는 경우, 재발급해주기
-        }*//* catch (UnsupportedJwtException e) {
-            log.info("지원되지 않는 JWT 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            log.info("JWT 토큰이 잘못되었습니다.");
-        } catch (Exception e) {
-            log.info("새로운 JWT 토큰 오류입니다.");
-        }
-        return false;
-    }*/
-
     // 토큰에서 Email을 추출한다.
-    public String extractEmail(String token) {
+    public String extractSocialId(String token) {
         return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
     }
 
@@ -147,21 +128,14 @@ public class JwtProvider {
     }
 
     public String extractSocialType(String token) {
-        log.info("resolveToken = {}", token);
         return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().get("socialType", String.class);
     }
     public boolean checkLogoutToken(String token) { // blackAccessToken의 존재 유무 반환 메소드 -> 존재한다면 해당 토큰은 인가 권한 X
-        log.info("로그아웃 체크 로직 실행");
-        log.info("token = {}", token);
-        log.info("소셜타입 반환 성공");
-        Optional<BlackAccessToken> findBlackToken = blackAccessTokenRepository.findByAccessToken("Bearer " + token);
-        log.info("Optional 블랙 토큰 조회 성공" );
+        Optional<BlackAccessToken> findBlackToken = blackAccessTokenRepository.findByAccessToken(BEARER_PREFIX + token);
         if (findBlackToken.isPresent()){ // 로그아웃을 이미 했고 소셜타입까지 일치하면 정확한 사용자가 맞고 로그아웃한 토큰이다.
-            log.info("블랙 토큰 존재");
-            log.info("소셜타입까지 일치하므로 현재 act은 접근 권한이 없음");
+            log.info("블랙 토큰 존재 ->  현재 act은 접근 권한이 없음");
             return true;
         }
-        log.info("체크 로직 종료 -> false");
         return false;
     }
 }

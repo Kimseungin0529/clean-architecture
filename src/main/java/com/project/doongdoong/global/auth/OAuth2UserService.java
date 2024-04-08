@@ -1,5 +1,6 @@
 package com.project.doongdoong.global.auth;
 
+import com.project.doongdoong.domain.user.model.Role;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.AuthorityUtils;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 
+/*
 @Service
 public class OAuth2UserService extends DefaultOAuth2UserService {
     @Override
@@ -18,7 +20,7 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
         OAuth2User oAuth2User = super.loadUser(userRequest);
 
         // Role generate
-        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList("ROLE_ADMIN");
+        List<GrantedAuthority> authorities = AuthorityUtils.createAuthorityList(Role.ROLE_USER.toString());
 
         // nameAttributeKey
         String userNameAttributeName = userRequest.getClientRegistration()
@@ -30,4 +32,4 @@ public class OAuth2UserService extends DefaultOAuth2UserService {
 
         return new DefaultOAuth2User(authorities, oAuth2User.getAttributes(), userNameAttributeName);
     }
-}
+}*/

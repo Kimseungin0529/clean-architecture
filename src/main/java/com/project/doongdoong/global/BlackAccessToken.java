@@ -21,19 +21,20 @@ public class BlackAccessToken implements Serializable {
     private String id;
 
     @Indexed
-    private String accessToken;
-    // 권한 필드가 추후 필요하면 추가
+    private String uniqueId;
+
     @Indexed
-    private String otherKey;
+    private String accessToken;
 
-    private String socialType;
 
-    public static BlackAccessToken of(String id, String accessToken, String socialType){
+    public static BlackAccessToken of(String socialId, String socialType, String accessToken){
+
         return BlackAccessToken.builder()
-                .id(id)
-                .socialType(socialType)
+                .uniqueId(findUniqueId(socialId,socialType))
                 .accessToken(accessToken)
-                .otherKey(id + " " + socialType)
                 .build();
+    }
+    public static String findUniqueId(String socialId, String socialType){
+        return socialId + "_" + socialType;
     }
 }
