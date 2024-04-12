@@ -3,6 +3,7 @@ package com.project.doongdoong.domain.analysis.model;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.user.model.User;
+import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -19,10 +20,10 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 @Entity
 @Getter                                            // pubilc 대신 protected? 무분별한 생성을 막기 위해서 라는데 무분별하게 생성할 일이 있을까?
 @NoArgsConstructor(access = AccessLevel.PROTECTED) // 지연 로딩으로 인해 프록시 객체(상속)하므로 private 대신 protected를 사용
-public class Analysis {
+public class Analysis extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
-    @Column(name = "analsis_id")
+    @Column(name = "analysis_id")
     private Long id;
 
     @Column(updatable = false)

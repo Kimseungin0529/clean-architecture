@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.analysis.service;
 
 import com.project.doongdoong.domain.analysis.dto.AnalysisCreateResponseDto;
+import com.project.doongdoong.domain.analysis.dto.AnaylsisListResponseDto;
 import com.project.doongdoong.domain.analysis.dto.AnaylsisResponseDto;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.model.Analysis;
@@ -14,9 +15,12 @@ import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -29,10 +33,12 @@ public class AnalysisServiceImp implements AnalysisService{
     private final QuestionRepository questionRepository;
     private final QuestionService questionService;
 
+    private final static int ANALYSIS_PAGE_SIZE = 10;
+
     @Transactional
     @Override //        추가적으로 사용자 정보가 있어야 함.
     public AnalysisCreateResponseDto createAnalysis(String uniqueValue) {
-        String[] values = uniqueValue.split("_"); // 사용자 찾기
+        String[] values = parseUniqueValue(uniqueValue);
         User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
                 .orElseThrow(() -> new UserNotFoundException());
 
@@ -54,13 +60,20 @@ public class AnalysisServiceImp implements AnalysisService{
                 .build();
     }
 
+    private static String[] parseUniqueValue(String uniqueValue) {
+        String[] values = uniqueValue.split("_"); // 사용자 찾기
+        return values;
+    }
+
     @Override
     public AnaylsisResponseDto getAnalysis(Long analysisId) {
         Analysis findAnalysis = analsisRepository.findById(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
 
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
         return AnaylsisResponseDto.builder()
                 .anaylisId(findAnalysis.getId())
+                .time(findAnalysis.getCreatedTime().format(formatter))
                 .feelingState(findAnalysis.getFeelingState())
                 .questionContent(findAnalysis.getQuestions().stream()
                         .map(question -> question.getQuestionContent().getText())
@@ -72,11 +85,32 @@ public class AnalysisServiceImp implements AnalysisService{
     }
 
     @Override
-    public List<AnaylsisResponseDto> getAnalysisList(/*사용자 정보 필요*/) {
-        // 사용자 찾기 로직
-        // 사용자 토대로 모든 분석 객체 가져오기(페이징 조건은 추후 고려 )
-        //
+    public AnaylsisListResponseDto getAnalysisList(String uniqueKey, int pageNumber) {
+        String[] values = parseUniqueValue(uniqueKey);
+        User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
+                .orElseThrow(() -> new UserNotFoundException());
 
+        PageRequest pageable = PageRequest.of(pageNumber, ANALYSIS_PAGE_SIZE);
+        Page<Analysis> analysisPages = analsisRepository.findAllByUserOrderByCreatedTime(user, pageable);
+
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+
+        return AnaylsisListResponseDto.builder()
+                .pageNumber(analysisPages.getNumber() + 1)
+                .totalPage(analysisPages.getTotalPages())
+                .anaylsisResponseDtoList(analysisPages.getContent().stream()
+                        .map(analysis -> AnaylsisResponseDto.builder()
+                                .anaylisId(analysis.getId())
+                                .time(analysis.getCreatedTime().format(formatter))
+                                .feelingState(analysis.getFeelingState())
+                                .build())
+                        .collect(Collectors.toList()))
+                .build();
+    }
+
+    @Override
+    public AnaylsisListResponseDto getAnalysisListGroupByDay(String uniqueValue) {
         return null;
     }
 

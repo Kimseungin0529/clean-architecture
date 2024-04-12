@@ -66,16 +66,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
 
     }
-        /*try {
-            filterChain.doFilter(request, response);
-        } catch (ExpiredJwtException e) {
-            //토큰의 유효기간 만료
-            setErrorResponse(response, HttpStatus.UNAUTHORIZED, "만료된 토큰입니다.");
-        } catch (JwtException | IllegalArgumentException e) {
-            //유효하지 않은 토큰
-            setErrorResponse(response, HttpStatus.UNAUTHORIZED, "유효하지 않은 토큰입니다.");
-        }
-    }*/
+
     private void setErrorResponse(
             HttpServletResponse response,
             HttpStatus status,
@@ -111,19 +102,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 .parseClaimsJws(token);
         // Jwts.parserBuilder().setSigningKey(jwtProvider.getKey()).build().parseClaimsJws(token)
         return true;
-        /*try {
-
-        } catch (SecurityException | MalformedJwtException e) {
-            setErrorResponse(response, HttpStatus.UNAUTHORIZED, "만료된 토큰입니다.");
-        } catch (ExpiredJwtException e) {
-            setErrorResponse(response, HttpStatus.UNAUTHORIZED, "만료된 토큰입니다."); // 만료된 토큰이라면 rft이 있는 경우, 재발급해주기
-        } catch (UnsupportedJwtException e) {
-            setErrorResponse(response, HttpStatus.UNAUTHORIZED, "지원하지 않는 토큰입니다.");
-        } catch (IllegalArgumentException e) {
-            setErrorResponse(response, HttpStatus.UNAUTHORIZED, "JWT 토큰이 잘못되었습니다.");
-        } catch (Exception e) {
-            setErrorResponse(response, HttpStatus.UNAUTHORIZED, "새로운 JWT 토큰 오류입니다.");
-        }*/
     }
 
 }
