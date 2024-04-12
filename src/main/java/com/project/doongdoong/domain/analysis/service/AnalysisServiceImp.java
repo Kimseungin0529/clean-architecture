@@ -85,8 +85,8 @@ public class AnalysisServiceImp implements AnalysisService{
     }
 
     @Override
-    public AnaylsisListResponseDto getAnalysisList(String uniqueKey, int pageNumber) {
-        String[] values = parseUniqueValue(uniqueKey);
+    public AnaylsisListResponseDto getAnalysisList(String uniqueValue, int pageNumber) {
+        String[] values = parseUniqueValue(uniqueValue);
         User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
                 .orElseThrow(() -> new UserNotFoundException());
 
@@ -104,6 +104,9 @@ public class AnalysisServiceImp implements AnalysisService{
                                 .anaylisId(analysis.getId())
                                 .time(analysis.getCreatedTime().format(formatter))
                                 .feelingState(analysis.getFeelingState())
+                                .questionContent(analysis.getQuestions().stream()
+                                        .map(a -> a.getQuestionContent().getText())
+                                        .collect(Collectors.toList()))
                                 .build())
                         .collect(Collectors.toList()))
                 .build();
@@ -111,6 +114,12 @@ public class AnalysisServiceImp implements AnalysisService{
 
     @Override
     public AnaylsisListResponseDto getAnalysisListGroupByDay(String uniqueValue) {
+        String[] values = parseUniqueValue(uniqueValue);
+        User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
+                .orElseThrow(() -> new UserNotFoundException());
+
+
+
         return null;
     }
 
