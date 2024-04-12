@@ -1,8 +1,6 @@
 package com.project.doongdoong.domain.analysis.service;
 
-import com.project.doongdoong.domain.analysis.dto.AnalysisCreateResponseDto;
-import com.project.doongdoong.domain.analysis.dto.AnaylsisListResponseDto;
-import com.project.doongdoong.domain.analysis.dto.AnaylsisResponseDto;
+import com.project.doongdoong.domain.analysis.dto.*;
 
 import java.util.List;
 
@@ -14,6 +12,6 @@ public interface AnalysisService {
 
     public AnaylsisListResponseDto getAnalysisList(String uniqueValue, int pageNumber);
 
-    public AnaylsisListResponseDto getAnalysisListGroupByDay(String uniqueValue);
+    public FeelingStateResponseListDto getAnalysisListGroupByDay(String uniqueValue);
 
 }

@@ -27,7 +27,7 @@ public class Analysis extends BaseEntity {
     private Long id;
 
     @Column(updatable = false)
-    private long feelingState;
+    private double feelingState;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")

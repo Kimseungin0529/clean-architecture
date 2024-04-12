@@ -1,13 +1,10 @@
 package com.project.doongdoong.domain.analysis.service;
 
-import com.project.doongdoong.domain.analysis.dto.AnalysisCreateResponseDto;
-import com.project.doongdoong.domain.analysis.dto.AnaylsisListResponseDto;
-import com.project.doongdoong.domain.analysis.dto.AnaylsisResponseDto;
+import com.project.doongdoong.domain.analysis.dto.*;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
 import com.project.doongdoong.domain.question.model.Question;
-import com.project.doongdoong.domain.question.repository.QuestionRepository;
 import com.project.doongdoong.domain.question.service.QuestionService;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialType;
@@ -20,7 +17,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,8 +29,8 @@ import java.util.stream.Collectors;
 public class AnalysisServiceImp implements AnalysisService{
     private final UserRepository userRepository;
     private final AnalysisRepository analsisRepository;
-    private final QuestionRepository questionRepository;
     private final QuestionService questionService;
+    private final static long WEEK_TIME = 60 * 60 * 24 * 7;
 
     private final static int ANALYSIS_PAGE_SIZE = 10;
 
@@ -113,14 +112,19 @@ public class AnalysisServiceImp implements AnalysisService{
     }
 
     @Override
-    public AnaylsisListResponseDto getAnalysisListGroupByDay(String uniqueValue) {
+    public FeelingStateResponseListDto getAnalysisListGroupByDay(String uniqueValue) {
         String[] values = parseUniqueValue(uniqueValue);
         User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
                 .orElseThrow(() -> new UserNotFoundException());
 
+        LocalDateTime endTime = LocalDateTime.now().plusDays(1).truncatedTo(ChronoUnit.DAYS);
+        LocalDateTime startTime = endTime.minusDays(6).truncatedTo(ChronoUnit.DAYS);
 
 
-        return null;
+        return FeelingStateResponseListDto.builder()
+                .feelingStateResponsesDto(analsisRepository.findAllByDateBetween(user,startTime,endTime))
+                .build();
+
     }
 
 

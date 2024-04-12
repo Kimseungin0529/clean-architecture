@@ -13,12 +13,12 @@ import java.util.List;
 public class AnaylsisResponseDto {
     private Long anaylisId;
     private String time;
-    private long feelingState;
+    private double feelingState;
     private List<String> questionContent;
     private List<String> answerContent;
 
     @Builder
-    public AnaylsisResponseDto(Long anaylisId, long feelingState, String time, List<String> questionContent, List<String> answerContent) {
+    public AnaylsisResponseDto(Long anaylisId, double feelingState, String time, List<String> questionContent, List<String> answerContent) {
         this.anaylisId = anaylisId;
         this.time = time;
         this.feelingState = feelingState;

@@ -1,14 +1,14 @@
 package com.project.doongdoong.domain.analysis.controller;
 
-import com.project.doongdoong.domain.analysis.dto.AnalysisCreateResponseDto;
-import com.project.doongdoong.domain.analysis.dto.AnaylsisListResponseDto;
-import com.project.doongdoong.domain.analysis.dto.AnaylsisResponseDto;
+import com.project.doongdoong.domain.analysis.dto.*;
 import com.project.doongdoong.domain.analysis.service.AnalysisService;
 import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 
 @RestController
@@ -41,7 +41,7 @@ public class AnalysisController {
     }
 
     @GetMapping("/week")
-    public ApiResponse<AnaylsisListResponseDto> getAnalysesGroupByDay(@CurrentUser String uniqueValue){
+    public ApiResponse<FeelingStateResponseListDto> getAnalysesGroupByDay(@CurrentUser String uniqueValue){
 
         return ApiResponse.of(HttpStatus.OK, null, analysisService.getAnalysisListGroupByDay(uniqueValue));
     }
