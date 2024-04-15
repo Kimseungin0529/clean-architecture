@@ -96,7 +96,8 @@ public interface ErrorType {
     enum ServerError implements ErrorType {
         SERVER_ERROR_DEFAULT(5000),
         FILE_UPLOAD_FAIL(5001),
-        FILE_DELETE_FAIL(5002)
+        FILE_DELETE_FAIL(5002),
+        EXTERNAL_SERVER_ERROR(5003)
         ;
 
         private final int errorCode;

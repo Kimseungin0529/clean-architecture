@@ -26,7 +26,7 @@ public class GoogleTtsProvider {
             SynthesizeSpeechResponse response = textToSpeechClient.synthesizeSpeech(input, voice, audioConfig); // TTS API 결과로 전달받은 reponse
             audioContent = response.getAudioContent().toByteArray(); // 바이트로 변환
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new GoogleTtsException();
         }
         return audioContent;
     }
