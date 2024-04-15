@@ -31,8 +31,11 @@ dependencies {
 
 	implementation("commons-io:commons-io:2.11.0") // 현재 버전 확인하여 적절히 수정
 
-	implementation ("com.google.cloud:google-cloud-texttospeech:2.10.0") // 구글 TTS 라이브러리
-	implementation ("com.google.auth:google-auth-library-oauth2-http:2.0.0")
+	//implementation ("com.google.auth:google-auth-library-oauth2-http:2.0.0")
+	implementation ("com.google.cloud:google-cloud-texttospeech:2.42.0") // 구글 TTS 라이브러리
+	//implementation ("com.google.auth:google-auth-library-oauth2-http:0.26.0") // 현재 사용하는 버전으로 업데이트
+
+
 
 	//jwt
 	implementation("io.jsonwebtoken:jjwt-api:0.11.1")

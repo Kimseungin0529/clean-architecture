@@ -14,8 +14,7 @@ public class GoogleTtsProvider {
     public byte[] convertTextToSpeech(String text){
 
         byte[] audioContent = null;
-        try {
-            TextToSpeechClient textToSpeechClient = TextToSpeechClient.create(); // TTS API 생성
+        try (TextToSpeechClient textToSpeechClient = TextToSpeechClient.create()){ // TTS API 생성
             SynthesisInput input = SynthesisInput.newBuilder().setText(text).build(); // 전달할 텍스트 설정
             VoiceSelectionParams voice = VoiceSelectionParams.newBuilder() // 요청할 음성 형식 지정
                     .setLanguageCode("ko-KR") // 한국어 설정
