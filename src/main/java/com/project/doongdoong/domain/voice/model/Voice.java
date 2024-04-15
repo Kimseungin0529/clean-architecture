@@ -24,6 +24,7 @@ public class Voice extends BaseEntity {
 
     private String accessUrl; // S3 내부 음성 파일에 접근할 수 있는 URL
 
+    @Enumerated(EnumType.STRING)
     private QuestionContent questionContent;
 
 

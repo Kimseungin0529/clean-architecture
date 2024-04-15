@@ -5,6 +5,7 @@ import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,7 +27,9 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "analysis_id")
     private Analysis analysis;
 
-    @OneToOne(fetch = LAZY, orphanRemoval = true)
-    @JoinColumn(name = "question_id")
-    private Question question;
+    @Builder
+    public Answer(String content, Analysis analysis) {
+        this.content = content;
+        this.analysis = analysis;
+    }
 }

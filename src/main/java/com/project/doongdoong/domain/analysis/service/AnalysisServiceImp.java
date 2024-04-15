@@ -6,7 +6,6 @@ import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
-import com.project.doongdoong.domain.question.repository.QuestionRepository;
 import com.project.doongdoong.domain.question.service.QuestionService;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialType;
@@ -28,9 +27,7 @@ import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @Service @Slf4j
@@ -95,6 +92,25 @@ public class AnalysisServiceImp implements AnalysisService{
     @Override
     public AnaylsisResponseDto getAnalysis(Long analysisId) {
         Analysis findAnalysis = analsisRepository.findById(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
+        List<Question> questions = findAnalysis.getQuestions();
+        // questions에 해당하는 answers 가져오기
+
+        List<QuestionContent> questionContents = extractQuestionContentsBy(questions);
+        List<String> questionTexts = extractQuestionTextBy(questionContents);
+
+        List<Voice> findVoices = voiceRepository.findVoiceAllByQuestionContentIn(questionContents);
+
+        Map<QuestionContent, String> voiceMap = mapVoiceToQuestionInformation(findVoices);
+        List<String> questionVoiceAccessUrls = questionContents.stream()
+                .map(voiceMap::get)
+                .collect(Collectors.toList());
+
+        List<String> answerContents = questions.stream()
+                .map(question -> Optional.ofNullable(question.getAnswer())
+                        .map(answer -> answer.getContent())
+                        .orElse(null))
+                .collect(Collectors.toList());
+
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -102,13 +118,33 @@ public class AnalysisServiceImp implements AnalysisService{
                 .anaylisId(findAnalysis.getId())
                 .time(findAnalysis.getCreatedTime().format(formatter))
                 .feelingState(findAnalysis.getFeelingState())
-                .questionContent(findAnalysis.getQuestions().stream()
-                        .map(question -> question.getQuestionContent().getText())
-                        .collect(Collectors.toList()))
-                .answerContent(findAnalysis.getAnswers().stream()
-                        .map(answer -> answer.getContent())
-                        .collect(Collectors.toList()))
+                .questionContent(questionTexts)
+                .questionContentVoiceUrls(questionVoiceAccessUrls)
+                .answerContent(answerContents)
                 .build();
+    }
+
+    private static Map<QuestionContent, String> mapVoiceToQuestionInformation(List<Voice> findVoices) {
+        return findVoices.stream()
+                .collect(Collectors.toMap(
+                        Voice::getQuestionContent,
+                        Voice::getAccessUrl,
+                        (existing, replacement) -> existing
+                ));
+    }
+
+    private static List<String> extractQuestionTextBy(List<QuestionContent> questionContents) {
+        List<String> questionTexts = questionContents.stream()
+                .map(questionContent -> questionContent.getText())
+                .collect(Collectors.toList());
+        return questionTexts;
+    }
+
+    private static List<QuestionContent> extractQuestionContentsBy(List<Question> questions) {
+        List<QuestionContent> questionContents = questions.stream()
+                .map(question -> question.getQuestionContent())
+                .collect(Collectors.toList());
+        return questionContents;
     }
 
     @Override
