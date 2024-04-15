@@ -59,6 +59,7 @@ public class AnalysisServiceImp implements AnalysisService{
                 .build();
 
         List<String> accessUrls = new ArrayList<>(); // 음성 파일 접근 url 리스트
+        List<String> questionTexts = new ArrayList<>(); // 질문에 대한 내용 텍스트 리스트
         for(int i=0; i<questions.size(); i++){
             Question question = questions.get(i);
             question.connectAnalysis(analysis); // 연관관계 편의 메서드
@@ -73,6 +74,7 @@ public class AnalysisServiceImp implements AnalysisService{
                 VoiceDetailResponseDto voiceDto = voiceService.saveTtsVoice(bytes, filename, question.getQuestionContent());
                 accessUrls.add(voiceDto.getAccessUrl());
             }
+            questionTexts.add(question.getQuestionContent().getText());
 
         } // ConcurrentModificationException 으로 인해 for문 사용
 
@@ -80,6 +82,7 @@ public class AnalysisServiceImp implements AnalysisService{
 
         return AnalysisCreateResponseDto.builder()
                 .analysisId(analysis.getId())
+                .questionTexts(questionTexts)
                 .accessUrls(accessUrls)
                 .build();
     }
