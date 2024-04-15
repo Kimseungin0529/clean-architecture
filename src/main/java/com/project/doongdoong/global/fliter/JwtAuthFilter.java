@@ -1,7 +1,7 @@
 package com.project.doongdoong.global.fliter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.doongdoong.global.JwtProvider;
+import com.project.doongdoong.global.util.JwtProvider;
 import com.project.doongdoong.global.common.ApiResponse;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.SecurityException;

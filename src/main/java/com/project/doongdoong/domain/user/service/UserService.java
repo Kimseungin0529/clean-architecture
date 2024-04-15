@@ -7,7 +7,7 @@ import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
 import com.project.doongdoong.global.BlackAccessToken;
-import com.project.doongdoong.global.JwtProvider;
+import com.project.doongdoong.global.util.JwtProvider;
 import com.project.doongdoong.global.RefreshToken;
 import com.project.doongdoong.global.dto.request.LogoutDto;
 import com.project.doongdoong.global.dto.request.OAuthTokenDto;

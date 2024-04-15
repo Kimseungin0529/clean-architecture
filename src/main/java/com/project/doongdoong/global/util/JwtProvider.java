@@ -1,5 +1,6 @@
-package com.project.doongdoong.global;
+package com.project.doongdoong.global.util;
 
+import com.project.doongdoong.global.BlackAccessToken;
 import com.project.doongdoong.global.dto.response.TokenDto;
 import com.project.doongdoong.global.repositoty.BlackAccessTokenRepository;
 import io.jsonwebtoken.*;

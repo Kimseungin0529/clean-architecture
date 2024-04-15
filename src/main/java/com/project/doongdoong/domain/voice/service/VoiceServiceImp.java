@@ -3,9 +3,11 @@ package com.project.doongdoong.domain.voice.service;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
+import com.google.cloud.texttospeech.v1.*;
 import com.project.doongdoong.domain.image.exception.FileDeleteException;
 import com.project.doongdoong.domain.image.exception.FileEmptyException;
 import com.project.doongdoong.domain.image.exception.FileUploadException;
+import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.voice.exception.VoiceUrlNotFoundException;
 import org.apache.commons.io.FilenameUtils;
 import com.project.doongdoong.domain.voice.dto.request.VoiceSaveRequestDto;
@@ -20,8 +22,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.List;
+import java.util.UUID;
 
 @Service @Slf4j
 @RequiredArgsConstructor
@@ -111,10 +116,30 @@ public class VoiceServiceImp implements VoiceService{
     }
 
     @Override
-    public String convertTextToSpeech(String text){
+    public VoiceDetailResponseDto saveTtsVoice(byte[] audioContent, String originName, QuestionContent questionContent) {
 
+        Voice voice = new Voice(originName, questionContent);
+        String filename = KEY + voice.getStoredName();
 
-        return null;
+        try {
+            log.info("TTS 음성 파일 저장 시작");
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType("audio/mpeg"); // MP3 파일의 MIME 타입 설정
+            objectMetadata.setContentLength(audioContent.length);
+
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(audioContent);
+            amazonS3Client.putObject(bucketName, filename, byteArrayInputStream, objectMetadata);
+
+            String accessUrl = amazonS3Client.getUrl(bucketName, filename).toString();
+            voice.changeAccessUrl(accessUrl);
+            voiceRepository.save(voice);
+
+        } catch(SdkClientException e) {
+            log.error("TTS 음성 파일 업로드 오류 -> {}", e.getMessage());
+            throw new FileUploadException();
+        }
+
+        return VoiceDetailResponseDto.of(voice.getAccessUrl());
     }
 
 

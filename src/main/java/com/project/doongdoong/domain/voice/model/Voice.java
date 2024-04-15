@@ -1,5 +1,7 @@
 package com.project.doongdoong.domain.voice.model;
 
+import com.project.doongdoong.domain.question.model.Question;
+import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -22,11 +24,21 @@ public class Voice extends BaseEntity {
 
     private String accessUrl; // S3 내부 음성 파일에 접근할 수 있는 URL
 
+    private QuestionContent questionContent;
+
+
     @Builder
     public Voice(String originName) {
         this.originName = originName;
         this.storedName = getFileName(originName);
         this.accessUrl = "";
+    }
+    @Builder
+    public Voice(String originName, QuestionContent questionContent) {
+        this.originName = originName;
+        this.storedName = getFileName() + originName;
+        this.accessUrl = "";
+        this.questionContent = questionContent;
     }
     public void changeAccessUrl(String accessUrl) {
         this.accessUrl = accessUrl;
@@ -41,5 +53,8 @@ public class Voice extends BaseEntity {
 
     public String getFileName(String originName) {
         return UUID.randomUUID()  + extractExtension(originName);
+    }
+    public String getFileName() {
+        return UUID.randomUUID().toString();
     }
 }
