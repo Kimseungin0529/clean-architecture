@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.analysis.service;
 
-import com.project.doongdoong.domain.analysis.dto.*;
+import com.project.doongdoong.domain.analysis.dto.response.*;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
@@ -23,7 +23,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.ByteArrayInputStream;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -93,7 +92,7 @@ public class AnalysisServiceImp implements AnalysisService{
     }
 
     @Override
-    public AnaylsisResponseDto getAnalysis(Long analysisId) {
+    public AnalysisDetailResponse getAnalysis(Long analysisId) {
         Analysis findAnalysis = analsisRepository.findById(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
         List<Question> questions = findAnalysis.getQuestions();
         // questions에 해당하는 answers 가져오기
@@ -117,8 +116,8 @@ public class AnalysisServiceImp implements AnalysisService{
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
-        return AnaylsisResponseDto.builder()
-                .anaylisId(findAnalysis.getId())
+        return AnalysisDetailResponse.builder()
+                .analysisId(findAnalysis.getId())
                 .time(findAnalysis.getCreatedTime().format(formatter))
                 .feelingState(findAnalysis.getFeelingState())
                 .questionContent(questionTexts)
@@ -167,7 +166,7 @@ public class AnalysisServiceImp implements AnalysisService{
                 .totalPage(analysisPages.getTotalPages())
                 .anaylsisResponseDtoList(analysisPages.getContent().stream()
                         .map(analysis -> AnaylsisResponseDto.builder()
-                                .anaylisId(analysis.getId())
+                                .analysisId(analysis.getId())
                                 .time(analysis.getCreatedTime().format(formatter))
                                 .feelingState(analysis.getFeelingState())
                                 .questionContent(analysis.getQuestions().stream()

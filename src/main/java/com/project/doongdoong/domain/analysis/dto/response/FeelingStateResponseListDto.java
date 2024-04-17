@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.analysis.dto;
+package com.project.doongdoong.domain.analysis.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

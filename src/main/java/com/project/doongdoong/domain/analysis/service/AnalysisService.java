@@ -1,14 +1,12 @@
 package com.project.doongdoong.domain.analysis.service;
 
-import com.project.doongdoong.domain.analysis.dto.*;
-
-import java.util.List;
+import com.project.doongdoong.domain.analysis.dto.response.*;
 
 public interface AnalysisService {
 
     public AnalysisCreateResponseDto createAnalysis(String uniqueValue);
 
-    public AnaylsisResponseDto getAnalysis(Long analysisId);
+    public AnalysisDetailResponse getAnalysis(Long analysisId);
 
     public AnaylsisListResponseDto getAnalysisList(String uniqueValue, int pageNumber);
 
