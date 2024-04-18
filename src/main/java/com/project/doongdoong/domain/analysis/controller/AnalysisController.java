@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.analysis.controller;
 
+import com.project.doongdoong.domain.analysis.dto.request.AnalysisEmotionRequestDto;
 import com.project.doongdoong.domain.analysis.dto.response.*;
 import com.project.doongdoong.domain.analysis.service.AnalysisService;
 import com.project.doongdoong.global.CurrentUser;
@@ -42,6 +43,12 @@ public class AnalysisController {
     public ApiResponse<FeelingStateResponseListDto> getAnalysesGroupByDay(@CurrentUser String uniqueValue){
 
         return ApiResponse.of(HttpStatus.OK, null, analysisService.getAnalysisListGroupByDay(uniqueValue));
+    }
+
+    @PostMapping("/{id}")
+    public ApiResponse<?> analyzeEmotion(@PathVariable("id") Long analysisId, AnalysisEmotionRequestDto dto){
+
+        return ApiResponse.of(HttpStatus.OK, null, analysisService.analyzeEmotion(analysisId, dto));
     }
 
 }

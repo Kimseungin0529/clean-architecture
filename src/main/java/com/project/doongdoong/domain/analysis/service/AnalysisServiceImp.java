@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.analysis.service;
 
+import com.project.doongdoong.domain.analysis.dto.request.AnalysisEmotionRequestDto;
 import com.project.doongdoong.domain.analysis.dto.response.*;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.model.Analysis;
@@ -191,6 +192,13 @@ public class AnalysisServiceImp implements AnalysisService{
                 .feelingStateResponsesDto(analsisRepository.findAllByDateBetween(user,startTime,endTime))
                 .build();
 
+    }
+
+    @Override
+    public Object analyzeEmotion(Long analysisId, AnalysisEmotionRequestDto dto) {
+
+
+        return null;
     }
 
 
