@@ -35,7 +35,6 @@ public class UserService {
     @Transactional
     public TokenDto checkRegistration(OAuthTokenDto oAuthTokenInfo) {
 
-        log.info("시작은 하냐? 시작은 하냐?시작은 하냐?시작은 하냐?");
         String socialId = oAuthTokenInfo.getSocialId();
         String email = oAuthTokenInfo.getEmail();
         String nickname = oAuthTokenInfo.getNickname();
@@ -71,6 +70,9 @@ public class UserService {
     }
 
     private void checkChange(String email, String nickname, User user) {
+        if(email == null)
+            return;
+
         if (!user.getEmail().equals(email) || !user.getNickname().equals(nickname)) {
             user.changeEmail(email);
             user.changeNickname(nickname);

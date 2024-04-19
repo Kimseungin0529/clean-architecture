@@ -7,11 +7,6 @@ import lombok.Getter;
 
 @Getter
 public class OAuthTokenDto {
-    @NotBlank(message = "access_tokne이 존재하지 않습니다.")
-    private String accessToken;
-
-    @NotBlank(message = "refresh_tokne이 존재하지 않습니다.")
-    private String refreshToken;
 
     @NotBlank(message = "소셜 id이가 존재하지 않습니다.")
     private String socialId;
@@ -19,8 +14,7 @@ public class OAuthTokenDto {
     @NotBlank(message = "닉네임이 공백입니다.")
     private String nickname;
 
-    @NotBlank(message = "이메일이 공백입니다.")
-    @Email(message = "이메일 형식이 아닙니다.")
+    @Email(message = "이메일 형식이 아닙니다.") // option으로 하기
     private String email;
 
     @NotBlank(message = "OAuth 타입이 공백입니다.")

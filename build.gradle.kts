@@ -31,9 +31,7 @@ dependencies {
 
 	implementation("commons-io:commons-io:2.11.0") // 현재 버전 확인하여 적절히 수정
 
-	//implementation ("com.google.auth:google-auth-library-oauth2-http:2.0.0")
 	implementation ("com.google.cloud:google-cloud-texttospeech:2.42.0") // 구글 TTS 라이브러리
-	//implementation ("com.google.auth:google-auth-library-oauth2-http:0.26.0") // 현재 사용하는 버전으로 업데이트
 
 
 
@@ -42,13 +40,12 @@ dependencies {
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.1")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.1")
 
-	//implementation ("org.springdoc:springdoc-openapi-ui:2.0.2") // swagger -> spring boot 3 이상부터는 해당 의존성 형식임, ui는 보여주기 위한 라이브러리
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2") // webmvc-ui는 json 형식을 보여주기 위함.
 
 	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE") // amazon cloud 사용
 	implementation ("org.springframework.boot:spring-boot-starter-webflux") // webflux, 모바일 사용
 
-	// 스프링 부트 3.0 이상
+	// 스프링 부트 3.0 이상 query dls
 	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
 	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
 
