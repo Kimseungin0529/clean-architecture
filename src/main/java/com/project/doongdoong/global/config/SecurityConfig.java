@@ -26,7 +26,7 @@
         private final JwtAuthFilter jwtAuthFilter;
         //private final OAuth2UserService oAuth2UserService;
         private final static String[] ALLOW_REQUEST = {
-                "/", "/api/v1/ping", "/api/v1/login-oauth", "/api/v1/reissue",
+                "/", "/api/v1/user/ping", "/api/v1/user/login-oauth", "/api/user/v1/reissue",
                 "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
         };
         @Bean

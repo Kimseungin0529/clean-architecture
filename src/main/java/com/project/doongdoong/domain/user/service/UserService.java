@@ -38,7 +38,7 @@ public class UserService {
         String socialId = oAuthTokenInfo.getSocialId();
         String email = oAuthTokenInfo.getEmail();
         String nickname = oAuthTokenInfo.getNickname();
-        SocialType socialType = SocialType.customValueOf(oAuthTokenInfo.getSocailType());
+        SocialType socialType = SocialType.customValueOf(oAuthTokenInfo.getSocialType());
         if(socialType == null){
             new SocialTypeNotFoundException();
         }

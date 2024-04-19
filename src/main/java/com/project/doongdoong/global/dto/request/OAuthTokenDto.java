@@ -4,8 +4,9 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import lombok.Getter;
+import lombok.Setter;
 
-@Getter
+@Getter @Setter
 public class OAuthTokenDto {
 
     @NotBlank(message = "소셜 id이가 존재하지 않습니다.")
@@ -19,6 +20,6 @@ public class OAuthTokenDto {
 
     @NotBlank(message = "OAuth 타입이 공백입니다.")
     @Pattern(regexp = "[A-Z]+", message = "알파벳 대문자로 입력해주세요.")
-    private String socailType;
+    private String socialType;
 
 }

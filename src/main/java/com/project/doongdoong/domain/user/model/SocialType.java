@@ -8,7 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 @Getter @Slf4j
 @RequiredArgsConstructor
 public enum SocialType {
-    KAKAO("KAKAO"), NAVER("NAVER"), GOOGLE("GOOGLE");
+    KAKAO("KAKAO"), NAVER("NAVER"), GOOGLE("GOOGLE"), APPLE("APPLE");
 
     private final String text;
     public static SocialType customValueOf(String socialType){
@@ -20,6 +20,8 @@ public enum SocialType {
             type = NAVER;
         }else if (socialType.equals(GOOGLE.getText())) {
             type = GOOGLE;
+        }else if(socialType.equals(APPLE.getText())){
+            type = APPLE;
         }else{
             new SocialTypeNotFoundException();
         }
