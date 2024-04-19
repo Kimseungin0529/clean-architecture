@@ -46,4 +46,8 @@ public class Analysis extends BaseEntity {
         this.user = user;
     }
 
+    public void changeFeelingState(double feelingState){
+        this.feelingState = feelingState;
+    }
+
 }

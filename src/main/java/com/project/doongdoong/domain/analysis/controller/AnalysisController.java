@@ -46,7 +46,7 @@ public class AnalysisController {
     }
 
     @PostMapping("/{id}")
-    public ApiResponse<?> analyzeEmotion(@PathVariable("id") Long analysisId, AnalysisEmotionRequestDto dto){
+    public ApiResponse<FellingStateCreateResponse> analyzeEmotion(@PathVariable("id") Long analysisId, @RequestBody AnalysisEmotionRequestDto dto){
 
         return ApiResponse.of(HttpStatus.OK, null, analysisService.analyzeEmotion(analysisId, dto));
     }

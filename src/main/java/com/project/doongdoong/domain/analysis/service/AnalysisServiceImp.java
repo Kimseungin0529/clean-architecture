@@ -17,6 +17,7 @@ import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.domain.voice.repository.VoiceRepository;
 import com.project.doongdoong.domain.voice.service.VoiceService;
 import com.project.doongdoong.global.util.GoogleTtsProvider;
+import com.project.doongdoong.global.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -41,6 +42,7 @@ public class AnalysisServiceImp implements AnalysisService{
     private final AnalysisRepository analsisRepository;
     private final QuestionService questionService;
     private final VoiceService voiceService;
+    private final WebClientUtil webClientUtil;
     private final static long WEEK_TIME = 60 * 60 * 24 * 7;
 
     private final static int ANALYSIS_PAGE_SIZE = 10;
@@ -195,10 +197,15 @@ public class AnalysisServiceImp implements AnalysisService{
     }
 
     @Override
-    public Object analyzeEmotion(Long analysisId, AnalysisEmotionRequestDto dto) {
+    public FellingStateCreateResponse analyzeEmotion(Long analysisId, AnalysisEmotionRequestDto dto) {
+        Analysis findAnalysis = analsisRepository.findById(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
+        FellingStateCreateResponse response = webClientUtil.callLambdaApi(dto);
 
+        findAnalysis.changeFeelingState(response.getFeelingState());
 
-        return null;
+        return FellingStateCreateResponse.builder()
+                .feelingState(response.getFeelingState())
+                .build();
     }
 
 

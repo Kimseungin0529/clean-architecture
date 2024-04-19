@@ -1,9 +1,10 @@
 package com.project.doongdoong.domain.analysis.dto.response;
 
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Getter
+@Getter @Builder
 @NoArgsConstructor
 public class FeelingStateResponseDto {
 
@@ -14,4 +15,6 @@ public class FeelingStateResponseDto {
         this.date = date;
         this.avgFeelingState = avgFeelingState;
     }
+
+
 }
