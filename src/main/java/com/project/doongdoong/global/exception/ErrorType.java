@@ -79,8 +79,8 @@ public interface ErrorType {
     }
 
     enum Conflict implements ErrorType {
-        CONFLICT_DEFAULT(9000)
-        ;
+        CONFLICT_DEFAULT(9000),
+        ANSWER_ALREADY_CREATED(9001);
 
         private final int errorCode;
 

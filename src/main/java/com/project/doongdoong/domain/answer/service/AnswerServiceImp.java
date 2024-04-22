@@ -5,10 +5,12 @@ import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateRequestDto;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
+import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.answer.repository.AnswerRepository;
 import com.project.doongdoong.domain.question.exception.QuestionNotFoundException;
 import com.project.doongdoong.domain.question.model.Question;
+import com.project.doongdoong.domain.question.repository.QuestionRepository;
 import com.project.doongdoong.domain.voice.dto.response.VoiceDetailResponseDto;
 import com.project.doongdoong.domain.voice.exception.VoiceUrlNotFoundException;
 import com.project.doongdoong.domain.voice.model.Voice;
@@ -18,6 +20,8 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -38,6 +42,9 @@ public class AnswerServiceImp implements AnswerService{
                 .filter(question -> question.getId() == dto.getQuestionId())
                 .findFirst().orElseThrow(() -> new QuestionNotFoundException());
         // 이미 설정된 question - answer이 존재할 때 다시 접근하려고 하면 예외 발생해야 하나? /
+        if(Optional.ofNullable(matchedQuestion.getAnswer()).isPresent()){
+            throw new AnswerConflictException();
+        }
 
 
         VoiceDetailResponseDto voiceDto = voiceService.saveVoice(file);
