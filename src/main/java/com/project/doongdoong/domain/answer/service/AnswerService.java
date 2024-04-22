@@ -1,9 +1,11 @@
 package com.project.doongdoong.domain.answer.service;
 
 
+import com.project.doongdoong.domain.answer.dto.AnswerCreateRequestDto;
+import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface AnswerService {
-    public void createAnswer(MultipartFile multipartFile);
+    public AnswerCreateResponseDto createAnswer(Long anaylsisId, AnswerCreateRequestDto dto);
 
 }

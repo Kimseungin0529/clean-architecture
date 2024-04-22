@@ -14,5 +14,7 @@ public interface VoiceRepository extends JpaRepository<Voice, Long> {
 
     public Optional<Voice> findVoiceByQuestionContent(QuestionContent questionContent);
     public List<Voice> findVoiceAllByQuestionContentIn(List<QuestionContent> questionContent);
+
+    public Optional<Voice> findVoiceByAccessUrl(String accessUrl);
 }
 

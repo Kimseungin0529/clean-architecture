@@ -33,7 +33,7 @@ import java.util.UUID;
 @Transactional(readOnly = true)
 public class VoiceServiceImp implements VoiceService{
 
-    private final String KEY = "voice/";
+    private static final String KEY = "voice/";
 
     @Value("${cloud.aws.bucket}")
     private String bucketName;
@@ -52,6 +52,7 @@ public class VoiceServiceImp implements VoiceService{
         }
         return resultList;
     }
+
 
     @Override
     public VoiceDetailResponseDto saveVoice(MultipartFile multipartFile) {
@@ -141,6 +142,5 @@ public class VoiceServiceImp implements VoiceService{
 
         return VoiceDetailResponseDto.of(voice.getAccessUrl());
     }
-
 
 }

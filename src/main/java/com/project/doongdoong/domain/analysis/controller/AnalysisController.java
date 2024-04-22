@@ -1,8 +1,11 @@
 package com.project.doongdoong.domain.analysis.controller;
 
+import com.google.protobuf.Api;
 import com.project.doongdoong.domain.analysis.dto.request.AnalysisEmotionRequestDto;
 import com.project.doongdoong.domain.analysis.dto.response.*;
 import com.project.doongdoong.domain.analysis.service.AnalysisService;
+import com.project.doongdoong.domain.answer.dto.AnswerCreateRequestDto;
+import com.project.doongdoong.domain.answer.service.AnswerService;
 import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 public class AnalysisController {
 
     private final AnalysisService analysisService;
+    private final AnswerService answerService;
 
     @PostMapping
     public ApiResponse<AnalysisCreateResponseDto> createAnaysis(@CurrentUser String uniqueValue){
@@ -51,4 +55,9 @@ public class AnalysisController {
         return ApiResponse.of(HttpStatus.OK, null, analysisService.analyzeEmotion(analysisId, dto));
     }
 
+    @PostMapping("/{id}/answer")
+    public ApiResponse<?> createAnswer(@PathVariable("id") Long analysisId,@ModelAttribute AnswerCreateRequestDto dto){
+
+        return ApiResponse.of(HttpStatus.OK, null, answerService.createAnswer(analysisId, dto));
+    }
 }

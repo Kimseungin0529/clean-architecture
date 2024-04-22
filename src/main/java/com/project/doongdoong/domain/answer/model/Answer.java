@@ -2,6 +2,8 @@ package com.project.doongdoong.domain.answer.model;
 
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.question.model.Question;
+import com.project.doongdoong.domain.voice.model.Voice;
+import com.project.doongdoong.domain.voice.service.VoiceService;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -27,9 +29,20 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "analysis_id")
     private Analysis analysis;
 
+    @OneToOne(fetch = LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
+    @JoinColumn(name = "voice_id", updatable = false, unique = true)
+    private Voice voice;
+
     @Builder
-    public Answer(String content, Analysis analysis) {
+    public Answer(String content, Voice voice) {
         this.content = content;
+        this.voice = voice;
+    }
+
+    public void connectAnalysis(Analysis analysis){
+        if(this.analysis != null)
+            return;
         this.analysis = analysis;
+        analysis.getAnswers().add(this);
     }
 }
