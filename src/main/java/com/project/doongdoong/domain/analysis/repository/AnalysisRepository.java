@@ -31,5 +31,6 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Long> {
 
     Optional<Analysis> findFirstByUserOrderByCreatedTimeDesc(User user);
 
-
+    @Query("select analysis from Analysis analysis join fetch analysis.questions where analysis.id = :analysisId")
+    Optional<Analysis> findAnalysisWithQuestion(@Param("analysisId") Long analysisId);
 }

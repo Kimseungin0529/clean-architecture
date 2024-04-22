@@ -11,6 +11,7 @@ import com.project.doongdoong.global.common.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 
 @RestController
@@ -56,8 +57,10 @@ public class AnalysisController {
     }
 
     @PostMapping("/{id}/answer")
-    public ApiResponse<?> createAnswer(@PathVariable("id") Long analysisId,@ModelAttribute AnswerCreateRequestDto dto){
+    public ApiResponse<?> createAnswer(@PathVariable("id") Long analysisId,
+                                       @RequestPart("file") MultipartFile file,
+                                       @RequestPart("dto") AnswerCreateRequestDto dto){
 
-        return ApiResponse.of(HttpStatus.OK, null, answerService.createAnswer(analysisId, dto));
+        return ApiResponse.of(HttpStatus.OK, null, answerService.createAnswer(analysisId, file, dto));
     }
 }

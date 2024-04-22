@@ -10,6 +10,6 @@ import org.springframework.web.multipart.MultipartFile;
 @NoArgsConstructor
 @AllArgsConstructor
 public class AnswerCreateRequestDto {
-    private MultipartFile voice;
+    private Long questionId;
 
 }
