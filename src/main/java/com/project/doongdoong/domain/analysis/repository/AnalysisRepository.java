@@ -12,6 +12,7 @@ import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @Repository // JPA가 @Repository 없이도 빈 등록해줌.
 public interface AnalysisRepository extends JpaRepository<Analysis, Long> {
@@ -27,6 +28,8 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Long> {
             " group by YEAR(a.createdTime), MONTH(a.createdTime), DAY(a.createdTime) ")
     List<FeelingStateResponseDto> findAllByDateBetween(@Param("user") User user
             , @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
+
+    Optional<Analysis> findFirstByUserOrderByCreatedTimeDesc(User user);
 
 
 }

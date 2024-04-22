@@ -186,14 +186,20 @@ public class AnalysisServiceImp implements AnalysisService{
         User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
                 .orElseThrow(() -> new UserNotFoundException());
 
-        LocalDateTime endTime = LocalDateTime.now().plusDays(1).truncatedTo(ChronoUnit.DAYS);
-        LocalDateTime startTime = endTime.minusDays(6).truncatedTo(ChronoUnit.DAYS);
-
+        Optional<Analysis> analysis = analsisRepository.findFirstByUserOrderByCreatedTimeDesc(user);
+        LocalDateTime endTime, startTime;
+        List<FeelingStateResponseDto> result = null;
+        if(analysis.isPresent())
+        {
+            Analysis findAnalysis = analysis.get();
+            endTime = findAnalysis.getCreatedTime().plusDays(1).truncatedTo(ChronoUnit.DAYS);
+            startTime = endTime.minusDays(6).truncatedTo(ChronoUnit.DAYS);
+            result = analsisRepository.findAllByDateBetween(user, startTime, endTime);
+        }
 
         return FeelingStateResponseListDto.builder()
-                .feelingStateResponsesDto(analsisRepository.findAllByDateBetween(user,startTime,endTime))
+                .feelingStateResponsesDto(result)
                 .build();
-
     }
 
     @Override

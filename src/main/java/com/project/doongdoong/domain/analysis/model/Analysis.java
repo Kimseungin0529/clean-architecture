@@ -18,8 +18,8 @@ import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
-@Getter                                            // pubilc 대신 protected? 무분별한 생성을 막기 위해서 라는데 무분별하게 생성할 일이 있을까?
-@NoArgsConstructor(access = AccessLevel.PROTECTED) // 지연 로딩으로 인해 프록시 객체(상속)하므로 private 대신 protected를 사용
+@Getter
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Analysis extends BaseEntity {
 
     @Id @GeneratedValue(strategy = IDENTITY)
