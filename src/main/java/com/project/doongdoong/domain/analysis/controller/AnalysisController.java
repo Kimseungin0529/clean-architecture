@@ -6,8 +6,12 @@ import com.project.doongdoong.domain.analysis.dto.response.*;
 import com.project.doongdoong.domain.analysis.service.AnalysisService;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateRequestDto;
 import com.project.doongdoong.domain.answer.service.AnswerService;
+import com.project.doongdoong.domain.image.exception.FileEmptyException;
 import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -59,7 +63,11 @@ public class AnalysisController {
     @PostMapping("/{id}/answer")
     public ApiResponse<?> createAnswer(@PathVariable("id") Long analysisId,
                                        @RequestPart("file") MultipartFile file,
-                                       @RequestPart("dto") AnswerCreateRequestDto dto){
+                                       @RequestPart("dto") @Valid AnswerCreateRequestDto dto){
+
+        if(file.isEmpty()){
+            throw new FileEmptyException();
+        }
 
         return ApiResponse.of(HttpStatus.OK, null, answerService.createAnswer(analysisId, file, dto));
     }

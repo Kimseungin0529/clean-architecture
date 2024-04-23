@@ -6,7 +6,8 @@ public interface ErrorType {
 
     enum BadRequest implements ErrorType {
         BAD_REQUEST_DEFAULT(0),
-        FILE_EMPTY(1);
+        FILE_EMPTY(1),
+        NO_MATCHING_QUESTION(2);
 
         private final int errorCode;
 

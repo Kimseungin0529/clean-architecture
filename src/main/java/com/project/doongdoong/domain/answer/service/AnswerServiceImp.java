@@ -8,6 +8,7 @@ import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.answer.repository.AnswerRepository;
+import com.project.doongdoong.domain.question.exception.NoMatchingQuestionException;
 import com.project.doongdoong.domain.question.exception.QuestionNotFoundException;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.repository.QuestionRepository;
@@ -16,6 +17,7 @@ import com.project.doongdoong.domain.voice.exception.VoiceUrlNotFoundException;
 import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.domain.voice.repository.VoiceRepository;
 import com.project.doongdoong.domain.voice.service.VoiceService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -40,7 +42,7 @@ public class AnswerServiceImp implements AnswerService{
         Analysis findAnaylsis = analysisRepository.findAnalysisWithQuestion(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
         Question matchedQuestion = findAnaylsis.getQuestions().stream()
                 .filter(question -> question.getId() == dto.getQuestionId())
-                .findFirst().orElseThrow(() -> new QuestionNotFoundException());
+                .findFirst().orElseThrow(() -> new NoMatchingQuestionException());
         // 이미 설정된 question - answer이 존재할 때 다시 접근하려고 하면 예외 발생해야 하나? /
         if(Optional.ofNullable(matchedQuestion.getAnswer()).isPresent()){
             throw new AnswerConflictException();
