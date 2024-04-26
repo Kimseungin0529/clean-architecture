@@ -205,6 +205,9 @@ public class AnalysisServiceImp implements AnalysisService{
     @Override
     public FellingStateCreateResponse analyzeEmotion(Long analysisId, AnalysisEmotionRequestDto dto) {
         Analysis findAnalysis = analsisRepository.findById(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
+        // 1. 분석에 대한 답변 매칭 파일 리스트 가져오기
+        // 2. 파일을 request 값으로 외부 lambda API 비동기 호출(4개)
+        // 3. 처리가 끝나면 4개 값을 평균 내서 감정 수치 값 반환하기
         FellingStateCreateResponse response = webClientUtil.callLambdaApi(dto);
 
         findAnalysis.changeFeelingState(response.getFeelingState());
