@@ -1,6 +1,5 @@
 package com.project.doongdoong.domain.voice.model;
 
-import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -31,13 +30,13 @@ public class Voice extends BaseEntity {
     @Builder
     public Voice(String originName) {
         this.originName = originName;
-        this.storedName = getFileName(originName);
+        this.storedName = gainFileName(originName);
         this.accessUrl = "";
     }
     @Builder
     public Voice(String originName, QuestionContent questionContent) {
         this.originName = originName;
-        this.storedName = getFileName() + originName;
+        this.storedName = gainFileName() + originName;
         this.accessUrl = "";
         this.questionContent = questionContent;
     }
@@ -52,10 +51,10 @@ public class Voice extends BaseEntity {
         return originName.substring(index, originName.length());
     }
 
-    public String getFileName(String originName) {
+    public String gainFileName(String originName) {
         return UUID.randomUUID()  + extractExtension(originName);
     }
-    public String getFileName() {
+    public String gainFileName() {
         return UUID.randomUUID().toString();
     }
 }

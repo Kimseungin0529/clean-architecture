@@ -13,6 +13,6 @@ public interface AnalysisService {
 
     public FeelingStateResponseListDto getAnalysisListGroupByDay(String uniqueValue);
 
-    public FellingStateCreateResponse analyzeEmotion(Long analysisId, AnalysisEmotionRequestDto dto);
+    public FellingStateCreateResponse analyzeEmotion(Long analysisId);
 
 }

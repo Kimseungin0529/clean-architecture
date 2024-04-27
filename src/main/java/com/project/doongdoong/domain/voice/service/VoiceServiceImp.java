@@ -3,7 +3,6 @@ package com.project.doongdoong.domain.voice.service;
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.ObjectMetadata;
-import com.google.cloud.texttospeech.v1.*;
 import com.project.doongdoong.domain.image.exception.FileDeleteException;
 import com.project.doongdoong.domain.image.exception.FileEmptyException;
 import com.project.doongdoong.domain.image.exception.FileUploadException;
@@ -24,16 +23,14 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.List;
-import java.util.UUID;
 
 @Service @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class VoiceServiceImp implements VoiceService{
 
-    private static final String KEY = "voice/";
+    private static final String VOICE_KEY = "voice/";
 
     @Value("${cloud.aws.bucket}")
     private String bucketName;
@@ -58,7 +55,7 @@ public class VoiceServiceImp implements VoiceService{
     public VoiceDetailResponseDto saveVoice(MultipartFile multipartFile) {
         String originalName = multipartFile.getOriginalFilename();
         Voice voice = new Voice(originalName);
-        String filename = KEY + voice.getStoredName();
+        String filename = VOICE_KEY + voice.getStoredName();
 
         log.info("음성 파일 저장 시작");
         try {
@@ -120,7 +117,7 @@ public class VoiceServiceImp implements VoiceService{
     public VoiceDetailResponseDto saveTtsVoice(byte[] audioContent, String originName, QuestionContent questionContent) {
 
         Voice voice = new Voice(originName, questionContent);
-        String filename = KEY + voice.getStoredName();
+        String filename = VOICE_KEY + voice.getStoredName();
 
         try {
             log.info("TTS 음성 파일 저장 시작");
