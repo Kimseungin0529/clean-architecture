@@ -29,8 +29,8 @@ public class Answer extends BaseEntity {
     @JoinColumn(name = "analysis_id")
     private Analysis analysis;
 
-    @OneToOne(fetch = LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
-    @JoinColumn(name = "voice_id", updatable = false, unique = true)
+    @OneToOne(fetch = LAZY, cascade = CascadeType.REMOVE)
+    @JoinColumn(name = "voice_id", unique = true)
     private Voice voice;
 
     @Builder
@@ -44,5 +44,9 @@ public class Answer extends BaseEntity {
             return;
         this.analysis = analysis;
         analysis.getAnswers().add(this);
+    }
+
+    public void disconnectWithVoice(){
+        this.voice = null;
     }
 }

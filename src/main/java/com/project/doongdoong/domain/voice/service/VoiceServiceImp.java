@@ -96,7 +96,14 @@ public class VoiceServiceImp implements VoiceService{
         Voice voice = voiceRepository.findByAccessUrl(imageUrl).orElseThrow(() -> new VoiceUrlNotFoundException());
         try{
             voiceRepository.delete(voice);
-            amazonS3Client.deleteObject(bucketName, voice.getStoredName());
+            String filename = VOICE_KEY + voice.getStoredName();
+            boolean isObjectExist = amazonS3Client.doesObjectExist(bucketName, filename);
+            if (isObjectExist) {
+                amazonS3Client.deleteObject(bucketName, filename);
+            } else {
+                log.info("s3 파일이 존재하지 않습니다.");
+            }
+            amazonS3Client.deleteObject(bucketName, filename);
         }
         catch(SdkClientException e) {
             log.error("음성 파일 삭제 오류 -> {}", e.getMessage());
@@ -106,7 +113,7 @@ public class VoiceServiceImp implements VoiceService{
 
     @Override
     @Transactional
-    public void deleteVoice(List<String> voiceUrls) {
+    public void deleteVoices(List<String> voiceUrls) {
         for (String voiceUrl : voiceUrls) {
             deleteVoice(voiceUrl);
         }
