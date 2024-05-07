@@ -3,6 +3,7 @@ package com.project.doongdoong.domain.analysis.controller;
 import com.project.doongdoong.domain.analysis.dto.response.*;
 import com.project.doongdoong.domain.analysis.service.AnalysisService;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateRequestDto;
+import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
 import com.project.doongdoong.domain.answer.service.AnswerService;
 import com.project.doongdoong.domain.image.exception.FileEmptyException;
 import com.project.doongdoong.global.CurrentUser;
@@ -53,18 +54,24 @@ public class AnalysisController {
     @PostMapping("/{id}")
     public ApiResponse<FellingStateCreateResponse> analyzeEmotion(@PathVariable("id") Long analysisId){
 
-        return ApiResponse.of(HttpStatus.OK, null, analysisService.analyzerEmotion(analysisId));
+        return ApiResponse.of(HttpStatus.OK, null, analysisService.analyzeEmotion(analysisId));
     }
 
     @PostMapping("/{id}/answer")
-    public ApiResponse<?> createAnswer(@PathVariable("id") Long analysisId,
-                                       @RequestPart("file") MultipartFile file,
-                                       @RequestPart("dto") @Valid AnswerCreateRequestDto dto){
+    public ApiResponse<AnswerCreateResponseDto> createAnswer(@PathVariable("id") Long analysisId,
+                                                             @RequestPart("file") MultipartFile file,
+                                                             @RequestPart("dto") @Valid AnswerCreateRequestDto dto){
 
         if(file.isEmpty()){
             throw new FileEmptyException();
         }
 
         return ApiResponse.of(HttpStatus.OK, null, answerService.createAnswer(analysisId, file, dto));
+    }
+
+    @DeleteMapping("/{id}")
+    public ApiResponse<?> deleteAnalysis(@PathVariable("id") Long analysisId){
+        analysisService.removeAnaylsis(analysisId);
+        return ApiResponse.of(HttpStatus.NO_CONTENT,null, null);
     }
 }

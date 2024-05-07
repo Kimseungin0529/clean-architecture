@@ -14,4 +14,5 @@ public interface AnalysisService {
 
     public FellingStateCreateResponse analyzeEmotion(Long analysisId);
 
+    public void removeAnaylsis(Long analysisId);
 }
