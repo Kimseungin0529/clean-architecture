@@ -1,7 +1,5 @@
 package com.project.doongdoong.domain.analysis.controller;
 
-import com.google.protobuf.Api;
-import com.project.doongdoong.domain.analysis.dto.request.AnalysisEmotionRequestDto;
 import com.project.doongdoong.domain.analysis.dto.response.*;
 import com.project.doongdoong.domain.analysis.service.AnalysisService;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateRequestDto;
@@ -10,8 +8,6 @@ import com.project.doongdoong.domain.image.exception.FileEmptyException;
 import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
 import jakarta.validation.Valid;
-import jakarta.validation.constraints.NotEmpty;
-import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -55,9 +51,9 @@ public class AnalysisController {
     }
 
     @PostMapping("/{id}")
-    public ApiResponse<FellingStateCreateResponse> analyzeEmotion(@PathVariable("id") Long analysisId, @RequestBody AnalysisEmotionRequestDto dto){
+    public ApiResponse<FellingStateCreateResponse> analyzeEmotion(@PathVariable("id") Long analysisId){
 
-        return ApiResponse.of(HttpStatus.OK, null, analysisService.analyzeEmotion(analysisId, dto));
+        return ApiResponse.of(HttpStatus.OK, null, analysisService.analyzerEmotion(analysisId));
     }
 
     @PostMapping("/{id}/answer")

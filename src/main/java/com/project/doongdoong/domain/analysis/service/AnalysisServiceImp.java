@@ -1,11 +1,9 @@
 package com.project.doongdoong.domain.analysis.service;
 
-import com.project.doongdoong.domain.analysis.dto.request.AnalysisEmotionRequestDto;
 import com.project.doongdoong.domain.analysis.dto.response.*;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
-import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.question.service.QuestionService;
@@ -213,7 +211,7 @@ public class AnalysisServiceImp implements AnalysisService{
 
         // 2. 파일을 request 값으로 외부 lambda API 비동기 처리(동일한 외부 API 4번 호출)
         // 해당하는 외부 API는 double 값 하나를 줌.
-        List<FellingStateCreateResponse> response = webClientUtil.callAnalyzeEmotion(voices);; // 비동기 처리해서 값 가져오기
+        List<FellingStateCreateResponse> response = webClientUtil.callAnalyzeEmotion(voices); // 비동기 처리해서 값 가져오기
 
 
         double result = response.stream() // 3. 처리가 끝나면 double값 4개 값을 평균 내서 감정 수치 값 반환하기

@@ -8,5 +8,7 @@ import org.checkerframework.checker.units.qual.A;
 @NoArgsConstructor
 @AllArgsConstructor
 public class FellingStateCreateResponse {
+
+    private String transcribedText;
     private double feelingState;
 }
