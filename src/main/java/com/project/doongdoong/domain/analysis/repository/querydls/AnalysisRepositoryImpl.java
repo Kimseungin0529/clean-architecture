@@ -21,11 +21,11 @@ public class AnalysisRepositoryImpl implements AnalysisRepositoryCustom {
     @Override
     public Optional<Analysis> searchAnalysisWithVoiceOfAnswer(Long analysisId) {
 
-        return Optional.of(
+        return Optional.ofNullable(
                 queryFactory
                 .selectFrom(analysis)
-                .join(analysis.answers, answer).fetchJoin()
-                .join(answer.voice, voice).fetchJoin()
+                .leftJoin(analysis.answers, answer).fetchJoin()
+                .leftJoin(answer.voice, voice).fetchJoin()
                 .where(analysis.id.eq(analysisId))
                 .fetchOne()
                 );

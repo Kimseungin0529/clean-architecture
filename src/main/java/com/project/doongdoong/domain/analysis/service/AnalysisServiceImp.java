@@ -4,6 +4,7 @@ import com.project.doongdoong.domain.analysis.dto.response.*;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
+import com.project.doongdoong.domain.answer.exception.AnswerNotFoundException;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
@@ -234,8 +235,10 @@ public class AnalysisServiceImp implements AnalysisService{
         Analysis findAnalysis = analsisRepository.searchAnalysisWithVoiceOfAnswer(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
         List<String> accessUrls = findAnalysis.getAnswers().stream().map(answer -> answer.getVoice().getAccessUrl())
                 .collect(Collectors.toList());
-        findAnalysis.getAnswers().stream().forEach(answer -> answer.disconnectWithVoice()); // 연관관계 끊기
-        voiceService.deleteVoices(accessUrls); // voice를 참조하는 객체 없으므로 삭제 가능 -> 벌크 삭제로 쿼리 최적화 필요
+        if(findAnalysis.getAnswers().size() != 0){
+            findAnalysis.getAnswers().stream().forEach(answer -> answer.disconnectWithVoice()); // 연관관계 끊기
+            voiceService.deleteVoices(accessUrls); // voice를 참조하는 객체 없으므로 삭제 가능 -> 벌크 삭제로 쿼리 최적화 필요
+        }
         // analysis 삭제로 question, answer 삭제 로직 -> voiceService.deleteVoices로 answer.voice와 관련 S3 파일은 이미 삭제.
         analsisRepository.deleteById(analysisId);
     }

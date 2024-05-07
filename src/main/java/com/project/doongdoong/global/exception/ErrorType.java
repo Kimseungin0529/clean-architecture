@@ -64,7 +64,8 @@ public interface ErrorType {
         VOICE_URL_NOT_FOUND(4004),
         ANALYSIS_NOT_FOUND(4005),
         USER_NOT_FOUND(4006),
-        QUESTION_NOT_FOUND(4007)
+        QUESTION_NOT_FOUND(4007),
+        ANSWER_NOT_FOUND(4008)
         ;
 
         private final int errorCode;
