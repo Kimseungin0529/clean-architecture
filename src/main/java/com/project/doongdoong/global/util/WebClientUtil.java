@@ -34,8 +34,8 @@ public class WebClientUtil
     private final WebClient webClient;
     private final AmazonS3Client amazonS3Client;
 
-    @Value("${spring.google.cloud.tts.url}")
-    private String apiUrl;
+    @Value("${spring.lambda.text.url}")
+    private String lambdaTextApiUrl;
     @Value("${cloud.aws.bucket}")
     private String bucketName;
     private static final String VOICE_KEY = "voice/";
@@ -49,6 +49,10 @@ public class WebClientUtil
                 .flatMap(voice -> callLambdaApi(voice));
 
         List<FellingStateCreateResponse> response = responseFlux.collectList().block();
+        for(FellingStateCreateResponse dto : response){
+            log.info("dto.getFeelingState() = {}", dto.getFeelingState());
+        }
+
         return response;
     }
 
@@ -61,14 +65,15 @@ public class WebClientUtil
 
             // MultipartBodyBuilder를 사용하여 파일 업로드 요청 생성
             MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
-            multipartBodyBuilder.part("file", fileBytes, MediaType.APPLICATION_OCTET_STREAM);
+            multipartBodyBuilder.part("file", fileBytes); // MediaType.APPLICATION_OCTET_STREAM
             MultiValueMap<String, HttpEntity<?>> multipartBody = multipartBodyBuilder.build();
 
-             return webClient.mutate().build()
+            log.info("에러 발생했냐?");
+            return webClient.mutate().build()
                     .post()
-                    .uri(apiUrl)
-                    .contentType(MediaType.MULTIPART_FORM_DATA)
-                    .bodyValue(BodyInserters.fromMultipartData(multipartBody))
+                    .uri(lambdaTextApiUrl)
+                    //.contentType(MediaType.MULTIPART_FORM_DATA)
+                    .bodyValue(multipartBody)   // BodyInserters.fromMultipartData(multipartBody);
                     .retrieve()
                     .bodyToMono(FellingStateCreateResponse.class);
 
@@ -81,8 +86,10 @@ public class WebClientUtil
             throw new RuntimeException("Failed to retrieve voice file from S3", e);
         }  catch (IOException e) {
             throw new RuntimeException("byte 변환에 실패했습니다.",e);
+        }catch (Exception e){
+            log.error("e.getMessage() = {}",e.getMessage());
         }
-
+        log.info("null이냐?");
         return null;
     }
     private S3ObjectInputStream convertVoiceToFileData(Voice voice) {

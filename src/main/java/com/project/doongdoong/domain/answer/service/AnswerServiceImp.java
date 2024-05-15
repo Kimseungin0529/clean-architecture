@@ -19,13 +19,14 @@ import com.project.doongdoong.domain.voice.repository.VoiceRepository;
 import com.project.doongdoong.domain.voice.service.VoiceService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Optional;
 
-@Service
+@Service @Slf4j
 @RequiredArgsConstructor
 public class AnswerServiceImp implements AnswerService{
 
@@ -36,12 +37,49 @@ public class AnswerServiceImp implements AnswerService{
 
     private final static int MAX_ANSWER_COUNT = 4;
 
-    @Transactional
+    /*@Transactional
     @Override
     public AnswerCreateResponseDto createAnswer(Long analysisId, MultipartFile file, AnswerCreateRequestDto dto) {
         Analysis findAnaylsis = analysisRepository.findAnalysisWithQuestion(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
         Question matchedQuestion = findAnaylsis.getQuestions().stream()
                 .filter(question -> question.getId() == dto.getQuestionId())
+                .findFirst().orElseThrow(() -> new NoMatchingQuestionException());
+        // 이미 설정된 question - answer이 존재할 때 다시 접근하려고 하면 예외 발생해야 하나? /
+        if(Optional.ofNullable(matchedQuestion.getAnswer()).isPresent()){
+            throw new AnswerConflictException();
+        }
+
+
+        VoiceDetailResponseDto voiceDto = voiceService.saveVoice(file);
+        Voice voice = voiceRepository.findVoiceByAccessUrl(voiceDto.getAccessUrl()).orElseThrow(() -> new VoiceUrlNotFoundException());
+
+        Answer answer = Answer.builder()
+                .content(null)
+                .voice(voice)
+                .build();
+
+        answer.connectAnalysis(findAnaylsis); // 굳이 필요한 가? question과 answer이 연관관계 매핑이 됐는데?
+        matchedQuestion.connectAnswer(answer);
+        answerRepository.save(answer);
+
+        return AnswerCreateResponseDto.builder()
+                .answerId(answer.getId())
+                .build();
+    }*/
+
+    @Transactional
+    @Override
+    public AnswerCreateResponseDto createAnswer(Long analysisId, MultipartFile file, Long questionId) {
+        log.info("analysisId = {}", analysisId);
+        log.info("questionId = {}", questionId);
+        Analysis findAnaylsis = analysisRepository.findAnalysisWithQuestion(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
+
+
+        for(Question question : findAnaylsis.getQuestions()){
+            log.info("question.getId() = {}", question.getId());
+        }
+        Question matchedQuestion = findAnaylsis.getQuestions().stream()
+                .filter(question -> (long)question.getId() == (long)questionId)
                 .findFirst().orElseThrow(() -> new NoMatchingQuestionException());
         // 이미 설정된 question - answer이 존재할 때 다시 접근하려고 하면 예외 발생해야 하나? /
         if(Optional.ofNullable(matchedQuestion.getAnswer()).isPresent()){

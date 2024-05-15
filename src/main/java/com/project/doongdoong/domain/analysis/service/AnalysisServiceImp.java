@@ -82,9 +82,12 @@ public class AnalysisServiceImp implements AnalysisService{
         } // ConcurrentModificationException 으로 인해 for문 사용
 
         analsisRepository.save(analysis);
+        List<Long> questionIds = analysis.getQuestions().stream().map(question -> question.getId())
+                .collect(Collectors.toList());
 
         return AnalysisCreateResponseDto.builder()
                 .analysisId(analysis.getId())
+                .questionIds(questionIds)
                 .questionTexts(questionTexts)
                 .accessUrls(accessUrls)
                 .build();
@@ -97,12 +100,13 @@ public class AnalysisServiceImp implements AnalysisService{
 
     @Override
     public AnalysisDetailResponse getAnalysis(Long analysisId) {
-        Analysis findAnalysis = analsisRepository.findById(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
+        Analysis findAnalysis = analsisRepository.findById(analysisId).orElseThrow(() -> new AnalysisNotFoundException()); // fetch join으로 최적화 필요
         List<Question> questions = findAnalysis.getQuestions();
         // questions에 해당하는 answers 가져오기
 
         List<QuestionContent> questionContents = extractQuestionContentsBy(questions);
         List<String> questionTexts = extractQuestionTextBy(questionContents);
+        List<Long> questionIds = questions.stream().map(question -> question.getId()).collect(Collectors.toList());
 
         List<Voice> findVoices = voiceRepository.findVoiceAllByQuestionContentIn(questionContents);
 
@@ -124,6 +128,7 @@ public class AnalysisServiceImp implements AnalysisService{
                 .analysisId(findAnalysis.getId())
                 .time(findAnalysis.getCreatedTime().format(formatter))
                 .feelingState(findAnalysis.getFeelingState())
+                .questionIds(questionIds)
                 .questionContent(questionTexts)
                 .questionContentVoiceUrls(questionVoiceAccessUrls)
                 .answerContent(answerContents)

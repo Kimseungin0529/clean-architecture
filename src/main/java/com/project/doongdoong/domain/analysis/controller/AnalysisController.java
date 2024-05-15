@@ -57,7 +57,7 @@ public class AnalysisController {
         return ApiResponse.of(HttpStatus.OK, null, analysisService.analyzeEmotion(analysisId));
     }
 
-    @PostMapping("/{id}/answer")
+    /*@PostMapping("/{id}/answer")
     public ApiResponse<AnswerCreateResponseDto> createAnswer(@PathVariable("id") Long analysisId,
                                                              @RequestPart("file") MultipartFile file,
                                                              @RequestPart("dto") @Valid AnswerCreateRequestDto dto){
@@ -67,6 +67,18 @@ public class AnalysisController {
         }
 
         return ApiResponse.of(HttpStatus.OK, null, answerService.createAnswer(analysisId, file, dto));
+    }*/
+
+    @PostMapping("/{id}/answer")
+    public ApiResponse<AnswerCreateResponseDto> createAnswer(@PathVariable("id") Long analysisId,
+                                                             @RequestPart("file") MultipartFile file,
+                                                             @RequestParam("questionId") Long questionId){
+
+        if(file.isEmpty()){
+            throw new FileEmptyException();
+        }
+
+        return ApiResponse.of(HttpStatus.OK, null, answerService.createAnswer(analysisId, file, questionId));
     }
 
     @DeleteMapping("/{id}")
