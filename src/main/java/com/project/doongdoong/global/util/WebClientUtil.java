@@ -7,6 +7,7 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.project.doongdoong.domain.analysis.dto.response.FellingStateCreateResponse;
 import com.project.doongdoong.domain.voice.model.Voice;
+import com.project.doongdoong.global.util.dto.VoiceToS3Request;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.IOUtils;
@@ -59,33 +60,27 @@ public class WebClientUtil
     private Mono<FellingStateCreateResponse> callLambdaApi(Voice voice) {
 
         try {
-            // S3에서 음성 파일 가져오기
-            S3ObjectInputStream inputStream = convertVoiceToFileData(voice);
-            byte[] fileBytes = IOUtils.toByteArray(inputStream);
-
-            // MultipartBodyBuilder를 사용하여 파일 업로드 요청 생성
-            MultipartBodyBuilder multipartBodyBuilder = new MultipartBodyBuilder();
-            multipartBodyBuilder.part("file", fileBytes); // MediaType.APPLICATION_OCTET_STREAM
-            MultiValueMap<String, HttpEntity<?>> multipartBody = multipartBodyBuilder.build();
+            VoiceToS3Request body = VoiceToS3Request.builder()
+                    .fileKey(VOICE_KEY + voice.getStoredName())
+                    .build();
 
             log.info("에러 발생했냐?");
             return webClient.mutate().build()
                     .post()
                     .uri(lambdaTextApiUrl)
-                    //.contentType(MediaType.MULTIPART_FORM_DATA)
-                    .bodyValue(multipartBody)   // BodyInserters.fromMultipartData(multipartBody);
+                    .contentType(MediaType.APPLICATION_JSON)
+                    .bodyValue(body)
                     .retrieve()
                     .bodyToMono(FellingStateCreateResponse.class);
 
         }catch (WebClientResponseException e){
             log.error("Error occurred: {}", e.getRawStatusCode());
             log.error("Response body: {}", e.getResponseBodyAsString());
-        } catch (AmazonS3Exception e) {
+
+        }catch (AmazonS3Exception e) {
             log.error("AmazonS3Exception occurred: {}", e.getMessage());
             log.error("AmazonS3Exception status code: {}", e.getStatusCode());
             throw new RuntimeException("Failed to retrieve voice file from S3", e);
-        }  catch (IOException e) {
-            throw new RuntimeException("byte 변환에 실패했습니다.",e);
         }catch (Exception e){
             log.error("e.getMessage() = {}",e.getMessage());
         }
