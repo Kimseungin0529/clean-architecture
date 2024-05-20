@@ -65,7 +65,8 @@ public interface ErrorType {
         ANALYSIS_NOT_FOUND(4005),
         USER_NOT_FOUND(4006),
         QUESTION_NOT_FOUND(4007),
-        ANSWER_NOT_FOUND(4008)
+        ANSWER_NOT_FOUND(4008),
+        ALL_ANSWER_NOT_FOUND(4009)
         ;
 
         private final int errorCode;

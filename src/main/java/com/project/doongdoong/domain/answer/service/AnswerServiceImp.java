@@ -35,7 +35,7 @@ public class AnswerServiceImp implements AnswerService{
     private final AnswerRepository answerRepository;
     private final AnalysisRepository analysisRepository;
 
-    private final static int MAX_ANSWER_COUNT = 4;
+    public final static int MAX_ANSWER_COUNT = 4;
 
     /*@Transactional
     @Override

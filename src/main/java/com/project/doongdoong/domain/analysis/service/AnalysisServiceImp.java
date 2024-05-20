@@ -1,11 +1,13 @@
 package com.project.doongdoong.domain.analysis.service;
 
 import com.project.doongdoong.domain.analysis.dto.response.*;
+import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
 import com.project.doongdoong.domain.answer.exception.AnswerNotFoundException;
 import com.project.doongdoong.domain.answer.model.Answer;
+import com.project.doongdoong.domain.answer.service.AnswerServiceImp;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.question.service.QuestionService;
@@ -31,6 +33,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
 import java.util.stream.Collectors;
+
+import static com.project.doongdoong.domain.answer.service.AnswerServiceImp.MAX_ANSWER_COUNT;
 
 @Service @Slf4j
 @RequiredArgsConstructor
@@ -211,10 +215,15 @@ public class AnalysisServiceImp implements AnalysisService{
     @Override
     public FellingStateCreateResponse analyzeEmotion(Long analysisId) {
         Analysis findAnalysis = analsisRepository.searchAnalysisWithVoiceOfAnswer(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
+
         // 1. 분석에 대한 답변 매칭 파일 리스트 가져오기
         List<Voice> voices = findAnalysis.getAnswers().stream()
                 .map(answer -> answer.getVoice())
                 .collect(Collectors.toList());
+
+        if(voices.size() != MAX_ANSWER_COUNT){ //만약 모든 질문에 대한 답변이 없는 경우, 답변이 부족하다는 예외 발생
+            throw new AllAnswersNotFoundException();
+        }
 
         // 2. 파일을 request 값으로 외부 lambda API 비동기 처리(동일한 외부 API 4번 호출)
         // 해당하는 외부 API는 double 값 하나를 줌.
