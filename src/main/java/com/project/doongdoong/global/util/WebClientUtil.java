@@ -7,6 +7,8 @@ import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.project.doongdoong.domain.analysis.dto.response.FellingStateCreateResponse;
 import com.project.doongdoong.domain.voice.model.Voice;
+import com.project.doongdoong.global.exception.ErrorType;
+import com.project.doongdoong.global.exception.servererror.ExternalApiCallException;
 import com.project.doongdoong.global.util.dto.VoiceToS3Request;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -64,7 +66,6 @@ public class WebClientUtil
                     .fileKey(VOICE_KEY + voice.getStoredName())
                     .build();
 
-            log.info("에러 발생했냐?");
             return webClient.mutate().build()
                     .post()
                     .uri(lambdaTextApiUrl)
@@ -76,21 +77,12 @@ public class WebClientUtil
         }catch (WebClientResponseException e){
             log.error("Error occurred: {}", e.getRawStatusCode());
             log.error("Response body: {}", e.getResponseBodyAsString());
+            throw new ExternalApiCallException();
 
-        }catch (AmazonS3Exception e) {
-            log.error("AmazonS3Exception occurred: {}", e.getMessage());
-            log.error("AmazonS3Exception status code: {}", e.getStatusCode());
-            throw new RuntimeException("Failed to retrieve voice file from S3", e);
         }catch (Exception e){
             log.error("e.getMessage() = {}",e.getMessage());
         }
-        log.info("null이냐?");
         return null;
-    }
-    private S3ObjectInputStream convertVoiceToFileData(Voice voice) {
-        S3Object s3Object = amazonS3Client.getObject(bucketName, VOICE_KEY + voice.getStoredName());
-        S3ObjectInputStream inputStream = s3Object.getObjectContent();
-        return inputStream;
     }
 
 }
