@@ -7,7 +7,7 @@ import static com.project.doongdoong.global.exception.ErrorType.ServerError.EXTE
 
 public class ExternalApiCallException extends CustomException.ServerErrorException {
     public ExternalApiCallException() {
-        super(EXTERNAL_SERVER_ERROR, "외부 API 호출을 실패했습니다.");
+        super(EXTERNAL_SERVER_ERROR, "외부 API 응답을 정상적으로 처리되지 않았습니다.");
 
     }
 }
