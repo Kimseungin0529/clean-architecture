@@ -212,10 +212,10 @@ public class AnalysisServiceImp implements AnalysisService{
                 .build();
     }
 
+    @Transactional
     @Override
     public FellingStateCreateResponse analyzeEmotion(Long analysisId) {
         Analysis findAnalysis = analsisRepository.searchAnalysisWithVoiceOfAnswer(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
-
         // 1. 분석에 대한 답변 매칭 파일 리스트 가져오기
         List<Voice> voices = findAnalysis.getAnswers().stream()
                 .map(answer -> answer.getVoice())
@@ -228,13 +228,15 @@ public class AnalysisServiceImp implements AnalysisService{
         // 2. 파일을 request 값으로 외부 lambda API 비동기 처리(동일한 외부 API 4번 호출)
         // 해당하는 외부 API는 double 값 하나를 줌.
         List<FellingStateCreateResponse> response = webClientUtil.callAnalyzeEmotion(voices); // 비동기 처리해서 값 가져오기
-
+        List<Answer> answers = findAnalysis.getAnswers();
+        for(int i=0; i<response.size(); i++){
+            answers.get(i).changeContent(response.get(i).getTranscribedText());
+        }
 
         double result = response.stream() // 3. 처리가 끝나면 double값 4개 값을 평균 내서 감정 수치 값 반환하기
                 .mapToDouble(value -> value.getFeelingState())
                 .average()
                 .getAsDouble();
-
         findAnalysis.changeFeelingState(result);
 
         return FellingStateCreateResponse.builder()

@@ -24,6 +24,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
+import reactor.core.scheduler.Schedulers;
 
 import java.io.File;
 import java.io.IOException;
@@ -49,7 +50,11 @@ public class WebClientUtil
 
         Flux<FellingStateCreateResponse> responseFlux = Flux
                 .fromIterable(voices)
-                .flatMap(voice -> callLambdaApi(voice));
+                .parallel()
+                .runOn(Schedulers.parallel())
+                .flatMap(this::callLambdaApi)
+                .sequential();
+        //.flatMap(voice -> callLambdaApi(voice));
 
         List<FellingStateCreateResponse> response = responseFlux.collectList().block();
         for(FellingStateCreateResponse dto : response){

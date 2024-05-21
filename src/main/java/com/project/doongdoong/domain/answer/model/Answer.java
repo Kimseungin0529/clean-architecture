@@ -49,4 +49,8 @@ public class Answer extends BaseEntity {
     public void disconnectWithVoice(){
         this.voice = null;
     }
+
+    public void changeContent(String content) {
+        this.content = content;
+    }
 }
