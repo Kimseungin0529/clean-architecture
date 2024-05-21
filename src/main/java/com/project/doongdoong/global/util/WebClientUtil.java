@@ -54,7 +54,10 @@ public class WebClientUtil
         List<FellingStateCreateResponse> response = responseFlux.collectList().block();
         for(FellingStateCreateResponse dto : response){
             log.info("dto.getFeelingState() = {}", dto.getFeelingState());
+            log.info("dto.getTranscribedText() = {}", dto.getTranscribedText());
         }
+
+        // 텍스트 저장하는 로직 필요.
 
         return response;
     }

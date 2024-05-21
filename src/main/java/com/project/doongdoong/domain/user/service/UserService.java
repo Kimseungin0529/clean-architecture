@@ -105,10 +105,9 @@ public class UserService {
                     .accessToken(accessToken)
                     .build();
         }else{
-            new RefreshTokenNoutFoundException();
+            throw new RefreshTokenNoutFoundException();
         }
 
-        return null;
     }
 
     @Transactional

@@ -86,6 +86,8 @@ public class VoiceServiceImp implements VoiceService{
                 return "audio/mpeg";
             case "m4a":
                 return "audio/mp4";
+            case "wav":
+                return  "audio/wav";
             default:
                 throw new IllegalArgumentException("Unsupported file format");
         }
