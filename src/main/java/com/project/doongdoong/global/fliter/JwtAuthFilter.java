@@ -20,6 +20,9 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Arrays;
+
+import static com.project.doongdoong.global.config.SecurityConfig.ALLOW_REQUEST;
 
 @RequiredArgsConstructor
 @Slf4j @Component
@@ -31,19 +34,23 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         try{
-            // request Header에서 AccessToken을 가져온다.
-            String token = resolveToken(request);
-            // 만약 "Bearer "이 붙어서 온다면 제거해줘야 함. 이따 빼주는 로직이 없다면 추가
-            log.info("JWT 필터 검사 시작.");
-            log.info("Bearer 삭제한 token 값 = {}", token);
+            boolean isAllowed = Arrays.stream(ALLOW_REQUEST).anyMatch(uri -> request.getRequestURI().contains(uri));
+            if(!isAllowed){
+                String requestURI = request.getRequestURI();
+                // request Header에서 AccessToken을 가져온다.
+                String token = resolveToken(request);
+                // 만약 "Bearer "이 붙어서 온다면 제거해줘야 함. 이따 빼주는 로직이 없다면 추가
+                log.info("JWT 필터 검사 시작.");
+                log.info("Bearer 삭제한 token 값 = {}", token);
 
-            //토큰이 존재하면서 유효하다면 Authentication 객체 생성
-            //시큐리티 컨텍스트 홀더에 Authentication 저장
-            if(validateToken(token) && !jwtProvider.checkLogoutToken(token)) {
-                Authentication authentication = jwtProvider.getAuthentication(token);
-                SecurityContextHolder.getContext().setAuthentication(authentication);
+                //토큰이 존재하면서 유효하다면 Authentication 객체 생성
+                //시큐리티 컨텍스트 홀더에 Authentication 저장
+                if(validateToken(token) && !jwtProvider.checkLogoutToken(token)) {
+                    Authentication authentication = jwtProvider.getAuthentication(token);
+                    SecurityContextHolder.getContext().setAuthentication(authentication);
+                }
+                log.info("토큰 검증 성공");
             }
-            log.info("토큰 검증 성공");
             filterChain.doFilter(request,response);
 
         }catch (SecurityException | MalformedJwtException e) {

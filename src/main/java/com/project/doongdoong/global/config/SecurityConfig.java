@@ -25,7 +25,7 @@
 
         private final JwtAuthFilter jwtAuthFilter;
         //private final OAuth2UserService oAuth2UserService;
-        private final static String[] ALLOW_REQUEST = {
+        public final static String[] ALLOW_REQUEST = {
                 "/", "/api/v1/user/ping", "/api/v1/user/login-oauth", "/api/v1/user/reissue",
                 "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
         };
