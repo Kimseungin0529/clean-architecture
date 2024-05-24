@@ -54,7 +54,6 @@ public class WebClientUtil
                 .runOn(Schedulers.parallel())
                 .flatMap(this::callLambdaApi)
                 .sequential();
-        //.flatMap(voice -> callLambdaApi(voice));
 
         List<FellingStateCreateResponse> response = responseFlux.collectList().block();
         for(FellingStateCreateResponse dto : response){
@@ -62,35 +61,28 @@ public class WebClientUtil
             log.info("dto.getTranscribedText() = {}", dto.getTranscribedText());
         }
 
-        // 텍스트 저장하는 로직 필요.
 
         return response;
     }
 
     private Mono<FellingStateCreateResponse> callLambdaApi(Voice voice) {
 
-        try {
-            VoiceToS3Request body = VoiceToS3Request.builder()
-                    .fileKey(VOICE_KEY + voice.getStoredName())
-                    .build();
+        VoiceToS3Request body = VoiceToS3Request.builder()
+                .fileKey(VOICE_KEY + voice.getStoredName())
+                .build();
 
-            return webClient.mutate().build()
-                    .post()
-                    .uri(lambdaTextApiUrl)
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .bodyValue(body)
-                    .retrieve()
-                    .bodyToMono(FellingStateCreateResponse.class);
+        return webClient.mutate().build()
+                .post()
+                .uri(lambdaTextApiUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(FellingStateCreateResponse.class)
+                .doOnError(e -> {
+                    log.info("error 발생 = {}", e.getMessage());
+                    throw new ExternalApiCallException();
+                });
 
-        }catch (WebClientResponseException e){
-            log.error("Error occurred: {}", e.getRawStatusCode());
-            log.error("Response body: {}", e.getResponseBodyAsString());
-            throw new ExternalApiCallException();
-
-        }catch (Exception e){
-            log.error("e.getMessage() = {}",e.getMessage());
-        }
-        return null;
     }
 
 }
