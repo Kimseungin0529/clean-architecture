@@ -11,7 +11,8 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class QAPair extends BaseEntity {
 
-    @Id @Column(name = "qapair_id")
+    @Id
+    @Column(name = "qapair_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -20,13 +21,13 @@ public class QAPair extends BaseEntity {
     private String answer;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "consultation_id")
-    private Consultation consultation;
+    @JoinColumn(name = "counsel_id")
+    private Counsel counsel;
 
     @Builder
-    public QAPair(String question, String answer, Consultation consultation) {
+    public QAPair(String question, String answer, Counsel counsel) {
         this.question = question;
         this.answer = answer;
-        this.consultation = consultation;
+        this.counsel = counsel;
     }
 }

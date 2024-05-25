@@ -6,15 +6,17 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Entity @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Consultation extends BaseEntity {
+public class Counsel extends BaseEntity {
 
     @Id
+    @Column(name = "counsel_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
@@ -27,7 +29,7 @@ public class Consultation extends BaseEntity {
     private List<QAPair> qaPairs = new ArrayList<>();
 
     @Builder
-    public Consultation(Long feelingState) {
+    public Counsel(Long feelingState) {
         this.feelingState = feelingState;
     }
 }

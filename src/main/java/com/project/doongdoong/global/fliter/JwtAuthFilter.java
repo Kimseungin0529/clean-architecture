@@ -34,7 +34,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
         try{
-            boolean isAllowed = Arrays.stream(ALLOW_REQUEST).anyMatch(uri -> request.getRequestURI().contains(uri));
+            boolean isAllowed = Arrays.stream(ALLOW_REQUEST).anyMatch(uri -> request.getRequestURI().equals(uri));
+            log.info("isAllowed = {}", isAllowed);
             if(!isAllowed){
                 String requestURI = request.getRequestURI();
                 // request Header에서 AccessToken을 가져온다.
@@ -50,6 +51,8 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
                 log.info("토큰 검증 성공");
+            }else{
+                log.info("허용한 uri");
             }
             filterChain.doFilter(request,response);
 
