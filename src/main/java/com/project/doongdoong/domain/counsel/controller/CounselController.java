@@ -1,15 +1,15 @@
-package com.project.doongdoong.domain.consultation.controller;
+package com.project.doongdoong.domain.counsel.controller;
 
-import com.project.doongdoong.domain.consultation.service.CounselService;
+import com.project.doongdoong.domain.counsel.service.CounselService;
 import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
-import lombok.Getter;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.util.UriComponentsBuilder;
+
+import java.net.URI;
 
 @RestController
 @RequestMapping("/api/v1/counsel")
@@ -20,18 +20,25 @@ public class CounselController {
 
     /**
      * 1. 상담 생성
-     * 2. 상담 단일 조회
-     * 3. 상담 페이징 조회
+     * 2. 상담하기
+     * 3. 상담 단일 조회
+     * 4. 상담 페이징 조회
      */
 
     @PostMapping
-    public ApiResponse<?> createCounsel(@CurrentUser String socialId){
-        counselService.createCounsel();
+    public ApiResponse<?> createCounsel(@CurrentUser String socialId, @RequestParam(name = "score", required = false) Double score,
+                                        HttpServletResponse response){
+
+        URI location = UriComponentsBuilder.fromPath("/api/counsel/{id}")
+                .buildAndExpand(counselService.createCounsel(socialId, score))
+                .toUri();
+
+        response.setHeader("Location", location.toString());
 
         return ApiResponse.of(HttpStatus.CREATED, null, null);
     }
 
-    @GetMapping("/{id}")
+    @PostMapping("/{id}")
     public ApiResponse<?> consult(@CurrentUser String socialId){
         counselService.consult();
 
@@ -45,7 +52,7 @@ public class CounselController {
         return null;
     }
 
-    @GetMapping("/{id}")
+    @GetMapping
     public ApiResponse<?> findConusels(@CurrentUser String socialId){
         counselService.findConusels();
 

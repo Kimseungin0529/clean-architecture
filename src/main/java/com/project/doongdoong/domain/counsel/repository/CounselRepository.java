@@ -1,8 +1,8 @@
-package com.project.doongdoong.domain.consultation.repository;
+package com.project.doongdoong.domain.counsel.repository;
 
 
-import com.project.doongdoong.domain.consultation.model.Counsel;
-import com.project.doongdoong.domain.consultation.repository.querydsl.CounselCustumRepository;
+import com.project.doongdoong.domain.counsel.model.Counsel;
+import com.project.doongdoong.domain.counsel.repository.querydsl.CounselCustumRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

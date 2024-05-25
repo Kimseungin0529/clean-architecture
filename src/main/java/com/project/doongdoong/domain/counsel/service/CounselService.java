@@ -1,8 +1,8 @@
-package com.project.doongdoong.domain.consultation.service;
+package com.project.doongdoong.domain.counsel.service;
 
 
 public interface CounselService {
-    public void createCounsel();
+    public Long createCounsel(String socialId, Double score);
 
     public void consult();
 

@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.consultation.model;
+package com.project.doongdoong.domain.counsel.model;
 
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;

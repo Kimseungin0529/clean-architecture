@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.consultation.model;
+package com.project.doongdoong.domain.counsel.model;
 
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.checkerframework.checker.units.qual.C;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,16 +19,16 @@ public class Counsel extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Long feelingState;
+    private Double feelingState;
 
     /**
      * 주고 받는 텍스트 값이 필요하다.
      */
-    @OneToMany(mappedBy = "consultation", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "counsel", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<QAPair> qaPairs = new ArrayList<>();
 
     @Builder
-    public Counsel(Long feelingState) {
+    public Counsel(Double feelingState) {
         this.feelingState = feelingState;
     }
 }

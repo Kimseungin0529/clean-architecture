@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.consultation.repository.querydsl;
+package com.project.doongdoong.domain.counsel.repository.querydsl;
 
 
 import com.querydsl.jpa.impl.JPAQueryFactory;

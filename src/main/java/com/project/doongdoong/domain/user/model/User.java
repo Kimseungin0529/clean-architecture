@@ -10,6 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity @Getter
+@Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
 public class User extends BaseEntity {
