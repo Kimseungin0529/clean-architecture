@@ -21,14 +21,19 @@ public class Counsel extends BaseEntity {
 
     private Double feelingState;
 
+    private String question;
+
+    private String answer;
+
+    @Enumerated(value = EnumType.STRING)
+    private CounselType counselType;
     /**
      * 주고 받는 텍스트 값이 필요하다.
      */
-    @OneToMany(mappedBy = "counsel", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<QAPair> qaPairs = new ArrayList<>();
 
     @Builder
-    public Counsel(Double feelingState) {
+    public Counsel(Double feelingState, CounselType counselType) {
         this.feelingState = feelingState;
+        this.counselType = counselType;
     }
 }
