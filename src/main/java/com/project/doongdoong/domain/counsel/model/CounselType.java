@@ -1,5 +1,8 @@
 package com.project.doongdoong.domain.counsel.model;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.project.doongdoong.domain.counsel.exception.CounselTypeInvalidException;
+import com.project.doongdoong.global.exception.CustomException;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -14,5 +17,15 @@ public enum CounselType {
     ETC("기타");
 
     private final String cotent;
+
+    @JsonCreator
+    public static CounselType from(String value) {
+        for (CounselType type : CounselType.values()) {
+            if (type.name().equals(value)) {
+                return type;
+            }
+        }
+        throw new CounselTypeInvalidException(value);
+    }
 
 }

@@ -2,6 +2,7 @@ package com.project.doongdoong.domain.counsel.service;
 
 import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.model.Counsel;
+import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialType;
