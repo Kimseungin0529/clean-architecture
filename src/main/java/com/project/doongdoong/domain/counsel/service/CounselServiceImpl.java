@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.counsel.service;
 
+import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
@@ -20,10 +21,11 @@ public class CounselServiceImpl implements CounselService {
 
 
     @Override
-    public Long createCounsel(String uniqueValue, Double score) {
+    public Long createCounsel(String uniqueValue, CounselCreateRequest request) {
 
         Counsel counsel = Counsel.builder()
-                .feelingState(score)
+                .feellingState(request.getFeellingScore())
+                .counselType(request.getCounselType())
                 .build();
 
         Counsel createdCounsel = consultationRepository.save(counsel);

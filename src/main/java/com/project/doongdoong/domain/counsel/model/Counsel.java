@@ -19,7 +19,7 @@ public class Counsel extends BaseEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    private Double feelingState;
+    private Double feellingState;
 
     private String question;
 
@@ -32,8 +32,8 @@ public class Counsel extends BaseEntity {
      */
 
     @Builder
-    public Counsel(Double feelingState, CounselType counselType) {
-        this.feelingState = feelingState;
+    public Counsel(Double feellingState, CounselType counselType) {
+        this.feellingState = feellingState;
         this.counselType = counselType;
     }
 }

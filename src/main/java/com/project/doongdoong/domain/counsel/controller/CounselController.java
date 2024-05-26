@@ -1,9 +1,11 @@
 package com.project.doongdoong.domain.counsel.controller;
 
+import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.service.CounselService;
 import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -26,11 +28,11 @@ public class CounselController {
      */
 
     @PostMapping
-    public ApiResponse<?> createCounsel(@CurrentUser String socialId, @RequestParam(name = "score", required = false) Double score,
+    public ApiResponse<?> createCounsel(@CurrentUser String socialId, @Valid @RequestBody CounselCreateRequest request,
                                         HttpServletResponse response){
 
         URI location = UriComponentsBuilder.fromPath("/api/counsel/{id}")
-                .buildAndExpand(counselService.createCounsel(socialId, score))
+                .buildAndExpand(counselService.createCounsel(socialId, request))
                 .toUri();
 
         response.setHeader("Location", location.toString());
