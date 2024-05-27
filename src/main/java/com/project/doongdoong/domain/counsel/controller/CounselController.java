@@ -6,7 +6,6 @@ import com.project.doongdoong.domain.counsel.service.CounselService;
 import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -22,32 +21,25 @@ public class CounselController {
     private final CounselService counselService;
 
     /**
-     * 1. 상담 생성
-     * 2. 상담하기
+     * 2. 상담하기(생성)
      * 3. 상담 단일 조회
      * 4. 상담 페이징 조회
      */
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ApiResponse<?> createCounsel(@CurrentUser String socialId, @Valid @RequestBody CounselCreateRequest request,
-                                        HttpServletResponse response){
+    public ApiResponse<CounselResultResponse> consult(@CurrentUser String socialId
+                                        , @RequestBody CounselCreateRequest request, HttpServletResponse response){
+
+        CounselResultResponse result = counselService.consult(socialId, request);
 
         URI location = UriComponentsBuilder.fromPath("/api/counsel/{id}")
-                .buildAndExpand(counselService.createCounsel(socialId, request))
+                .buildAndExpand(result.getCounselId())
                 .toUri();
 
         response.setHeader("Location", location.toString());
 
-        return ApiResponse.of(HttpStatus.CREATED, null, null);
-    }
-
-    @PostMapping("/{id}")
-    public ApiResponse<CounselResultResponse> consult(@CurrentUser String socialId, @PathVariable("id") Long counselId
-    , @RequestHeader(name = "option") boolean option){
-
-
-        return ApiResponse.of(HttpStatus.OK, null, counselService.consult(socialId, counselId, option));
+        return ApiResponse.of(HttpStatus.OK, null, result);
     }
 
     @GetMapping("/{id}")

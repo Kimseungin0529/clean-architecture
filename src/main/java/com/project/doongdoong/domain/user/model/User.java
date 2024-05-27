@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.user.model;
 
 import com.project.doongdoong.domain.analysis.model.Analysis;
+import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -12,7 +13,6 @@ import java.util.List;
 @Entity @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor
 public class User extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,6 +33,9 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Analysis> analysisList = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Counsel> CounselList = new ArrayList<>();
 
     // 권한 추가
 

@@ -6,6 +6,7 @@ import com.amazonaws.services.s3.model.AmazonS3Exception;
 import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.project.doongdoong.domain.analysis.dto.response.FellingStateCreateResponse;
+import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.global.exception.ErrorType;
 import com.project.doongdoong.global.exception.servererror.ExternalApiCallException;
@@ -29,6 +30,7 @@ import reactor.core.scheduler.Schedulers;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.HashMap;
 import java.util.List;
 
 @Component @Slf4j
@@ -85,4 +87,8 @@ public class WebClientUtil
 
     }
 
+    public String callConsult(HashMap<String, String> parameters) {
+
+        return null;
+    }
 }

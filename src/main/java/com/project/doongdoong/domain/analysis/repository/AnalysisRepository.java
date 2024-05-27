@@ -19,6 +19,7 @@ import java.util.Optional;
 public interface AnalysisRepository extends JpaRepository<Analysis, Long>, AnalysisRepositoryCustom {
 
 
+    Optional<Analysis> findByUserAndId(User user, Long analysisId);
     Page<Analysis> findAllByUserOrderByCreatedTime(User user, Pageable pageable);
 
     // 현재 시간 기준으로 일주일 치 분석값 하루 기준으로 그룹핑해서 가져오기

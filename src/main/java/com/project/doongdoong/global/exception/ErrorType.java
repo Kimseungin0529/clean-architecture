@@ -42,8 +42,8 @@ public interface ErrorType {
     enum Forbidden implements ErrorType {
         FORBIDDEN_DEFAULT(3000),
         TOKEN_INFO_FORBIDDEN(3001),
-        ACCESS_DENIED(3100)
-        ;
+        ACCESS_DENIED(3100),
+        ANALYSIS_ACCESS_DENIED(3102);
 
         private final int errorCode;
 
@@ -67,9 +67,7 @@ public interface ErrorType {
         USER_NOT_FOUND(4006),
         QUESTION_NOT_FOUND(4007),
         ANSWER_NOT_FOUND(4008),
-        ALL_ANSWER_NOT_FOUND(4009)
-        ;
-
+        ALL_ANSWER_NOT_FOUND(4009);
         private final int errorCode;
 
         NotFound(int errorCode) {
