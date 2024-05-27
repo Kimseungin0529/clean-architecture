@@ -3,8 +3,11 @@ package com.project.doongdoong.domain.counsel.model;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.project.doongdoong.domain.counsel.exception.CounselTypeInvalidException;
 import com.project.doongdoong.global.exception.CustomException;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+
+import java.util.Arrays;
 
 @Getter
 @RequiredArgsConstructor
@@ -20,12 +23,12 @@ public enum CounselType {
 
     @JsonCreator
     public static CounselType from(String value) {
-        for (CounselType type : CounselType.values()) {
-            if (type.name().equals(value)) {
-                return type;
-            }
-        }
-        throw new CounselTypeInvalidException(value);
+        System.out.println(FAMILY.name());
+
+        return Arrays.stream(CounselType.values())
+                .filter(i -> i.name().equals(value))
+                .findAny()
+                .orElseThrow(() -> new CounselTypeInvalidException(value));
     }
 
 }

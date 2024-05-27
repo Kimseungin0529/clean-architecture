@@ -25,7 +25,7 @@ import java.util.Arrays;
 import static com.project.doongdoong.global.config.SecurityConfig.ALLOW_REQUEST;
 
 @RequiredArgsConstructor
-@Slf4j @Component
+@Slf4j  //@Component
 public class JwtAuthFilter extends OncePerRequestFilter {
 
     private final JwtProvider jwtProvider;
@@ -46,7 +46,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
 
                 //토큰이 존재하면서 유효하다면 Authentication 객체 생성
                 //시큐리티 컨텍스트 홀더에 Authentication 저장
-                if(validateToken(token) && !jwtProvider.checkLogoutToken(token)) {
+                if(jwtProvider.validateToken(token) && !jwtProvider.checkLogoutToken(token)) {
                     Authentication authentication = jwtProvider.getAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }
@@ -100,18 +100,6 @@ public class JwtAuthFilter extends OncePerRequestFilter {
             return bearerToken.substring(7);
         }
         return null;
-    }
-    public boolean validateToken(String token) {  // 토큰의 유효성 검증을 수행
-        if (token == null) {
-            log.info("인가가 필요없는 API 호출에서는 토큰 필요 X, 따라서 토큰이 null인 경우는 그렇게 판단하고 제외");
-            return false;
-        }
-        Jwts.parserBuilder()
-                .setSigningKey(jwtProvider.getKey())
-                .build()
-                .parseClaimsJws(token);
-        // Jwts.parserBuilder().setSigningKey(jwtProvider.getKey()).build().parseClaimsJws(token)
-        return true;
     }
 
 }

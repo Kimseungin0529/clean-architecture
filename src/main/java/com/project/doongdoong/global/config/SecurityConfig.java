@@ -1,30 +1,23 @@
     package com.project.doongdoong.global.config;
 
     import com.project.doongdoong.global.fliter.JwtAuthFilter;
+    import com.project.doongdoong.global.util.JwtProvider;
     import lombok.RequiredArgsConstructor;
     import lombok.extern.slf4j.Slf4j;
     import org.springframework.context.annotation.Bean;
     import org.springframework.context.annotation.Configuration;
-    import org.springframework.http.MediaType;
-    import org.springframework.security.config.annotation.web.OAuth2ClientDsl;
     import org.springframework.security.config.annotation.web.builders.HttpSecurity;
     import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
     import org.springframework.security.config.http.SessionCreationPolicy;
-    import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
     import org.springframework.security.web.SecurityFilterChain;
-    import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
     import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
-
-    import java.io.PrintWriter;
-    import java.nio.charset.StandardCharsets;
 
     @Configuration @Slf4j
     @EnableWebSecurity
     @RequiredArgsConstructor
     public class SecurityConfig {
 
-        private final JwtAuthFilter jwtAuthFilter;
-        //private final OAuth2UserService oAuth2UserService;
+        private final JwtProvider jwtProvider;
         public final static String[] ALLOW_REQUEST = {
                 "/", "/api/v1/user/ping", "/api/v1/user/login-oauth", "/api/v1/user/reissue",
                 "/api-docs/**", "/swagger-ui/**", "/swagger-ui.html"
@@ -49,7 +42,7 @@
                                     .userService(oAuth2UserService))
 
                     )*/ // native app 형식이라 프론트(ios)에서 sdk로 모든 소셜 과정 처리 -> oauth2 clinet 대신 security가 제공하는 기본 값 사용하자
-                    .addFilterBefore(jwtAuthFilter, UsernamePasswordAuthenticationFilter.class)
+                    .addFilterBefore(new JwtAuthFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
                     .build();
                      // 추후 웹 사용으로 인해 위 설정이 필요하다면 블로그 링크를 통해 다시 구현
                     //웹과 다르게 앱에서는 카카오 SDK와 같이 클라이언트 측에서 직접 OAuth 검증을 하므로 필요가 없음.

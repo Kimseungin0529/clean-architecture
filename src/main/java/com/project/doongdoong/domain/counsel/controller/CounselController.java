@@ -27,6 +27,7 @@ public class CounselController {
      * 4. 상담 페이징 조회
      */
 
+    @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ApiResponse<?> createCounsel(@CurrentUser String socialId, @Valid @RequestBody CounselCreateRequest request,
                                         HttpServletResponse response){

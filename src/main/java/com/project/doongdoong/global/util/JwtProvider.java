@@ -48,6 +48,17 @@ public class JwtProvider {
     }
 
 
+    public boolean validateToken(String token) {  // 토큰의 유효성 검증을 수행
+        if (token == null) {
+            log.info("인가가 필요없는 API 호출에서는 토큰 필요 X, 따라서 토큰이 null인 경우는 그렇게 판단하고 제외");
+            return false;
+        }
+        Jwts.parserBuilder()
+                .setSigningKey(key)
+                .build()
+                .parseClaimsJws(token);
+        return true;
+    }
 
     public TokenDto generateToken(String socialId, String socialType, List<String> roles) {
         List<SimpleGrantedAuthority> authorities = roles.stream()

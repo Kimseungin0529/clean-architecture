@@ -1,5 +1,7 @@
 package com.project.doongdoong.domain.counsel.service;
 
+import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
+import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
@@ -32,8 +34,10 @@ class CounselServiceImplTest {
                 .socialId("1")
                 .build();
 
+        CounselCreateRequest request = new CounselCreateRequest(100.0, CounselType.ETC);
+
         //when
-        Long createdValue = counselService.createCounsel("1", null);
+        Long createdValue = counselService.createCounsel(user.getSocialId(), request);
         //then
         assertThat(createdValue).isNotNull();
 
