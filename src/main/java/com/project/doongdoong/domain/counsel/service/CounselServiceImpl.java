@@ -1,12 +1,9 @@
 package com.project.doongdoong.domain.counsel.service;
 
 import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
+import com.project.doongdoong.domain.counsel.dto.CounselResultResponse;
 import com.project.doongdoong.domain.counsel.model.Counsel;
-import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
-import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
-import com.project.doongdoong.domain.user.model.SocialType;
-import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -35,8 +32,9 @@ public class CounselServiceImpl implements CounselService {
     }
 
     @Override
-    public void consult() {
+    public CounselResultResponse consult(String socialId, Long counselId, boolean option) {
 
+        return null;
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.counsel.controller;
 
 import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
+import com.project.doongdoong.domain.counsel.dto.CounselResultResponse;
 import com.project.doongdoong.domain.counsel.service.CounselService;
 import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
@@ -42,10 +43,11 @@ public class CounselController {
     }
 
     @PostMapping("/{id}")
-    public ApiResponse<?> consult(@CurrentUser String socialId){
-        counselService.consult();
+    public ApiResponse<CounselResultResponse> consult(@CurrentUser String socialId, @PathVariable("id") Long counselId
+    , @RequestHeader(name = "option") boolean option){
 
-        return null;
+
+        return ApiResponse.of(HttpStatus.OK, null, counselService.consult(socialId, counselId, option));
     }
 
     @GetMapping("/{id}")
