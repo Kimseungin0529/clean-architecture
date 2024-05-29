@@ -39,7 +39,7 @@ public class CounselController {
 
         response.setHeader("Location", location.toString());
 
-        return ApiResponse.of(HttpStatus.OK, null, result);
+        return ApiResponse.of(HttpStatus.CREATED, null, result);
     }
 
     @GetMapping("/{id}")

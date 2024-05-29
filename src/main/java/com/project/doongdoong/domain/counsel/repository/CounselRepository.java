@@ -12,5 +12,4 @@ import java.util.Optional;
 @Repository
 public interface CounselRepository extends JpaRepository<Counsel, Long>, CounselCustumRepository {
 
-    Optional<Counsel> findByUserAndId(User user, Long counselId);
 }

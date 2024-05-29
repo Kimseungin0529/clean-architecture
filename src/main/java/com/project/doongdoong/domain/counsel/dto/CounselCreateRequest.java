@@ -16,7 +16,6 @@ public class CounselCreateRequest {
     @NotNull(message = "상담 카테코리는 필수입니다.")
     private CounselType counselType;
 
-    @NotBlank(message = "상담 내용이 존재하지 않습니다.")
     private String question;
 
 

@@ -11,7 +11,6 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity @Getter
-@Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class User extends BaseEntity {
     @Id
@@ -33,9 +32,6 @@ public class User extends BaseEntity {
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Analysis> analysisList = new ArrayList<>();
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Counsel> CounselList = new ArrayList<>();
 
     // 권한 추가
 

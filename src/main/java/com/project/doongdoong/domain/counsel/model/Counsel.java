@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.counsel.model;
 
 import com.project.doongdoong.domain.analysis.model.Analysis;
+import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -30,14 +31,19 @@ public class Counsel extends BaseEntity {
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "analysis_id", unique = true, updatable = false)
     private Analysis analysis;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", updatable = false)
+    private User user;
     /**
      * 주고 받는 텍스트 값이 필요하다.
      */
 
     @Builder
-    public Counsel(String question, CounselType counselType) {
+    public Counsel(String question, CounselType counselType, User user) {
         this.question = question;
         this.counselType = counselType;
+        this.user = user;
 
     }
 

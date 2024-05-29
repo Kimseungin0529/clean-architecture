@@ -1,10 +1,12 @@
 package com.project.doongdoong.domain.counsel.service;
 
+import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
 import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.CounselResultResponse;
+import com.project.doongdoong.domain.counsel.exception.CounselConflictException;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
@@ -40,18 +42,24 @@ public class CounselServiceImpl implements CounselService {
         Counsel counsel = Counsel.builder() // 상담 객체 생성
                 .question(request.getQuestion())
                 .counselType(request.getCounselType())
+                .user(user)
                 .build();
-
         if(request.getAnalysisId() != null){ // 기존 분석 결과 반영하기
-            Analysis findAnalysis = analysisRepository.findByUserAndId
-                    (user, request.getAnalysisId()).orElseThrow(() -> new AnalysisAccessDeny());
+            Analysis findAnalysis = analysisRepository.findByUserAndId(user, request.getAnalysisId()).orElseThrow(() -> new AnalysisAccessDeny());
+            checkCounselAlreadyProcessed(findAnalysis); // 해당 분석의 정보로 상담한 경우 예외
             counsel.addAnalysis(findAnalysis); // 연관관계 매핑
         }
 
-        HashMap<String, String> parameters = new HashMap<String, String>( ); // 외부 API request 설정
-        parameters.put("question", counsel.getQuestion());
-        Optional.ofNullable(counsel.getAnalysis())
+        HashMap<String, Object> parameters = new HashMap<String, Object>( ); // 외부 API request 설정
+        if(Optional.ofNullable(counsel.getQuestion()).isPresent()){ // question 있다면 추가
+            parameters.put("question", counsel.getQuestion());
+            parameters.put("isNotAnalyis", true);
+        }
+
+        Optional.ofNullable(counsel.getAnalysis()) // 분석 -> 상담 으로 연결되는 경우, 분석에 대한 답변 항목 추가
                 .ifPresent(analysis -> {
+                    if(analysis.getAnswers().size() != 4)
+                        throw new AllAnswersNotFoundException();
                     for(int i=0; i<analysis.getAnswers().size(); i++){
                         parameters.put("analysisQuestion" + i, analysis.getAnswers().get(i).getContent());
                     }
@@ -67,6 +75,12 @@ public class CounselServiceImpl implements CounselService {
                 .counselResult(consultResult)
                 .build();
 
+    }
+
+    private static void checkCounselAlreadyProcessed(Analysis findAnalysis) {
+        if(findAnalysis.getCounsel() != null){
+            throw new CounselConflictException();
+        }
     }
 
     @Override

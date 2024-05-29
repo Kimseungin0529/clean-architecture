@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.analysis.model;
 
 import com.project.doongdoong.domain.answer.model.Answer;
+import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.global.common.BaseEntity;
@@ -37,6 +38,9 @@ public class Analysis extends BaseEntity {
 
     @OneToMany(cascade = ALL ,orphanRemoval = true, mappedBy = "analysis")
     private List<Answer> answers = new ArrayList<>();
+
+    @OneToOne(fetch = LAZY, mappedBy = "analysis")
+    private Counsel counsel;
 
     @Builder
     public Analysis(User user, List<Question> questions){

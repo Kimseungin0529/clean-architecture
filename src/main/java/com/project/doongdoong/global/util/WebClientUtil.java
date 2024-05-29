@@ -32,6 +32,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 
 @Component @Slf4j
 @RequiredArgsConstructor
@@ -87,8 +88,9 @@ public class WebClientUtil
 
     }
 
-    public String callConsult(HashMap<String, String> parameters) {
+    public String callConsult(HashMap<String, Object> parameters) {
 
-        return null;
+
+        return "안녕하세요. 메롱메롱!";
     }
 }
