@@ -9,14 +9,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Getter
-@NoArgsConstructor
 public class CounselCreateRequest {
     private Long analysisId;
 
-    @NotNull(message = "상담 카테코리는 필수입니다.")
     private CounselType counselType;
 
     private String question;
 
-
+    public CounselCreateRequest() { // 기본 설정
+        this.counselType = CounselType.ETC;
+    }
 }

@@ -24,8 +24,8 @@ public interface ErrorType {
 
     enum Unauthorized implements ErrorType {
         UNAUTHORIZED_DEFAULT(1000),
-        LOGIN_FAILED(1001)
-        ;
+        LOGIN_FAILED(1001),
+        UNAUTHORIZED_COUNSEL(1002);
 
         private final int errorCode;
 
@@ -67,7 +67,8 @@ public interface ErrorType {
         USER_NOT_FOUND(4006),
         QUESTION_NOT_FOUND(4007),
         ANSWER_NOT_FOUND(4008),
-        ALL_ANSWER_NOT_FOUND(4009);
+        ALL_ANSWER_NOT_FOUND(4009),
+        COUNSEL_NOT_FOUND(4010);
         private final int errorCode;
 
         NotFound(int errorCode) {

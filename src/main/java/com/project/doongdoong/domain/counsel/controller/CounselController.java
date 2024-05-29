@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.counsel.controller;
 
+import com.google.protobuf.Api;
 import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.CounselResultResponse;
 import com.project.doongdoong.domain.counsel.service.CounselService;
@@ -43,10 +44,9 @@ public class CounselController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<?> findCouselContent(@CurrentUser String socialId){
-        counselService.findCouselContent();
+    public ApiResponse<?> findCouselContent(@CurrentUser String socialId, @PathVariable("id") Long counselId){
 
-        return null;
+        return ApiResponse.of(HttpStatus.OK, null, counselService.findCouselContent(socialId, counselId));
     }
 
     @GetMapping
