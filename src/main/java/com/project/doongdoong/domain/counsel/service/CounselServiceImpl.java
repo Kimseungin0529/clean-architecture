@@ -8,6 +8,7 @@ import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.counsel.dto.*;
 import com.project.doongdoong.domain.counsel.exception.CounselAlreadyProcessedException;
 import com.project.doongdoong.domain.counsel.exception.CounselNotFoundException;
+import com.project.doongdoong.domain.counsel.exception.NOT_EXIST_PAGE_NUMBER;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
@@ -24,6 +25,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -110,9 +112,11 @@ public class CounselServiceImpl implements CounselService {
         }
 
         CounselDetailResponse response = CounselDetailResponse.builder()
+                .data(findCounsel.getCreatedTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                 .counselId(findCounsel.getId())
+                .question(findCounsel.getQuestion())
                 .answer(findCounsel.getAnswer())
-                .counselType(findCounsel.getCounselType().name())
+                .counselType(findCounsel.getCounselType().getCotent())
                 .build();
 
         if (Optional.ofNullable(findCounsel.getAnalysis()).isPresent()){ // 분석 O
@@ -126,10 +130,9 @@ public class CounselServiceImpl implements CounselService {
 
             response.setAnalysisQuestions(questions);
             response.setAnalysisAnswers(answers);
-        }else{ // 분석 X
-            String question = findCounsel.getQuestion();
-            response.setQuestion(question);
         }
+        String question = findCounsel.getQuestion();
+        response.setQuestion(question);
 
         return response;
     }
@@ -140,8 +143,13 @@ public class CounselServiceImpl implements CounselService {
         User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(value[1]), value[0])
                 .orElseThrow(() -> new UserNotFoundException());
 
+        pageNumber -= 1;
         PageRequest pageRequest = PageRequest.of(pageNumber, COUNSEL_PAGE_SIZE);
         Page<Counsel> counselsPage = counselRepository.searchPageCounselList(findUser, pageRequest);
+
+        if(pageNumber + 1 > counselsPage.getTotalPages()){ // 존재하지 않는 페이지에 접근하는 경우
+            throw new NOT_EXIST_PAGE_NUMBER();
+        }
 
         CounselListResponse response = CounselListResponse.builder()
                 .currentPage(counselsPage.getNumber() + 1)
@@ -151,9 +159,10 @@ public class CounselServiceImpl implements CounselService {
                 .counselContent(counselsPage.getContent().stream()
                         .map(counsel ->
                                 CounselResponse.builder()
+                                        .date(counsel.getCreatedTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
                                         .counselId(counsel.getId())
                                         .isAnalysisUsed(counsel.hasAnaylsis())
-                                        .counselType(counsel.getCounselType().name())
+                                        .counselType(counsel.getCounselType().getCotent())
                                         .build()
                         )
                         .collect(Collectors.toList())

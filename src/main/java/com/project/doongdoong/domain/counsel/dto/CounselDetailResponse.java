@@ -4,12 +4,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Getter
 @NoArgsConstructor
 public class CounselDetailResponse {
 
+    private String date;
     private Long counselId;
     private String question;
     private String answer;
@@ -18,8 +21,10 @@ public class CounselDetailResponse {
     private List<String> analysisAnswers;
 
     @Builder
-    public CounselDetailResponse(Long counselId, String answer, String counselType) {
+    public CounselDetailResponse(String data, Long counselId, String question, String answer, String counselType) {
+        this.date = data;
         this.counselId = counselId;
+        this.question = question;
         this.answer = answer;
         this.counselType = counselType;
     }

@@ -8,12 +8,14 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class CounselResponse {
 
+    private String date;
     private Long counselId;
     private boolean isAnalysisUsed;
     private String counselType;
 
     @Builder
-    public CounselResponse(Long counselId, boolean isAnalysisUsed, String counselType) {
+    public CounselResponse(String date, Long counselId, boolean isAnalysisUsed, String counselType) {
+        this.date = date;
         this.counselId = counselId;
         this.isAnalysisUsed = isAnalysisUsed;
         this.counselType = counselType;

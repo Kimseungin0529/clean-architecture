@@ -55,8 +55,6 @@ public class CounselController {
     public ApiResponse<?> findConusels(@CurrentUser String uniqueValue,
                                        @RequestParam(name = "pageNumber",required = false, defaultValue = "1")
                                        @Valid @Min(value = 1, message = "페이지 시작은 최소 1입니다.") int pageNumber){
-        // 페이지 음수에 대한 예외처리 하기
-        pageNumber -= 1;
 
         return ApiResponse.of(HttpStatus.OK, null, counselService.findConusels(uniqueValue, pageNumber));
     }
