@@ -10,15 +10,17 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public enum QuestionContent {
 
-    FIXED_QUESTION1("오늘 느낀 감정에 대해 말해줘.", 1, true),
-    FIXED_QUESTION2("행복한 사람인 거 같아? 이유도 함께 말해줘.",2, true),
-    FIXED_QUESTION3("너는 어떤 일을 하고 싶어? 인생의 최종 목표가 뭐야?", 3, true),
-    FIXED_QUESTION4("인생에서 제일 필요한 건 뭐라고 생각해?", 4, true),
-
-    UNFIXED_QUESTION1("유연한 질문1", 5, false),
-    UNFIXED_QUESTION2("유연한 질문2", 6, false),
-    UNFIXED_QUESTION3("유연한 질문3", 7, false),
-    UNFIXED_QUESTION4("유연한 질문4", 7, false);
+    FIXED_QUESTION1("어떤 이유로 상담이 필요하신가요?", 1, true),
+    FIXED_QUESTION2("당신의 감정에 무엇이 가장 큰 영향을 주었나요?",2, true),
+    FIXED_QUESTION3("과거나 현재 어렵거나 힘들게 했던 문제가 있었다면 그 문제로 인해, 당신은 지금까지 어땠나요? 무엇을 느끼고 어떤 감정을 느꼈어요?", 3, true),
+    FIXED_QUESTION4("더 만족스럽고 행복한 삶을 위해, 당신은 무엇을 바꿔보고 싶나요?", 4, true),
+    FIXED_QUESTION5("문제를 해결하기 위해 이전에 시도해 본 것들이 있나요? " +
+            "있다면 그중 가장 효과 있던 방법은 무엇기고 당신만의 방법으로 시도해본 것이 있나요?", 5, true),
+    FIXED_QUESTION6("문제를 더 나아지게 만들 수 있게 당신이 지금 해볼 수 있는 것은 무엇인가요?", 6, true),
+    UNFIXED_QUESTION1("울적/우울하다고 느낄때는 언제인가요?", 7, false),
+    UNFIXED_QUESTION2("어떤 것을 하면 기분이 좋아지나요?", 8, false),
+    UNFIXED_QUESTION3("당신만의 기분전환 방법이 있나요?", 9, false),
+    UNFIXED_QUESTION4("기분이 처지고 힘들 때는 어떻게 벗어나곤 하나요?", 10, false);
 
     private final String text;
     private final int number;
