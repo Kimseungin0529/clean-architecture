@@ -90,6 +90,8 @@ public class WebClientUtil
 
     public String callConsult(HashMap<String, Object> parameters) {
 
+        parameters.values().stream()
+                .forEach(value -> log.info("value = {}", value));
 
         return "안녕하세요. 메롱메롱!";
     }

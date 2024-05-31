@@ -3,6 +3,7 @@ package com.project.doongdoong.domain.counsel.service;
 
 import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.CounselDetailResponse;
+import com.project.doongdoong.domain.counsel.dto.CounselListResponse;
 import com.project.doongdoong.domain.counsel.dto.CounselResultResponse;
 
 public interface CounselService {
@@ -10,5 +11,5 @@ public interface CounselService {
 
     public CounselDetailResponse findCouselContent(String socialId, Long counselId);
 
-    public void findConusels();
+    public CounselListResponse findConusels(String uniqueValue, int pageNumber);
 }

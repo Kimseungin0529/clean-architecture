@@ -4,16 +4,12 @@ import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundExcept
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
-import com.project.doongdoong.domain.answer.model.Answer;
-import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
-import com.project.doongdoong.domain.counsel.dto.CounselDetailResponse;
-import com.project.doongdoong.domain.counsel.dto.CounselResultResponse;
+import com.project.doongdoong.domain.counsel.dto.*;
 import com.project.doongdoong.domain.counsel.exception.CounselAlreadyProcessedException;
 import com.project.doongdoong.domain.counsel.exception.CounselNotFoundException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
-import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
@@ -21,6 +17,8 @@ import com.project.doongdoong.domain.user.repository.UserRepository;
 import com.project.doongdoong.global.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -38,6 +36,7 @@ public class CounselServiceImpl implements CounselService {
     private final CounselRepository counselRepository;
     private final UserRepository userRepository;
     private final WebClientUtil webClientUtil;
+    private final static int COUNSEL_PAGE_SIZE = 10;
 
 
     @Transactional
@@ -131,8 +130,32 @@ public class CounselServiceImpl implements CounselService {
     }
 
     @Override
-    public void findConusels() {
+    public CounselListResponse findConusels(String uniqueValue, int pageNumber) {
+        String[] value = parseUniqueValue(uniqueValue);
+        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(value[1]), value[0])
+                .orElseThrow(() -> new UserNotFoundException());
 
+        PageRequest pageRequest = PageRequest.of(pageNumber, COUNSEL_PAGE_SIZE);
+        Page<Counsel> counselsPage = counselRepository.searchPageCounselList(findUser, pageRequest);
+
+        CounselListResponse response = CounselListResponse.builder()
+                .currentPage(counselsPage.getNumber() + 1)
+                .numberPerPage(counselsPage.getSize())
+                .totalPage(counselsPage.getTotalPages())
+                .totalElements(counselsPage.getTotalElements())
+                .counselContent(counselsPage.getContent().stream()
+                        .map(counsel ->
+                                CounselResponse.builder()
+                                        .counselId(counsel.getId())
+                                        .isAnalysisUsed(counsel.hasAnaylsis())
+                                        .counselType(counsel.getCounselType().name())
+                                        .build()
+                        )
+                        .collect(Collectors.toList())
+                )
+                .build();
+
+        return response;
     }
 
     private static String[] parseUniqueValue(String uniqueValue) {

@@ -7,6 +7,8 @@ import com.project.doongdoong.domain.counsel.service.CounselService;
 import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -29,10 +31,10 @@ public class CounselController {
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
-    public ApiResponse<CounselResultResponse> consult(@CurrentUser String socialId
+    public ApiResponse<CounselResultResponse> consult(@CurrentUser String uniqueValue
                                         , @RequestBody CounselCreateRequest request, HttpServletResponse response){
 
-        CounselResultResponse result = counselService.consult(socialId, request);
+        CounselResultResponse result = counselService.consult(uniqueValue, request);
 
         URI location = UriComponentsBuilder.fromPath("/api/counsel/{id}")
                 .buildAndExpand(result.getCounselId())
@@ -44,16 +46,19 @@ public class CounselController {
     }
 
     @GetMapping("/{id}")
-    public ApiResponse<?> findCouselContent(@CurrentUser String socialId, @PathVariable("id") Long counselId){
+    public ApiResponse<?> findCouselContent(@CurrentUser String uniqueValue, @PathVariable("id") Long counselId){
 
-        return ApiResponse.of(HttpStatus.OK, null, counselService.findCouselContent(socialId, counselId));
+        return ApiResponse.of(HttpStatus.OK, null, counselService.findCouselContent(uniqueValue, counselId));
     }
 
     @GetMapping
-    public ApiResponse<?> findConusels(@CurrentUser String socialId){
-        counselService.findConusels();
+    public ApiResponse<?> findConusels(@CurrentUser String uniqueValue,
+                                       @RequestParam(name = "pageNumber",required = false, defaultValue = "1")
+                                       @Valid @Min(value = 1, message = "페이지 시작은 최소 1입니다.") int pageNumber){
+        // 페이지 음수에 대한 예외처리 하기
+        pageNumber -= 1;
 
-        return null;
+        return ApiResponse.of(HttpStatus.OK, null, counselService.findConusels(uniqueValue, pageNumber));
     }
 
 

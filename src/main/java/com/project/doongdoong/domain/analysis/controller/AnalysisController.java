@@ -39,7 +39,6 @@ public class AnalysisController {
     @GetMapping
     public ApiResponse<AnaylsisListResponseDto> getAnalyses(@CurrentUser String uniqueValue
             , @RequestParam(name = "pageNumber", required = false, defaultValue = "1") int pageNumber){
-        System.out.println("시작");
         pageNumber -= 1; // 페이징은 0번부터이므로 1페이지로 표시
 
         return ApiResponse.of(HttpStatus.OK, null, analysisService.getAnalysisList(uniqueValue ,pageNumber));
