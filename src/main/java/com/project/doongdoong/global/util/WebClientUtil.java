@@ -90,8 +90,20 @@ public class WebClientUtil
 
     public String callConsult(HashMap<String, Object> parameters) {
 
-        parameters.values().stream()
-                .forEach(value -> log.info("value = {}", value));
+        log.info("analysisTotalContent = {}", parameters.get("analysisContent"));
+        log.info("question = {}", parameters.get("question"));
+
+        /*Mono<String> stringMono = webClient.mutate().build()
+                .post()
+                .uri(lambdaTextApiUrl)
+                .bodyValue(new Object())
+                .retrieve()
+                .bodyToMono(String.class)
+                .doOnError(e -> {
+                    log.info("error 발생 = {}", e.getMessage());
+                    throw new ExternalApiCallException();
+                });
+        log.info("stringMono.toString() = {}", stringMono.toString());*/
 
         return "안녕하세요. 메롱메롱!";
     }

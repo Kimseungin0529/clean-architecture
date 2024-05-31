@@ -13,20 +13,18 @@ import java.util.Arrays;
 @RequiredArgsConstructor
 public enum CounselType {
 
-    FAMILY("가족"),
-    LOVE("사랑"),
-    FRIEND("친구"),
-    JOB("직장"),
-    ETC("기타");
+    LOVE("연애"),
+    JOB("취업진로"),
+    MENTAL_HEALTH("정신건강"),
+    RELATIONSHIP("대인관계"),
+    FAMILY("가족");
 
     private final String cotent;
 
-    @JsonCreator
     public static CounselType from(String value) {
-        System.out.println(FAMILY.name());
 
         return Arrays.stream(CounselType.values())
-                .filter(i -> i.name().equals(value))
+                .filter(i -> i.getCotent().equals(value))
                 .findAny()
                 .orElseThrow(() -> new CounselTypeInvalidException(value));
     }

@@ -10,13 +10,11 @@ import lombok.NoArgsConstructor;
 
 @Getter
 public class CounselCreateRequest {
+
     private Long analysisId;
-
-    private CounselType counselType;
-
+    @NotBlank(message = "카테코리는 필수입니다.")
+    private String counselType;
+    @NotBlank(message = "상담 질문은 필수입니다.")
     private String question;
 
-    public CounselCreateRequest() { // 기본 설정
-        this.counselType = CounselType.ETC;
-    }
 }

@@ -4,11 +4,13 @@ import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundExcept
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
+import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.counsel.dto.*;
 import com.project.doongdoong.domain.counsel.exception.CounselAlreadyProcessedException;
 import com.project.doongdoong.domain.counsel.exception.CounselNotFoundException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
 import com.project.doongdoong.domain.counsel.model.Counsel;
+import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialType;
@@ -48,10 +50,14 @@ public class CounselServiceImpl implements CounselService {
 
         Counsel counsel = Counsel.builder() // 상담 객체 생성
                 .question(request.getQuestion())
-                .counselType(request.getCounselType())
+                .counselType(CounselType.from(request.getCounselType()))
                 .user(user)
                 .build();
-
+        /**
+         * 1. 고민은 무조건
+         * 2. analysisId 여부
+         * 3. 각 분석 답변 4개 -> 하나의 스트링 -> AI한테 (imformation)
+         */
         if(request.getAnalysisId() != null){ // 기존 분석 결과 반영하기
             Analysis findAnalysis = analysisRepository.findByUserAndId(user, request.getAnalysisId()).orElseThrow(() -> new AnalysisAccessDeny());
             checkCounselAlreadyProcessed(findAnalysis); // 해당 분석의 정보로 상담한 경우 예외
@@ -59,19 +65,18 @@ public class CounselServiceImpl implements CounselService {
         }
 
         HashMap<String, Object> parameters = new HashMap<String, Object>( ); // 외부 API request 설정
-        if(Optional.ofNullable(counsel.getQuestion()).isPresent()){ // question 있다면 추가
-            parameters.put("question", counsel.getQuestion());
-            parameters.put("isAnalyis", true);
-        }
+        parameters.put("question", counsel.getQuestion()); // 고민은 필수
 
         Optional.ofNullable(counsel.getAnalysis()) // 분석 -> 상담 으로 연결되는 경우, 분석에 대한 답변 항목 추가
                 .ifPresent(analysis -> {
-                    parameters.put("isAnalyis", true);
-                    if(analysis.getAnswers().size() != 4)
+                    if(analysis.getAnswers().size() != 4) {
                         throw new AllAnswersNotFoundException();
-                    for(int i=0; i<analysis.getAnswers().size(); i++){
-                        parameters.put("analysisQuestion" + i, analysis.getAnswers().get(i).getContent());
                     }
+                    String content = "";
+                    for(Answer answer :analysis.getAnswers())    {
+                        content += answer.getContent() + " ";
+                    }
+                    parameters.put("analysisContent", content);
                 });
 
         String consultResult = webClientUtil.callConsult(parameters);

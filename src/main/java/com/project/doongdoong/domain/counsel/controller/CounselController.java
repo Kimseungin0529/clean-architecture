@@ -32,7 +32,7 @@ public class CounselController {
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping
     public ApiResponse<CounselResultResponse> consult(@CurrentUser String uniqueValue
-                                        , @RequestBody CounselCreateRequest request, HttpServletResponse response){
+                                        , @Valid @RequestBody CounselCreateRequest request, HttpServletResponse response){
 
         CounselResultResponse result = counselService.consult(uniqueValue, request);
 
