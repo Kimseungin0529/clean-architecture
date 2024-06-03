@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.user.controller;
 
 import com.project.doongdoong.domain.user.service.UserService;
+import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
 import com.project.doongdoong.global.dto.request.LogoutDto;
 import com.project.doongdoong.global.dto.request.OAuthTokenDto;
@@ -51,6 +52,12 @@ public class UserController {
         TokenDto reissuedToken = userService.reissue(reissueDto);
 
         return ApiResponse.of(HttpStatus.OK, null, reissuedToken);
+    }
+
+    @GetMapping("/my-page")
+    public ApiResponse<?> userMyPage(@CurrentUser String uniqueValue){
+
+        return ApiResponse.of(HttpStatus.OK, null, userService.getMyPage(uniqueValue));
     }
 
     @Operation(summary = "jwt 테스트 API")

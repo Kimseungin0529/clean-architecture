@@ -1,8 +1,10 @@
 package com.project.doongdoong.domain.user.service;
 
+import com.project.doongdoong.domain.user.dto.UserInfomationResponse;
 import com.project.doongdoong.domain.user.exeception.RefreshTokenNoutFoundException;
 import com.project.doongdoong.domain.user.exeception.SocialTypeNotFoundException;
 import com.project.doongdoong.domain.user.exeception.TokenInfoFobiddenException;
+import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
@@ -131,6 +133,25 @@ public class UserService {
         BlackAccessToken blackAccessToken = BlackAccessToken.of(socialId, socialType, accessToken);
         blackAccessTokenRepository.save(blackAccessToken); // blackAccessToken 저장 -> 해당 act은 만료기간 남았더라도 접근 불가
     }
+
+    public UserInfomationResponse getMyPage(String uniqueValue) {
+        String[] value = parseUniqueValue(uniqueValue);
+        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(value[1]), value[0])
+                .orElseThrow(() -> new UserNotFoundException());
+
+        return UserInfomationResponse.builder()
+                .nickname(findUser.getNickname())
+                .email(findUser.getEmail())
+                .socialType(findUser.getSocialType().getText())
+                .analysisCount(0L)
+                .build();
+    }
+
+    private static String[] parseUniqueValue(String uniqueValue) {
+        String[] values = uniqueValue.split("_"); // 사용자 찾기
+        return values;
+    }
+
     /*public boolean checkBlackToken(HttpServletRequest request){
         String accessToken = request.getHeader("Authorization");
         Optional<BlackAccessToken> findBlackToken = blackAccessTokenRepository.findByAccessToken(accessToken);
@@ -138,4 +159,6 @@ public class UserService {
             throw new CustomException.UnauthorizedException(HttpStatus.UNAUTHORIZED, "로그아웃으로 인해 인가 권한이 없습니다.");
         }
     }*/
+
+
 }
