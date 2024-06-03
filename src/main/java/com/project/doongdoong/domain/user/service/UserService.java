@@ -143,7 +143,7 @@ public class UserService {
                 .nickname(findUser.getNickname())
                 .email(findUser.getEmail())
                 .socialType(findUser.getSocialType().getText())
-                .analysisCount(0L)
+                .analysisCount(findUser.getEmotionGrowth())
                 .build();
     }
 

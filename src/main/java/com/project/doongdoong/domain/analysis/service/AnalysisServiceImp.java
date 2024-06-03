@@ -221,6 +221,7 @@ public class AnalysisServiceImp implements AnalysisService{
         String[] values = parseUniqueValue(uniqueValue);
 
         LocalDateTime now = LocalDate.now().atStartOfDay();
+        log.info("now = {}", now);
         User user = userRepository.findBySocialTypeAndSocialIdWithAnalysisToday(SocialType.customValueOf(values[1]), values[0], now)
                 .orElseThrow(() -> new UserNotFoundException());
 
@@ -258,9 +259,10 @@ public class AnalysisServiceImp implements AnalysisService{
     }
 
     private boolean checkFirstGrowthToday(User user) {
-        return Optional.ofNullable(user.getAnalysisList().stream()
+        List<Analysis> list = user.getAnalysisList().stream()
                 .filter(analysis -> analysis.getAnswers().size() == 4)
-                .findAny()).isEmpty();
+                .collect(Collectors.toList());
+        return list.size() == 1 ? true : false;
     }
 
     @Transactional
