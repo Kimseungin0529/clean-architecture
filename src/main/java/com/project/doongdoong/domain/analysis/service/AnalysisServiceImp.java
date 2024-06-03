@@ -5,9 +5,7 @@ import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundExcept
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
-import com.project.doongdoong.domain.answer.exception.AnswerNotFoundException;
 import com.project.doongdoong.domain.answer.model.Answer;
-import com.project.doongdoong.domain.answer.service.AnswerServiceImp;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.question.service.QuestionService;
@@ -28,6 +26,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
@@ -58,6 +57,10 @@ public class AnalysisServiceImp implements AnalysisService{
         String[] values = parseUniqueValue(uniqueValue); // 사용자 정보 찾기
         User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
                 .orElseThrow(() -> new UserNotFoundException());
+
+        /**
+         * 해당 사용자가 오늘 생성한 분석이 있는지 체크 로직
+         */
 
         List<Question> questions = questionService.createQuestions(); // 질문 가져오기
         Analysis analysis = Analysis.builder()
@@ -214,7 +217,17 @@ public class AnalysisServiceImp implements AnalysisService{
 
     @Transactional
     @Override
-    public FellingStateCreateResponse analyzeEmotion(Long analysisId) {
+    public FellingStateCreateResponse analyzeEmotion(Long analysisId, String uniqueValue) {
+        String[] values = parseUniqueValue(uniqueValue);
+
+        LocalDateTime now = LocalDate.now().atStartOfDay();
+        User user = userRepository.findBySocialTypeAndSocialIdWithAnalysisToday(SocialType.customValueOf(values[1]), values[0], now)
+                .orElseThrow(() -> new UserNotFoundException());
+
+        if(checkFirstGrowthToday(user)){
+            user.growUp();
+        }
+
         Analysis findAnalysis = analsisRepository.searchAnalysisWithVoiceOfAnswer(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
         // 1. 분석에 대한 답변 매칭 파일 리스트 가져오기
         List<Voice> voices = findAnalysis.getAnswers().stream()
@@ -242,6 +255,12 @@ public class AnalysisServiceImp implements AnalysisService{
         return FellingStateCreateResponse.builder()
                 .feelingState(result)
                 .build();
+    }
+
+    private boolean checkFirstGrowthToday(User user) {
+        return Optional.ofNullable(user.getAnalysisList().stream()
+                .filter(analysis -> analysis.getAnswers().size() == 4)
+                .findAny()).isEmpty();
     }
 
     @Transactional

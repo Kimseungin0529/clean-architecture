@@ -27,6 +27,8 @@ public class User extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
+    private long emotionGrowth = 0L;
+
     @ElementCollection(fetch = FetchType.EAGER) // security와 같이 사용할 권한 역할
     private List<String> roles = new ArrayList<>();
 
@@ -55,6 +57,10 @@ public class User extends BaseEntity {
             this.roles = Collections.singletonList(Role.ROLE_USER.toString());
         }
 
+    }
+
+    public void growUp(){
+        this.emotionGrowth++;
     }
 
 }

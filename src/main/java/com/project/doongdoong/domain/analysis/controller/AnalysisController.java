@@ -51,9 +51,9 @@ public class AnalysisController {
     }
 
     @PostMapping("/{id}")
-    public ApiResponse<FellingStateCreateResponse> analyzeEmotion(@PathVariable("id") Long analysisId){
+    public ApiResponse<FellingStateCreateResponse> analyzeEmotion(@PathVariable("id") Long analysisId, @CurrentUser String uniqueValue){
 
-        return ApiResponse.of(HttpStatus.OK, null, analysisService.analyzeEmotion(analysisId));
+        return ApiResponse.of(HttpStatus.OK, null, analysisService.analyzeEmotion(analysisId, uniqueValue));
     }
 
     /*@PostMapping("/{id}/answer")
