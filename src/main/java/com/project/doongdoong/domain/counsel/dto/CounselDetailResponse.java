@@ -17,8 +17,6 @@ public class CounselDetailResponse {
     private String question;
     private String answer;
     private String counselType;
-    private List<String> analysisQuestions;
-    private List<String> analysisAnswers;
 
     @Builder
     public CounselDetailResponse(String data, Long counselId, String question, String answer, String counselType) {
@@ -29,15 +27,4 @@ public class CounselDetailResponse {
         this.counselType = counselType;
     }
 
-    public void setQuestion(String question) {
-        this.question = question;
-    }
-
-    public void setAnalysisQuestions(List<String> analysisQuestions) {
-        this.analysisQuestions = analysisQuestions;
-    }
-
-    public void setAnalysisAnswers(List<String> analysisAnswers) {
-        this.analysisAnswers = analysisAnswers;
-    }
 }

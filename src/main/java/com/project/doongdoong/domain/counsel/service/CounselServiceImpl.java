@@ -66,8 +66,25 @@ public class CounselServiceImpl implements CounselService {
             counsel.addAnalysis(findAnalysis); // 연관관계 매핑
         }
 
+        HashMap<String, Object> parameters = setupParameters(counsel);
+
+        String consultResult = webClientUtil.callConsult(parameters);
+
+        counsel.saveAnswer(consultResult);
+        Counsel savedCounsel = counselRepository.save(counsel);
+
+        return  CounselResultResponse.builder()
+                .counselId(savedCounsel.getId())
+                .counselResult(consultResult)
+                .build();
+
+    }
+
+    private HashMap<String, Object> setupParameters(Counsel counsel) {
         HashMap<String, Object> parameters = new HashMap<String, Object>( ); // 외부 API request 설정
         parameters.put("question", counsel.getQuestion()); // 고민은 필수
+        parameters.put("category", counsel.getCounselType().getCotent());
+
 
         Optional.ofNullable(counsel.getAnalysis()) // 분석 -> 상담 으로 연결되는 경우, 분석에 대한 답변 항목 추가
                 .ifPresent(analysis -> {
@@ -80,17 +97,10 @@ public class CounselServiceImpl implements CounselService {
                     }
                     parameters.put("analysisContent", content);
                 });
-
-        String consultResult = webClientUtil.callConsult(parameters);
-
-        counsel.saveAnswer(consultResult);
-        Counsel savedCounsel = counselRepository.save(counsel);
-
-        return  CounselResultResponse.builder()
-                .counselId(savedCounsel.getId())
-                .counselResult(consultResult)
-                .build();
-
+        if(parameters.get("analysisContent") == null){ // 없는 경우, 빈 문자열값
+            parameters.put("analysisContent", "");
+        }
+        return parameters;
     }
 
     private void checkCounselAlreadyProcessed(Analysis findAnalysis) {
@@ -111,30 +121,13 @@ public class CounselServiceImpl implements CounselService {
             throw new UnAuthorizedForCounselException();
         }
 
-        CounselDetailResponse response = CounselDetailResponse.builder()
-                .data(findCounsel.getCreatedTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+        return CounselDetailResponse.builder()
+                .data(findCounsel.getCreatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .counselId(findCounsel.getId())
                 .question(findCounsel.getQuestion())
                 .answer(findCounsel.getAnswer())
                 .counselType(findCounsel.getCounselType().getCotent())
                 .build();
-
-        if (Optional.ofNullable(findCounsel.getAnalysis()).isPresent()){ // 분석 O
-            List<String> questions = findCounsel.getAnalysis().getQuestions().stream()
-                    .map(question -> question.getQuestionContent().getText())
-                    .collect(Collectors.toList());
-
-            List<String> answers = findCounsel.getAnalysis().getAnswers().stream()
-                    .map(answer -> answer.getContent())
-                    .collect(Collectors.toList());
-
-            response.setAnalysisQuestions(questions);
-            response.setAnalysisAnswers(answers);
-        }
-        String question = findCounsel.getQuestion();
-        response.setQuestion(question);
-
-        return response;
     }
 
     @Override
@@ -159,7 +152,7 @@ public class CounselServiceImpl implements CounselService {
                 .counselContent(counselsPage.getContent().stream()
                         .map(counsel ->
                                 CounselResponse.builder()
-                                        .date(counsel.getCreatedTime().format(DateTimeFormatter.ISO_LOCAL_DATE_TIME))
+                                        .date(counsel.getCreatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                                         .counselId(counsel.getId())
                                         .isAnalysisUsed(counsel.hasAnaylsis())
                                         .counselType(counsel.getCounselType().getCotent())
