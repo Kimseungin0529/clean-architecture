@@ -88,7 +88,7 @@ public class WebClientUtil
                 .analysisContent(parameters.get("analysisContent").toString())
                 .build();
 
-        return webClient.mutate().build()
+        /*return webClient.mutate().build()
                 .post()
                 .uri(lambdaConsultApiUrl)
                 .bodyValue(body)
@@ -98,6 +98,7 @@ public class WebClientUtil
                     log.info("error 발생 = {}", e.getMessage());
                     throw new ExternalApiCallException();
                 })
-                .block();
+                .block();*/
+        return "너는 뭐든 할 수 있어. 준비하면 충분히 해낼 수 있어. 너무 고민하지 말고 일단 도전해봐.";
     }
 }
