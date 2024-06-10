@@ -25,7 +25,7 @@ public class Counsel extends BaseEntity {
     @Column(length = 5000)
     private String answer;
 
-    @Column(updatable = false, length = 350)
+    @Column(length = 1000)
     private String imageUrl;
 
     @Enumerated(value = EnumType.STRING)
