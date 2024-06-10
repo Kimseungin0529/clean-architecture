@@ -245,8 +245,10 @@ public class AnalysisServiceImp implements AnalysisService{
 
         // 2. 파일을 request 값으로 외부 lambda API 비동기 처리(동일한 외부 API 4번 호출)
         // 해당하는 외부 API는 double 값 하나를 줌.
+        log.info("텍스트 분석 시작");
         List<FellingStateCreateResponse> responseByText = webClientUtil.callAnalyzeEmotion(voices); // 비동기 처리해서 값 가져오기
-        //List<FellingStateCreateResponse> responseByVoice = webClientUtil.callAnalyzeEmotionVoice(voices);
+        log.info("음성 분석 시작");
+        List<FellingStateCreateResponse> responseByVoice = webClientUtil.callAnalyzeEmotionVoice(voices);
 
         List<Answer> answers = findAnalysis.getAnswers();
         for(int i=0; i<responseByText.size(); i++){
@@ -257,11 +259,11 @@ public class AnalysisServiceImp implements AnalysisService{
                 .mapToDouble(value -> value.getFeelingState())
                 .average()
                 .getAsDouble();
-//        double resultByVoice = responseByVoice.stream()
-//                .mapToDouble(value -> value.getFeelingState())
-//                .average()
-//                .getAsDouble();
-        double result = 0.65 * resultByText; //+ 0.35 * resultByVoice;
+        double resultByVoice = responseByVoice.stream()
+                .mapToDouble(value -> value.getFeelingState())
+                .average()
+                .getAsDouble();
+        double result = 0.65 * resultByText + 0.35 * resultByVoice;
 
         findAnalysis.changeFeelingStateAndAnalyzeTime(result);
 
