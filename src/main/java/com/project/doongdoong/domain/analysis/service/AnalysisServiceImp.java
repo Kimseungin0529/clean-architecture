@@ -2,6 +2,7 @@ package com.project.doongdoong.domain.analysis.service;
 
 import com.project.doongdoong.domain.analysis.dto.response.*;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
+import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
@@ -238,20 +239,31 @@ public class AnalysisServiceImp implements AnalysisService{
         if(voices.size() != MAX_ANSWER_COUNT){ //만약 모든 질문에 대한 답변이 없는 경우, 답변이 부족하다는 예외 발생
             throw new AllAnswersNotFoundException();
         }
+        if (findAnalysis.getAnalyzeTime().equals(LocalDate.now())) { // 분석은 1번만 가능
+            throw new AlreadyAnalyzedException();
+        }
 
         // 2. 파일을 request 값으로 외부 lambda API 비동기 처리(동일한 외부 API 4번 호출)
         // 해당하는 외부 API는 double 값 하나를 줌.
-        List<FellingStateCreateResponse> response = webClientUtil.callAnalyzeEmotion(voices); // 비동기 처리해서 값 가져오기
+        List<FellingStateCreateResponse> responseByText = webClientUtil.callAnalyzeEmotion(voices); // 비동기 처리해서 값 가져오기
+        //List<FellingStateCreateResponse> responseByVoice = webClientUtil.callAnalyzeEmotionVoice(voices);
+
         List<Answer> answers = findAnalysis.getAnswers();
-        for(int i=0; i<response.size(); i++){
-            answers.get(i).changeContent(response.get(i).getTranscribedText());
+        for(int i=0; i<responseByText.size(); i++){
+            answers.get(i).changeContent(responseByText.get(i).getTranscribedText());
         }
 
-        double result = response.stream() // 3. 처리가 끝나면 double값 4개 값을 평균 내서 감정 수치 값 반환하기
+        double resultByText = responseByText.stream() // 3. 처리가 끝나면 double값 4개 값을 평균 내서 감정 수치 값 반환하기
                 .mapToDouble(value -> value.getFeelingState())
                 .average()
                 .getAsDouble();
-        findAnalysis.changeFeelingState(result);
+//        double resultByVoice = responseByVoice.stream()
+//                .mapToDouble(value -> value.getFeelingState())
+//                .average()
+//                .getAsDouble();
+        double result = 0.65 * resultByText; //+ 0.35 * resultByVoice;
+
+        findAnalysis.changeFeelingStateAndAnalyzeTime(result);
 
         return FellingStateCreateResponse.builder()
                 .feelingState(result)
@@ -260,9 +272,9 @@ public class AnalysisServiceImp implements AnalysisService{
 
     private boolean checkFirstGrowthToday(User user) {
         List<Analysis> list = user.getAnalysisList().stream()
-                .filter(analysis -> analysis.getAnswers().size() == 4)
+                .filter(analysis ->   analysis.getAnalyzeTime().equals(LocalDate.now()))
                 .collect(Collectors.toList());
-        return list.size() == 1 ? true : false;
+        return list.size() == 0 ? true : false;
     }
 
     @Transactional

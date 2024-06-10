@@ -17,6 +17,7 @@ import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
+import com.project.doongdoong.global.dto.response.CounselAiResponse;
 import com.project.doongdoong.global.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -68,14 +69,15 @@ public class CounselServiceImpl implements CounselService {
 
         HashMap<String, Object> parameters = setupParameters(counsel);
 
-        String consultResult = webClientUtil.callConsult(parameters);
+        CounselAiResponse counselAiResponse = webClientUtil.callConsult(parameters);
 
-        counsel.saveAnswer(consultResult);
+        counsel.saveAnswer(counselAiResponse.getAnswer());
         Counsel savedCounsel = counselRepository.save(counsel);
 
         return  CounselResultResponse.builder()
                 .counselId(savedCounsel.getId())
-                .counselResult(consultResult)
+                .counselContent(counselAiResponse.getAnswer())
+                .imageUrl(counselAiResponse.getImageUrl())
                 .build();
 
     }

@@ -11,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -28,6 +29,8 @@ public class Analysis extends BaseEntity {
     private Long id;
 
     private double feelingState;
+
+    private LocalDate analyzeTime;
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
@@ -47,10 +50,13 @@ public class Analysis extends BaseEntity {
         this.feelingState = 0;
         this.questions = questions;
         this.user = user;
+        this.analyzeTime = LocalDate.of(1,1,1);
     }
 
-    public void changeFeelingState(double feelingState){
+
+    public void changeFeelingStateAndAnalyzeTime(double feelingState){
         this.feelingState = feelingState;
+        this.analyzeTime = LocalDate.now();
     }
 
 }

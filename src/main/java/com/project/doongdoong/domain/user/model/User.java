@@ -39,7 +39,6 @@ public class User extends BaseEntity {
 
     @Builder
     public User(String socialId, String nickname, String email, SocialType socialType) {
-
         this.socialId = socialId;
         this.nickname = nickname;
         this.email = email;

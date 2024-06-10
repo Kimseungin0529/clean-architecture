@@ -4,6 +4,7 @@ package com.project.doongdoong.global.util;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.project.doongdoong.domain.analysis.dto.response.FellingStateCreateResponse;
 import com.project.doongdoong.domain.voice.model.Voice;
+import com.project.doongdoong.global.dto.response.CounselAiResponse;
 import com.project.doongdoong.global.exception.servererror.ExternalApiCallException;
 import com.project.doongdoong.global.util.dto.ConsultRequest;
 import com.project.doongdoong.global.util.dto.VoiceToS3Request;
@@ -31,6 +32,10 @@ public class WebClientUtil
     private String lambdaTextApiUrl;
     @Value("${spring.lambda.cosult}")
     private String lambdaConsultApiUrl;
+
+    @Value("${spring.lambda.emotion_voice}")
+    private String lambdaVoiceApiUrl;
+
     @Value("${cloud.aws.bucket}")
     private String bucketName;
     private static final String VOICE_KEY = "voice/";
@@ -76,7 +81,46 @@ public class WebClientUtil
 
     }
 
-    public String callConsult(HashMap<String, Object> parameters) {
+    public List<FellingStateCreateResponse> callAnalyzeEmotionVoice(List<Voice> voices) {
+
+        Flux<FellingStateCreateResponse> responseFlux = Flux
+                .fromIterable(voices)
+                .parallel()
+                .runOn(Schedulers.parallel())
+                .flatMap(this::callLambdaApiVoice)
+                .sequential();
+
+        List<FellingStateCreateResponse> response = responseFlux.collectList().block();
+        for(FellingStateCreateResponse dto : response){
+            log.info("dto.getFeelingState() = {}", dto.getFeelingState());
+            log.info("dto.getTranscribedText() = {}", dto.getTranscribedText());
+        }
+
+
+        return response;
+    }
+
+    private Mono<FellingStateCreateResponse> callLambdaApiVoice(Voice voice) {
+
+        VoiceToS3Request body = VoiceToS3Request.builder()
+                .fileKey(VOICE_KEY + voice.getStoredName())
+                .build();
+
+        return webClient.mutate().build()
+                .post()
+                .uri(lambdaVoiceApiUrl)
+                .contentType(MediaType.APPLICATION_JSON)
+                .bodyValue(body)
+                .retrieve()
+                .bodyToMono(FellingStateCreateResponse.class)
+                .doOnError(e -> {
+                    log.info("error 발생 = {}", e.getMessage());
+                    throw new ExternalApiCallException();
+                });
+
+    }
+
+    public CounselAiResponse callConsult(HashMap<String, Object> parameters) {
 
         log.info("analysisTotalContent = {}", parameters.get("analysisContent"));
         log.info("question = {}", parameters.get("question"));
@@ -88,17 +132,16 @@ public class WebClientUtil
                 .analysisContent(parameters.get("analysisContent").toString())
                 .build();
 
-        /*return webClient.mutate().build()
+        return webClient.mutate().build()
                 .post()
                 .uri(lambdaConsultApiUrl)
                 .bodyValue(body)
                 .retrieve()
-                .bodyToMono(String.class)
+                .bodyToMono(CounselAiResponse.class)
                 .doOnError(e -> {
                     log.info("error 발생 = {}", e.getMessage());
                     throw new ExternalApiCallException();
                 })
-                .block();*/
-        return "너는 뭐든 할 수 있어. 준비하면 충분히 해낼 수 있어. 너무 고민하지 말고 일단 도전해봐.";
+                .block();
     }
 }

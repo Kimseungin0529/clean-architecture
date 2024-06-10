@@ -23,6 +23,7 @@ public class Answer extends BaseEntity {
     @Column(name = "answer_id")
     private Long id;
 
+    @Column(length = 5000)
     private String content;
 
     @ManyToOne(fetch = LAZY)

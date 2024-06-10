@@ -6,11 +6,13 @@ import lombok.Getter;
 @Getter
 public class CounselResultResponse {
     private Long counselId;
-    private String counselResult;
+    private String counselContent;
+    private String imageUrl;
 
     @Builder
-    public CounselResultResponse(String counselResult, Long counselId) {
-        this.counselResult = counselResult;
+    public CounselResultResponse(Long counselId, String counselContent, String imageUrl) {
         this.counselId = counselId;
+        this.counselContent = counselContent;
+        this.imageUrl = imageUrl;
     }
 }

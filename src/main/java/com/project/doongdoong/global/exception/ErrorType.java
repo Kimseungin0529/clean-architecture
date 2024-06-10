@@ -84,7 +84,8 @@ public interface ErrorType {
     enum Conflict implements ErrorType {
         CONFLICT_DEFAULT(9000),
         ANSWER_ALREADY_CREATED(9001),
-        COUNSEL_ALREADY_EXIST(9002);
+        COUNSEL_ALREADY_EXIST(9002),
+        ANALYSIS_ALREADY_ANALYZE(9003);
 
         private final int errorCode;
 
