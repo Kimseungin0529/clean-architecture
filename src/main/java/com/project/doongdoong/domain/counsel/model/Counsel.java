@@ -60,4 +60,7 @@ public class Counsel extends BaseEntity {
     }
 
 
+    public void saveImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
+    }
 }

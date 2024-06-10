@@ -72,6 +72,7 @@ public class CounselServiceImpl implements CounselService {
         CounselAiResponse counselAiResponse = webClientUtil.callConsult(parameters);
 
         counsel.saveAnswer(counselAiResponse.getAnswer());
+        counsel.saveImageUrl(counselAiResponse.getImageUrl());
         Counsel savedCounsel = counselRepository.save(counsel);
 
         return  CounselResultResponse.builder()
@@ -128,6 +129,7 @@ public class CounselServiceImpl implements CounselService {
                 .counselId(findCounsel.getId())
                 .question(findCounsel.getQuestion())
                 .answer(findCounsel.getAnswer())
+                .imageUrl(findCounsel.getImageUrl())
                 .counselType(findCounsel.getCounselType().getCotent())
                 .build();
     }
