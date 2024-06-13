@@ -1,10 +1,10 @@
 package com.project.doongdoong.domain.counsel.service;
 
 
-import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
-import com.project.doongdoong.domain.counsel.dto.CounselDetailResponse;
-import com.project.doongdoong.domain.counsel.dto.CounselListResponse;
-import com.project.doongdoong.domain.counsel.dto.CounselResultResponse;
+import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
+import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
+import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
+import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
 
 public interface CounselService {
     public CounselResultResponse consult(String socialId, CounselCreateRequest request);

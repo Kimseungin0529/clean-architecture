@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.counsel.dto;
+package com.project.doongdoong.domain.counsel.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;

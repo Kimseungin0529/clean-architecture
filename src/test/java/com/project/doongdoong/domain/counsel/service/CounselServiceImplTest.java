@@ -1,8 +1,6 @@
 package com.project.doongdoong.domain.counsel.service;
 
-import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
-import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
@@ -18,6 +16,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
@@ -38,11 +37,12 @@ class CounselServiceImplTest {
     AnalysisRepository analysisRepository;
 
     @Test
-    @DisplayName("상담을 생성합니다.")
+    @DisplayName("상담 이후, 상담 결과를 알려줍니다.")
     void createCounsel(){
-       /* //given
+        //given
+        CounselType counselType = Arrays.stream(CounselType.values()).findAny().get();
         User user = createUserMethod("1", "abc@naver.com", "진진2", SocialType.APPLE);
-        CounselCreateRequest request = new CounselCreateRequest(100.0, CounselType.ETC);
+        //CounselCreateRequest request = new CounselCreateRequest(100.0, counselType.toString());
 
         when(userRepository.findBySocialTypeAndSocialId(user.getSocialType(),user.getSocialId())).thenReturn(Optional.of(user));
         when(counselRepository.save(any(Counsel.class))).thenAnswer(invocation -> {
@@ -55,7 +55,6 @@ class CounselServiceImplTest {
         Long createdValue = counselService.createCounsel(user.getSocialId(), request);
         //then
         assertThat(createdValue).isNotNull();
-*/
     }
 
     @Test
@@ -64,7 +63,7 @@ class CounselServiceImplTest {
         //given
 
         User user = createUserMethod("1", "fdf@naver.com","진이", SocialType.APPLE);
-        Counsel counsel = createCounselMethod(81.6, CounselType.ETC);
+        //Counsel counsel = createCounselMethod(81.6, CounselType.);
 
      /*   Counsel savedCounsel = counselRepository.save(counsel);
 

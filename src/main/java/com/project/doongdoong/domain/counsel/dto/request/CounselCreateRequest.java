@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.counsel.dto;
+package com.project.doongdoong.domain.counsel.dto.request;
 
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;

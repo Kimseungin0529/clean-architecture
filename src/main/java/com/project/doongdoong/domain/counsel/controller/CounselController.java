@@ -1,8 +1,7 @@
 package com.project.doongdoong.domain.counsel.controller;
 
-import com.google.protobuf.Api;
-import com.project.doongdoong.domain.counsel.dto.CounselCreateRequest;
-import com.project.doongdoong.domain.counsel.dto.CounselResultResponse;
+import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
+import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
 import com.project.doongdoong.domain.counsel.service.CounselService;
 import com.project.doongdoong.global.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
