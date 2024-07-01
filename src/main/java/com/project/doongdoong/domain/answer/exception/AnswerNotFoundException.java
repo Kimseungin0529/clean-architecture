@@ -1,7 +1,6 @@
 package com.project.doongdoong.domain.answer.exception;
 
 import com.project.doongdoong.global.exception.CustomException;
-import com.project.doongdoong.global.exception.ErrorType;
 
 import static com.project.doongdoong.global.exception.ErrorType.NotFound.ANSWER_NOT_FOUND;
 

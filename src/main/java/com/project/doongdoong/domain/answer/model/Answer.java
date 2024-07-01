@@ -1,12 +1,9 @@
 package com.project.doongdoong.domain.answer.model;
 
 import com.project.doongdoong.domain.analysis.model.Analysis;
-import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.voice.model.Voice;
-import com.project.doongdoong.domain.voice.service.VoiceService;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

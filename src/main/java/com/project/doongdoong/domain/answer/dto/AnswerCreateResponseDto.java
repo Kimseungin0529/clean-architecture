@@ -9,7 +9,6 @@ import lombok.NoArgsConstructor;
 public class AnswerCreateResponseDto {
     private Long answerId;
 
-
     @Builder
     public AnswerCreateResponseDto(Long answerId) {
         this.answerId = answerId;

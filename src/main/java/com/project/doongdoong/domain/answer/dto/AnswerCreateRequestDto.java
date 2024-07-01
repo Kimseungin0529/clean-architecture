@@ -1,7 +1,6 @@
 package com.project.doongdoong.domain.answer.dto;
 
 
-import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
