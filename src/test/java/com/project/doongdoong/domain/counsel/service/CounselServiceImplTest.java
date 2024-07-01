@@ -1,50 +1,62 @@
 package com.project.doongdoong.domain.counsel.service;
 
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
+import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
+import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
+import com.project.doongdoong.global.dto.response.CounselAiResponse;
+import com.project.doongdoong.global.util.WebClientUtil;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.ActiveProfiles;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.HashMap;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-@SpringBootTest
-@ActiveProfiles("test")
-@Transactional
+@ExtendWith(MockitoExtension.class)
+//@ActiveProfiles("test")
+//@Transactional
 class CounselServiceImplTest {
-    @Autowired
-    CounselService counselService;
-    @MockBean
+    @InjectMocks
+    CounselServiceImpl counselService;
+    @Mock
     CounselRepository counselRepository;
-    @MockBean
+    @Mock
     UserRepository userRepository;
-    @MockBean
+    @Mock
     AnalysisRepository analysisRepository;
+    @Mock
+    WebClientUtil webClientUtil;
 
     @Test
     @DisplayName("상담 이후, 상담 결과를 알려줍니다.")
-    void createCounsel(){
+    void consult(){
         //given
+        String question = "나의 고민을 해결해줘.";
+        String socialId = "123";
+        String socialType = "APPLE";
+        String uniqueValue = socialId + "_" + socialType;
         CounselType counselType = Arrays.stream(CounselType.values()).findAny().get();
-        User user = createUserMethod("1", "abc@naver.com", "진진2", SocialType.APPLE);
-        //CounselCreateRequest request = new CounselCreateRequest(100.0, counselType.toString());
 
-        when(userRepository.findBySocialTypeAndSocialId(user.getSocialType(),user.getSocialId())).thenReturn(Optional.of(user));
+        User user = createUserMethod(socialId, "abc@naver.com", "닉네임", SocialType.APPLE);
+        CounselCreateRequest request = new CounselCreateRequest(counselType.getCotent(), question);
+
+        when(userRepository.findBySocialTypeAndSocialId(SocialType.APPLE, socialId)).thenReturn(Optional.of(user));
+        when(webClientUtil.callConsult(new HashMap<>())).thenReturn(new CounselAiResponse("", ""));
         when(counselRepository.save(any(Counsel.class))).thenAnswer(invocation -> {
             Counsel savedCounsel = invocation.getArgument(0);
             ReflectionTestUtils.setField(savedCounsel, "id", 1L); // 여기서 ID를 설정합니다
@@ -52,14 +64,17 @@ class CounselServiceImplTest {
         });
 
         //when
-        Long createdValue = counselService.createCounsel(user.getSocialId(), request);
+        CounselResultResponse result = counselService.consult(uniqueValue, request);
         //then
-        assertThat(createdValue).isNotNull();
+        assertThat(result)
+                .extracting("counselId", "counselContent", "imageUrl")
+                .contains(Long.class, String.class, String.class);
+
     }
 
     @Test
     @DisplayName("기존 분석 내용과 함께 상담을 진행한다.")
-    void consult(){
+    void consultWithAnalysisContents(){
         //given
 
         User user = createUserMethod("1", "fdf@naver.com","진이", SocialType.APPLE);
