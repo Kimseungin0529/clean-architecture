@@ -1,7 +1,6 @@
 package com.project.doongdoong.domain.user.model;
 
 import com.project.doongdoong.domain.analysis.model.Analysis;
-import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
