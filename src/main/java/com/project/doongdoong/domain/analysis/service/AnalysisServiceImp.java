@@ -14,11 +14,9 @@ import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
-import com.project.doongdoong.domain.voice.dto.response.VoiceDetailResponseDto;
 import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.domain.voice.repository.VoiceRepository;
 import com.project.doongdoong.domain.voice.service.VoiceService;
-import com.project.doongdoong.global.util.GoogleTtsProvider;
 import com.project.doongdoong.global.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,7 +39,6 @@ import static com.project.doongdoong.domain.answer.service.AnswerServiceImp.MAX_
 @Transactional(readOnly = true)
 public class AnalysisServiceImp implements AnalysisService{
 
-    private final GoogleTtsProvider googleTtsProvider;
     private final VoiceRepository voiceRepository;
     private final UserRepository userRepository;
     private final AnalysisRepository analsisRepository;
@@ -51,6 +48,8 @@ public class AnalysisServiceImp implements AnalysisService{
     private final static long WEEK_TIME = 60 * 60 * 24 * 7;
 
     private final static int ANALYSIS_PAGE_SIZE = 10;
+    private final static double ANALYSIS_VOICE_RATE = 0.35;
+    private final static double ANALYSIS_TEXT_RATE = 0.35;
 
     @Transactional
     @Override //        추가적으로 사용자 정보가 있어야 함.
@@ -58,10 +57,6 @@ public class AnalysisServiceImp implements AnalysisService{
         String[] values = parseUniqueValue(uniqueValue); // 사용자 정보 찾기
         User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
                 .orElseThrow(() -> new UserNotFoundException());
-
-        /**
-         * 해당 사용자가 오늘 생성한 분석이 있는지 체크 로직
-         */
 
         List<Question> questions = questionService.createQuestions(); // 질문 가져오기
         Analysis analysis = Analysis.builder()
@@ -75,16 +70,8 @@ public class AnalysisServiceImp implements AnalysisService{
             Question question = questions.get(i);
             question.connectAnalysis(analysis); // 연관관계 편의 메서드
 
-
             Optional<Voice> voice = voiceRepository.findVoiceByQuestionContent(question.getQuestionContent());
-            if(voice.isPresent()){ // voiceRepository를 통해 이미 저장된 음성 파일이라면 TTS 과정 생략하고 음성 조회하기
-                accessUrls.add(voice.get().getAccessUrl());
-            }else { // 새로운 음성 파일 생성이라면 TTS 과정을 통해 음성 파일 저장하고 반환하기
-                byte[] bytes = googleTtsProvider.convertTextToSpeech(question.getQuestionContent().getText());// 질문 내용 -> 음성 파일 변환
-                String filename = "voice-question" + String.valueOf(question.getQuestionContent().getNumber());
-                VoiceDetailResponseDto voiceDto = voiceService.saveTtsVoice(bytes, filename, question.getQuestionContent());
-                accessUrls.add(voiceDto.getAccessUrl());
-            }
+            accessUrls.add(voice.get().getAccessUrl());
             questionTexts.add(question.getQuestionContent().getText());
 
         } // ConcurrentModificationException 으로 인해 for문 사용
@@ -201,13 +188,12 @@ public class AnalysisServiceImp implements AnalysisService{
                 .orElseThrow(() -> new UserNotFoundException());
 
         Optional<Analysis> analysis = analsisRepository.findFirstByUserOrderByCreatedTimeDesc(user);
-        LocalDateTime endTime, startTime;
         List<FeelingStateResponseDto> result = null;
         if(analysis.isPresent())
         {
             Analysis findAnalysis = analysis.get();
-            endTime = findAnalysis.getCreatedTime().plusDays(1).truncatedTo(ChronoUnit.DAYS);
-            startTime = endTime.minusDays(6).truncatedTo(ChronoUnit.DAYS);
+            LocalDateTime endTime = findAnalysis.getCreatedTime().plusDays(1).truncatedTo(ChronoUnit.DAYS);
+            LocalDateTime startTime = endTime.minusDays(6).truncatedTo(ChronoUnit.DAYS);
             result = analsisRepository.findAllByDateBetween(user, startTime, endTime);
         }
 
@@ -231,8 +217,7 @@ public class AnalysisServiceImp implements AnalysisService{
         }
 
         Analysis findAnalysis = analsisRepository.searchAnalysisWithVoiceOfAnswer(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
-        // 1. 분석에 대한 답변 매칭 파일 리스트 가져오기
-        List<Voice> voices = findAnalysis.getAnswers().stream()
+        List<Voice> voices = findAnalysis.getAnswers().stream() // 1. 분석에 대한 답변 매칭 파일 리스트 가져오기
                 .map(answer -> answer.getVoice())
                 .collect(Collectors.toList());
 
@@ -243,11 +228,7 @@ public class AnalysisServiceImp implements AnalysisService{
             throw new AlreadyAnalyzedException();
         }
 
-        // 2. 파일을 request 값으로 외부 lambda API 비동기 처리(동일한 외부 API 4번 호출)
-        // 해당하는 외부 API는 double 값 하나를 줌.
-        log.info("텍스트 분석 시작");
-        List<FellingStateCreateResponse> responseByText = webClientUtil.callAnalyzeEmotion(voices); // 비동기 처리해서 값 가져오기
-        log.info("음성 분석 시작");
+        List<FellingStateCreateResponse> responseByText = webClientUtil.callAnalyzeEmotion(voices); // 2. 파일을 request 값으로 외부 lambda API 비동기 처리(동일한 외부 API 4번 호출)
         List<FellingStateCreateResponse> responseByVoice = webClientUtil.callAnalyzeEmotionVoice(voices);
 
         List<Answer> answers = findAnalysis.getAnswers();
@@ -263,7 +244,7 @@ public class AnalysisServiceImp implements AnalysisService{
                 .mapToDouble(value -> value.getFeelingState())
                 .average()
                 .getAsDouble();
-        double result = 0.65 * resultByText + 0.35 * resultByVoice;
+        double result = ANALYSIS_TEXT_RATE * resultByText + ANALYSIS_VOICE_RATE * resultByVoice;
 
         findAnalysis.changeFeelingStateAndAnalyzeTime(result);
 
@@ -284,14 +265,16 @@ public class AnalysisServiceImp implements AnalysisService{
     public void removeAnaylsis(Long analysisId) {
         // anlaysis와 관련된 answer의 voice에 해당하는 S3 파일 삭제 로직
         Analysis findAnalysis = analsisRepository.searchAnalysisWithVoiceOfAnswer(analysisId).orElseThrow(() -> new AnalysisNotFoundException());
-        List<String> accessUrls = findAnalysis.getAnswers().stream().map(answer -> answer.getVoice().getAccessUrl())
+        List<String> accessUrls = findAnalysis.getAnswers().stream()
+                .map(answer -> answer.getVoice().getAccessUrl())
                 .collect(Collectors.toList());
+
         if(findAnalysis.getAnswers().size() != 0){
             findAnalysis.getAnswers().stream().forEach(answer -> answer.disconnectWithVoice()); // 연관관계 끊기
             voiceService.deleteVoices(accessUrls); // voice를 참조하는 객체 없으므로 삭제 가능 -> 벌크 삭제로 쿼리 최적화 필요
         }
-        // analysis 삭제로 question, answer 삭제 로직 -> voiceService.deleteVoices로 answer.voice와 관련 S3 파일은 이미 삭제.
-        analsisRepository.deleteById(analysisId);
+
+        analsisRepository.deleteById(analysisId); // analysis 삭제로 question, answer 삭제 로직 -> voiceService.deleteVoices로 answer.voice와 관련 S3 파일은 이미 삭제.
     }
 
 
