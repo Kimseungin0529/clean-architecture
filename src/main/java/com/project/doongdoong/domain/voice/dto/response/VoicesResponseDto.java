@@ -1,6 +1,5 @@
 package com.project.doongdoong.domain.voice.dto.response;
 
-import com.project.doongdoong.domain.image.dto.response.ImageDetailResponseDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 

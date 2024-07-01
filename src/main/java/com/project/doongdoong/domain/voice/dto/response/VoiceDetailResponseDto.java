@@ -12,7 +12,6 @@ public class VoiceDetailResponseDto {
 
     @Builder
     public VoiceDetailResponseDto(String accessUrl) {
-        //this.imageId = imageId;
         this.accessUrl = accessUrl;
     }
 
