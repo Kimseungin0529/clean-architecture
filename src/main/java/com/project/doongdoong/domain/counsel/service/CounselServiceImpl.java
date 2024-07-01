@@ -12,7 +12,7 @@ import com.project.doongdoong.domain.counsel.dto.response.CounselResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
 import com.project.doongdoong.domain.counsel.exception.CounselAlreadyProcessedException;
 import com.project.doongdoong.domain.counsel.exception.CounselNotFoundException;
-import com.project.doongdoong.domain.counsel.exception.NOT_EXIST_PAGE_NUMBER;
+import com.project.doongdoong.domain.counsel.exception.CounselNotExistPageException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
@@ -149,7 +149,7 @@ public class CounselServiceImpl implements CounselService {
         Page<Counsel> counselsPage = counselRepository.searchPageCounselList(findUser, pageRequest);
 
         if(pageNumber + 1 > counselsPage.getTotalPages()){ // 존재하지 않는 페이지에 접근하는 경우
-            throw new NOT_EXIST_PAGE_NUMBER();
+            throw new CounselNotExistPageException();
         }
 
         CounselListResponse response = CounselListResponse.builder()

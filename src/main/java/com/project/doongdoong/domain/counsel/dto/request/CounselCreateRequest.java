@@ -1,11 +1,6 @@
 package com.project.doongdoong.domain.counsel.dto.request;
 
-import com.project.doongdoong.domain.counsel.model.Counsel;
-import com.project.doongdoong.domain.counsel.model.CounselType;
 import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
