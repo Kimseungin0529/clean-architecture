@@ -1,15 +1,15 @@
-package com.project.doongdoong.domain.question.model;
+package com.project.doongdoong.domain.question.service;
 
+import com.project.doongdoong.domain.question.model.QuestionContent;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 import java.util.Random;
-import java.util.stream.Collectors;
 
 
-class QuestionGeneratorTest {
+class QuestionServiceImpTest {
     @Test
     @DisplayName("고정 QuestionContent을 랜덤으로 하나 반환한다. ")
     void provideFixedQuestionContent(){
