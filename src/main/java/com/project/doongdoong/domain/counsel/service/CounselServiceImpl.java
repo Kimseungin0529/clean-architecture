@@ -49,9 +49,8 @@ public class CounselServiceImpl implements CounselService {
 
     @Transactional
     @Override
-    public CounselResultResponse
-    consult(String socialId, CounselCreateRequest request) {
-        String[] values = parseUniqueValue(socialId); // 사용자 정보 찾기
+    public CounselResultResponse consult(String uniqueValue, CounselCreateRequest request) {
+        String[] values = parseUniqueValue(uniqueValue); // 사용자 정보 찾기
         User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
                 .orElseThrow(() -> new UserNotFoundException());
 

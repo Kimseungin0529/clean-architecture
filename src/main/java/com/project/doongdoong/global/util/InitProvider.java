@@ -7,12 +7,14 @@ import com.project.doongdoong.domain.voice.service.VoiceService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
 @Component @Slf4j
 @RequiredArgsConstructor
+@Profile("!test")
 public class InitProvider {
 
     private final GoogleTtsProvider googleTtsProvider;
