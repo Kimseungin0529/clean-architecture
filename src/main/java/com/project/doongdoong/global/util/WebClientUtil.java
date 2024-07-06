@@ -132,6 +132,9 @@ public class WebClientUtil
                 .analysisContent(parameters.get("analysisContent").toString())
                 .build();
 
+        CounselAiResponse counselAiResponse = new CounselAiResponse("답변입니다.", "임시 imageUrl 입니다.");
+        return  counselAiResponse;
+        /*
         return webClient.mutate().build()
                 .post()
                 .uri(lambdaConsultApiUrl)
@@ -142,6 +145,6 @@ public class WebClientUtil
                     log.info("error 발생 = {}", e.getMessage());
                     throw new ExternalApiCallException();
                 })
-                .block();
+                .block();*/
     }
 }
