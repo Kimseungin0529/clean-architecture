@@ -18,6 +18,8 @@ class QuestionServiceImpTest {
                 , QuestionContent.FIXED_QUESTION2
                 , QuestionContent.FIXED_QUESTION3
                 , QuestionContent.FIXED_QUESTION4
+                , QuestionContent.FIXED_QUESTION5
+                , QuestionContent.FIXED_QUESTION6
         );
         Random random = new Random();
         int index = random.nextInt(values.size());

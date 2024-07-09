@@ -1,27 +1,30 @@
 package com.project.doongdoong.domain.counsel.repository;
 
+import com.project.doongdoong.domain.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
+import com.project.doongdoong.domain.voice.repository.VoiceRepository;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.Optional;
 
 
-@ActiveProfiles("test")
-@DataJpaTest
-class CounselRepositoryTest {
+//@DataJpaTest
+class CounselRepositoryTest extends IntegrationSupportTest{
 
     @Autowired
     CounselRepository counselRepository;
@@ -29,7 +32,7 @@ class CounselRepositoryTest {
     AnalysisRepository analysisRepository;
     @Autowired
     UserRepository userRepository;
-    
+
     @Test
     @DisplayName("상담 고유 번호로 분석 정보가 담긴 상담 정보를 조회한다.")
     void findWithAnalysisById(){

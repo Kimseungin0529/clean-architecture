@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.counsel.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.project.doongdoong.domain.ControllerTestSupport;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
 import com.project.doongdoong.domain.counsel.service.CounselService;
@@ -14,10 +15,6 @@ import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
-
-
-import java.util.List;
-
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.Mockito.*;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.*;
@@ -25,19 +22,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
-
-@WebMvcTest(controllers = CounselController.class) // 컨트롤러 테스트를 위해 관련 빈만 등록해줌
-class CounselControllerTest {
-
-
-    @Autowired
-    MockMvc mockMvc;
-
-    @MockBean
-    CounselService counselService;
-
-    @Autowired
-    ObjectMapper objectMapper;
+class CounselControllerTest extends ControllerTestSupport {
 
     @Test
     @DisplayName("상담에 대한 결과가 나온다.")
@@ -90,10 +75,10 @@ class CounselControllerTest {
         CounselCreateRequest request = CounselCreateRequest.builder()
                 .analysisId(null)
                 .counselType(null)
-                .question(null  )
+                .question(null)
                 .build();
 
-        //when
+        //when & then
         mockMvc.perform(
                         MockMvcRequestBuilders.post("/api/v1/counsel")
                                 .with(csrf())
@@ -110,7 +95,7 @@ class CounselControllerTest {
                                 "상담 질문은 필수입니다.")
                         )
                 );
-        //then
+
 
     }
 
