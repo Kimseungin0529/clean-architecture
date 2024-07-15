@@ -3,10 +3,8 @@ package com.project.doongdoong.domain.voice.model;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.UUID;
 
@@ -27,13 +25,13 @@ public class Voice extends BaseEntity {
     private QuestionContent questionContent;
 
 
-    @Builder
+    @Builder(builderClassName = "CommonBuilder", builderMethodName = "commonBuilder")
     public Voice(String originName) {
         this.originName = originName;
         this.storedName = gainFileName(originName);
         this.accessUrl = "";
     }
-    @Builder
+    @Builder(builderClassName = "InitVoiceContentBuilder", builderMethodName = "initVoiceContentBuilder")
     public Voice(String originName, QuestionContent questionContent) {
         this.originName = originName;
         this.storedName = gainFileName() + originName;

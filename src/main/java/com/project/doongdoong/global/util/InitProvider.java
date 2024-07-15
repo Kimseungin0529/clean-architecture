@@ -21,6 +21,8 @@ public class InitProvider {
     private final VoiceRepository voiceRepository;
     private final VoiceService voiceService;
 
+    private final static String VOICE_QUESTION = "voice-question";
+
     @PostConstruct
     public void initQuestionVoiceFiles(){
 
@@ -28,7 +30,7 @@ public class InitProvider {
             Optional<Voice> existingVoice = voiceRepository.findVoiceByQuestionContent(questionContent);
             if (!existingVoice.isPresent()) {
                 byte[] audioContent = googleTtsProvider.convertTextToSpeech(questionContent.getText());
-                String filename = "voice-question" + questionContent.getNumber();
+                String filename = VOICE_QUESTION + questionContent.getNumber();
                 voiceService.saveTtsVoice(audioContent, filename, questionContent);
                 log.info("Voice for question {} created and saved.", questionContent.getNumber());
             }
