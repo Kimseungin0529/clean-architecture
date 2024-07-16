@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain;
 
+import com.project.doongdoong.domain.voice.service.VoiceService;
 import com.project.doongdoong.global.util.WebClientUtil;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
