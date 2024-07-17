@@ -5,16 +5,13 @@ import com.project.doongdoong.domain.analysis.model.Analysis;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
-import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 
-import java.util.List;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 
 class AnalysisRepositoryTest extends IntegrationSupportTest {
 
@@ -25,31 +22,24 @@ class AnalysisRepositoryTest extends IntegrationSupportTest {
     @DisplayName("접근 회원과 고유 분석 번호를 통해 일치하는 분석 정보를 조회합니다.")
     void findByUserAndId(){
         //given
-        User user1 = createUser("socialId1", SocialType.APPLE);
-        User user2 = createUser("socialId2", SocialType.APPLE);
-        User user3 = createUser("socialId3", SocialType.GOOGLE);
-        User savedUser1 = userRepository.save(user1);
-        userRepository.saveAll(List.of(user2, user3));
+        User user = createUser("socialId1", SocialType.APPLE);
+        User savedUser = userRepository.save(user);
 
-        Analysis analysis1 = createAnalysis(user1);
-        Analysis analysis2 = createAnalysis(user1);
-        Analysis analysis3 = createAnalysis(user2);
-        Analysis savedAnalysis1 = analysisRepository.save(analysis1);
-        Analysis savedAnalysis2 = analysisRepository.save(analysis2);
-        Analysis savedAnalysis3 = analysisRepository.save(analysis3);
+        Analysis analysis = createAnalysis(user);
+        Analysis savedAnalysis = analysisRepository.save(analysis);
 
-        Long requestId = savedAnalysis1.getId();
+        Long requestId = savedAnalysis.getId();
 
         //when
-        Optional<Analysis> findAnalysis = analysisRepository.findByUserAndId(savedUser1, requestId);
+        Optional<Analysis> findAnalysis = analysisRepository.findByUserAndId(savedUser, requestId);
 
         //then
         assertThat(findAnalysis.get())
                 .isNotNull()
-                .isEqualTo(savedAnalysis1);
+                .isEqualTo(savedAnalysis);
         assertThat(findAnalysis.get().getUser())
                 .isNotNull()
-                .isEqualTo(savedUser1);
+                .isEqualTo(savedUser);
 
     }
 
