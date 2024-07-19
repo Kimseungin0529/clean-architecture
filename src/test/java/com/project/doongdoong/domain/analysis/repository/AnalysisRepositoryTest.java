@@ -3,6 +3,9 @@ package com.project.doongdoong.domain.analysis.repository;
 import com.project.doongdoong.domain.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.dto.response.FeelingStateResponseDto;
 import com.project.doongdoong.domain.analysis.model.Analysis;
+import com.project.doongdoong.domain.question.model.Question;
+import com.project.doongdoong.domain.question.model.QuestionContent;
+import com.project.doongdoong.domain.question.repository.QuestionRepository;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
@@ -13,7 +16,6 @@ import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,6 +25,7 @@ import static org.assertj.core.api.Assertions.tuple;
 class AnalysisRepositoryTest extends IntegrationSupportTest {
 
     @Autowired AnalysisRepository analysisRepository;
+    @Autowired QuestionRepository questionRepository;
     @Autowired UserRepository userRepository;
 
     @Test
@@ -114,12 +117,60 @@ class AnalysisRepositoryTest extends IntegrationSupportTest {
                 .contains(savedUser, analysis4.getFeelingState(), analysis4.getAnalyzeTime());
     }
 
+    @Test
+    @DisplayName("분석 정보와 분석에 사용된 질문들을 조회합니다.")
+    void findAnalysisWithQuestion(){
+        //given
+        User user = createUser("socialId", SocialType.APPLE);
+        User savedUser = userRepository.save(user);
+
+        Question question1 = createQuestion(QuestionContent.FIXED_QUESTION1);
+        Question question2 = createQuestion(QuestionContent.FIXED_QUESTION2);
+        Question question3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
+        Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
+
+        List<Question> questions = List.of(question1, question2, question3, question4);
+
+        Analysis analysis = createAnalysis(savedUser,questions);
+        question1.connectAnalysis(analysis);
+        question2.connectAnalysis(analysis);
+        question3.connectAnalysis(analysis);
+        question4.connectAnalysis(analysis);
+
+        Analysis savedAnaylsis = analysisRepository.save(analysis);
+
+        //when
+        Optional<Analysis> result = analysisRepository.findAnalysisWithQuestion(savedAnaylsis.getId());
+        //then
+        assertThat(result.get()).isNotNull()
+                .isEqualTo(savedAnaylsis)
+                .extracting("id", "user")
+                .contains(savedAnaylsis.getId(), savedUser);
+
+        assertThat(result.get().getQuestions())
+                .hasSize(questions.size())
+                .containsExactlyInAnyOrder(question1, question2, question3, question4);
+        ;
+    }
+
+    private static Question createQuestion(QuestionContent questionContent) {
+        Question question = Question.builder()
+                .questionContent(questionContent)
+                .build();
+
+        return question;
+    }
+
     private static Analysis createAnalysis(User user) {
         return Analysis.builder()
                 .user(user)
                 .build();
-
-
+    }
+    private static Analysis createAnalysis(User user, List<Question> questions) {
+        return Analysis.builder()
+                .user(user)
+                .questions(questions)
+                .build();
     }
 
     private static User createUser(String socialId, SocialType socialType) {
