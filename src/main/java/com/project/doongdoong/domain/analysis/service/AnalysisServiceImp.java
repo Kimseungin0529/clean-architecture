@@ -187,7 +187,7 @@ public class AnalysisServiceImp implements AnalysisService{
         User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
                 .orElseThrow(() -> new UserNotFoundException());
 
-        Optional<Analysis> analysis = analsisRepository.findFirstByUserOrderByCreatedTimeDesc(user);
+        Optional<Analysis> analysis = analsisRepository.findFirstByUserOrderByAnalyzeTimeDesc(user);
         List<FeelingStateResponseDto> result = null;
         if(analysis.isPresent())
         {

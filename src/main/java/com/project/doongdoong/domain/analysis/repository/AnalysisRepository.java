@@ -33,7 +33,7 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Long>, Analy
     List<FeelingStateResponseDto> findAllByDateBetween(@Param("user") User user
             , @Param("startTime") LocalDate startTime, @Param("endTime") LocalDate endTime);
 
-    Optional<Analysis> findFirstByUserOrderByCreatedTimeDesc(User user);
+    Optional<Analysis> findFirstByUserOrderByAnalyzeTimeDesc(User user);
 
     @Query("select analysis from Analysis analysis join fetch analysis.questions where analysis.id = :analysisId")
     Optional<Analysis> findAnalysisWithQuestion(@Param("analysisId") Long analysisId);
