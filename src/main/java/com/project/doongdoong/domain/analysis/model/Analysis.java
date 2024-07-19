@@ -12,6 +12,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -50,7 +51,7 @@ public class Analysis extends BaseEntity {
         this.feelingState = 0;
         this.questions = questions;
         this.user = user;
-        this.analyzeTime = LocalDate.of(1,1,1);
+        this.analyzeTime = this.getCreatedTime().toLocalDate();
     }
 
 

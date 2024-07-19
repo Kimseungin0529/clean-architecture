@@ -224,7 +224,7 @@ public class AnalysisServiceImp implements AnalysisService{
         if(voices.size() != MAX_ANSWER_COUNT){ //만약 모든 질문에 대한 답변이 없는 경우, 답변이 부족하다는 예외 발생
             throw new AllAnswersNotFoundException();
         }
-        if (findAnalysis.getAnalyzeTime().equals(LocalDate.now())) { // 분석은 1번만 가능
+        if (!findAnalysis.getAnalyzeTime().equals(findAnalysis.getCreatedTime())) { // 분석은 1번만 가능
             throw new AlreadyAnalyzedException();
         }
 
