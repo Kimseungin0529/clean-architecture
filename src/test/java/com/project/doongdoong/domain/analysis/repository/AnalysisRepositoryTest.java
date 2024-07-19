@@ -87,7 +87,7 @@ class AnalysisRepositoryTest extends IntegrationSupportTest {
 
     @Test
     @DisplayName("사용자의 가장 최근 분석 조회하기")
-    void (){
+    void findFirstByUserOrderByAnalyzeTimeDesc(){
         //given
         User user = createUser("socialId", SocialType.APPLE);
         User savedUser = userRepository.save(user);
