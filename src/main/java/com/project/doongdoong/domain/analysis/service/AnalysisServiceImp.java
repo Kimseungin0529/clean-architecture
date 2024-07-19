@@ -194,7 +194,7 @@ public class AnalysisServiceImp implements AnalysisService{
             Analysis findAnalysis = analysis.get();
             LocalDateTime endTime = findAnalysis.getCreatedTime().plusDays(1).truncatedTo(ChronoUnit.DAYS);
             LocalDateTime startTime = endTime.minusDays(6).truncatedTo(ChronoUnit.DAYS);
-            result = analsisRepository.findAllByDateBetween(user, startTime, endTime);
+            result = analsisRepository.findAllByDateBetween(user, startTime.toLocalDate(), endTime.toLocalDate());
         }
 
         return FeelingStateResponseListDto.builder()
@@ -224,7 +224,7 @@ public class AnalysisServiceImp implements AnalysisService{
         if(voices.size() != MAX_ANSWER_COUNT){ //만약 모든 질문에 대한 답변이 없는 경우, 답변이 부족하다는 예외 발생
             throw new AllAnswersNotFoundException();
         }
-        if (!findAnalysis.getAnalyzeTime().equals(findAnalysis.getCreatedTime())) { // 분석은 1번만 가능
+        if (Optional.of(findAnalysis.getAnalyzeTime()).isPresent()) { // 분석은 1번만 가능
             throw new AlreadyAnalyzedException();
         }
 
@@ -246,7 +246,7 @@ public class AnalysisServiceImp implements AnalysisService{
                 .getAsDouble();
         double result = ANALYSIS_TEXT_RATE * resultByText + ANALYSIS_VOICE_RATE * resultByVoice;
 
-        findAnalysis.changeFeelingStateAndAnalyzeTime(result);
+        findAnalysis.changeFeelingStateAndAnalyzeTime(result, LocalDate.now());
 
         return FellingStateCreateResponse.builder()
                 .feelingState(result)

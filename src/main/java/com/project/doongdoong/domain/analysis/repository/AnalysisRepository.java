@@ -11,6 +11,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -25,12 +26,12 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Long>, Analy
 
     // 현재 시간 기준으로 일주일 치 분석값 하루 기준으로 그룹핑해서 가져오기
     @Query("select new com.project.doongdoong.domain.analysis.dto.response.FeelingStateResponseDto" +
-            "(CONCAT(YEAR(a.createdTime), '-', MONTH(a.createdTime), '-', DAY(a.createdTime)), avg(a.feelingState))" +
+            "(CONCAT(YEAR(a.analyzeTime), '-', MONTH(a.analyzeTime), '-', DAY(a.analyzeTime)), avg(a.feelingState))" +
             "from Analysis a where a.user = :user " +
-            "and a.createdTime between :startTime AND :endTime" +
-            " group by YEAR(a.createdTime), MONTH(a.createdTime), DAY(a.createdTime) ")
+            "and a.analyzeTime between :startTime AND :endTime" +
+            " group by YEAR(a.analyzeTime), MONTH(a.analyzeTime), DAY(a.analyzeTime) ")
     List<FeelingStateResponseDto> findAllByDateBetween(@Param("user") User user
-            , @Param("startTime") LocalDateTime startTime, @Param("endTime") LocalDateTime endTime);
+            , @Param("startTime") LocalDate startTime, @Param("endTime") LocalDate endTime);
 
     Optional<Analysis> findFirstByUserOrderByCreatedTimeDesc(User user);
 

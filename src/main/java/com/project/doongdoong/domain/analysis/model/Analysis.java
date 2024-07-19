@@ -51,13 +51,12 @@ public class Analysis extends BaseEntity {
         this.feelingState = 0;
         this.questions = questions;
         this.user = user;
-        this.analyzeTime = this.getCreatedTime().toLocalDate();
     }
 
 
-    public void changeFeelingStateAndAnalyzeTime(double feelingState){
+    public void changeFeelingStateAndAnalyzeTime(double feelingState, LocalDate analyzeTime){
         this.feelingState = feelingState;
-        this.analyzeTime = LocalDate.now();
+        this.analyzeTime = analyzeTime;
     }
 
 }
