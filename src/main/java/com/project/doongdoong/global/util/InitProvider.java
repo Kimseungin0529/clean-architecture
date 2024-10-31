@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.Optional;
 
-// @Component // 결제 문제로 일단 사용 X
+@Component // 결제 문제로 일단 사용 X
 @Slf4j
 @RequiredArgsConstructor
 @Profile("!test")

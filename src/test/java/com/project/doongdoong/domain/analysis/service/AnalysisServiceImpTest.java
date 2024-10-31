@@ -17,7 +17,6 @@ import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
 import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.domain.voice.repository.VoiceRepository;
-import org.hibernate.query.sqm.mutation.internal.cte.CteInsertStrategy;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 
@@ -29,7 +28,6 @@ import java.util.stream.Collectors;
 import static java.time.LocalDate.now;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyList;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
@@ -247,7 +245,7 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
                 .extracting("pageNumber", "totalPage")
                 .containsExactly(1, 1);
 
-        assertThat(response.getAnaylsisResponseDtoList())
+        assertThat(response.getAnalysisResponseDtoList())
                 .hasSize(analysies.size())
                 .extracting("analysisId", "questionContent")
                 .containsExactlyInAnyOrder(
@@ -484,11 +482,7 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
     }
 
     private static Question createQuestion(QuestionContent questionContent) {
-        Question question = Question.builder()
-                .questionContent(questionContent)
-                .build();
-
-        return question;
+        return Question.of(questionContent);
     }
 
     private static Analysis createAnalysis(User user, List<Question> questions) {
