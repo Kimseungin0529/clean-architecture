@@ -10,6 +10,8 @@ build/
 #quersydsl 설정
 **/src/main/generated/**
 
+target/**
+
 ### STS ###
 .apt_generated
 .classpath
