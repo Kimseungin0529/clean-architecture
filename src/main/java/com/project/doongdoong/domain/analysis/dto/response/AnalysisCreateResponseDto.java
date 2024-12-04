@@ -15,8 +15,17 @@ public class AnalysisCreateResponseDto {
     private List<String> questionTexts;
     private List<String> accessUrls;
 
+    public static AnalysisCreateResponseDto of(Long analysisId, List<Long> questionIds, List<String> questionTexts, List<String> accessUrls) {
+        return AnalysisCreateResponseDto.builder()
+                .analysisId(analysisId)
+                .questionIds(questionIds)
+                .questionTexts(questionTexts)
+                .accessUrls(accessUrls)
+                .build();
+    }
+
     @Builder
-    public AnalysisCreateResponseDto(Long analysisId, List<Long> questionIds, List<String> questionTexts, List<String> accessUrls){
+    public AnalysisCreateResponseDto(Long analysisId, List<Long> questionIds, List<String> questionTexts, List<String> accessUrls) {
         this.analysisId = analysisId;
         this.questionIds = questionIds;
         this.questionTexts = questionTexts;

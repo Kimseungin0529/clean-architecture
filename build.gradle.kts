@@ -1,5 +1,7 @@
 plugins {
 	java
+	jacoco
+
 	id("org.springframework.boot") version "3.2.1"
 	id("io.spring.dependency-management") version "1.1.4"
 	id("org.asciidoctor.jvm.convert") version "3.3.2"
@@ -51,7 +53,6 @@ dependencies {
 
 
     implementation("io.netty:netty-resolver-dns-native-macos:4.1.96.Final:osx-aarch_64")
-//	implementation('io.netty:netty-resolver-dns-native-macos')
 
 	// 스프링 부트 3.0 이상 query dls
 	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
@@ -76,15 +77,12 @@ dependencies {
     testImplementation("org.springframework.restdocs:spring-restdocs-mockmvc")
 
 }
-
 tasks.withType<Test> {
-	useJUnitPlatform()
+    useJUnitPlatform()
+    //systemProperty("spring.profiles.active", "test")
 }
 
 // Querydsl 빌드 옵션 (옵셔널)
-/**
- * QueryDSL Build Options
- */
 val querydslDir = "src/main/generated"
 
 sourceSets {
@@ -109,7 +107,58 @@ val snippetsDir by extra { file("build/generated-snippets") }
 
 tasks.test {
     useJUnitPlatform()
+    doFirst { // 기존
+        //snippetsDir.deleteRecursively()
+    }
     outputs.dir(snippetsDir) // 테스트 결과를 Snippets 디렉터리에 저장
+    finalizedBy("jacocoTestReport") // 테스트 후 JaCoCo 리포트 생성
+}
+
+jacoco {
+    toolVersion = "0.8.10" // 최신 버전 사용
+}
+
+// 제외할 디렉토리 및 파일 패턴을 공통 변수로 선언
+val jacocoExcludes = listOf(
+    "**/generated/**", // Querydsl Qfile
+    "**/docs/**", // RestDocs
+    "**/dto/**", // DTO 클래스
+    "**/exception/**", // 커스텀 예외
+    "**/config/**", // 설정 파일
+    "**/common/**" // 공통 유틸
+)
+tasks.jacocoTestReport {
+    dependsOn(tasks.test) // 테스트 실행 후 리포트 생성
+    reports {
+        xml.required.set(true) // SonarQube를 위한 XML 리포트 생성
+        html.required.set(true) // 사람이 읽기 쉬운 HTML 리포트 생성
+        csv.required.set(false) // CSV 리포트는 비활성화
+    }
+    classDirectories.setFrom( // 리포트 생성에서 제외할 디렉토리와 파일 설정
+                    files(classDirectories.files.map {
+                        fileTree(it) {
+                            exclude(jacocoExcludes)
+                        }
+                    })
+                )
+
+    finalizedBy("jacocoTestCoverageVerification") // 리포트 생성 후 검증
+}
+
+tasks.jacocoTestCoverageVerification {
+    violationRules {
+        rule {
+                enabled = true
+                element = "BUNDLE" // 전체 모듈 수준에서 통합 커버리지 검증
+
+                limit {
+                    counter = "LINE" // 라인 커버리지 기준
+                    value = "COVEREDRATIO"
+                    minimum = 0.50.toBigDecimal()
+                }
+                excludes = jacocoExcludes
+        }
+    }
 }
 
 tasks.named<org.asciidoctor.gradle.jvm.AsciidoctorTask>("asciidoctor") {

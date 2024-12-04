@@ -43,8 +43,10 @@ public class Question extends BaseEntity {
     }
 
     public void connectAnalysis(Analysis analysis) {
-        this.analysis = analysis;
-        //analysis.getQuestions().add(this); // 무한 참조(heap space)로 인해 주석 처리. 원인을 못 찾음...
+        if(this.analysis != null) {
+            return;
+        }
+        this.analysis = analysis; // 양방향 연관관계 메서드를 맺지 않아도 되는 이유 -> 생성자에서 이미 questions 객체를 넣어줌. 이미 완료됨.
     }
 
     public void connectAnswer(Answer answer) {
@@ -52,4 +54,7 @@ public class Question extends BaseEntity {
     }
 
 
+    public boolean hasAnswer() {
+        return answer != null;
+    }
 }
