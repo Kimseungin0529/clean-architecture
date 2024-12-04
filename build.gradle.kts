@@ -181,3 +181,12 @@ tasks.named<org.springframework.boot.gradle.tasks.bundling.BootJar>("bootJar") {
     }
 }
 
+tasks.register<Copy>("copyPrivate") {
+    from("./seungjin-yml-importer") // 서브모듈 경로
+    include("*.yml")               // 복사할 파일 패턴 (*.yml)
+    into("src/main/resources")     // 복사 대상 경로 (resources 폴더)
+}
+
+tasks.named("processResources") {
+    dependsOn("copyPrivate")       // processResources 전에 copyPrivate 실행
+}
