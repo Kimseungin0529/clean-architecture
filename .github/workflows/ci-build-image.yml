@@ -44,12 +44,6 @@ jobs:
       - name: Gradle build를 수행합니다
         run: ./gradlew build
 
-      - name: Jacoco 리포트 아티팩트로 업로드
-        uses: actions/upload-artifact@v3
-        with:
-          name: jacoco-report
-          path: build/reports/jacoco/test/jacocoTestReport.xml  # 생성된 Jacoco 리포트 파일 경로
-
 #      - name: Jacoco 리포트 아티팩트로 업로드
 #        uses: actions/upload-artifact@v3
 #        with:
@@ -71,7 +65,7 @@ jobs:
 
       - name: 테스트 커버리지를 PR에 코멘트로 등록합니다
         id: jacoco
-        uses: madrapps/jacoco-report@v1.6.1
+        uses: Madrapps/jacoco-report@v1.7.1
         with:
           title: "📈 테스트 커버리지 리포트입니다"
           paths: ${{ github.workspace }}/build/reports/jacoco/test/jacocoTestReport.xml
