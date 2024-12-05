@@ -23,5 +23,4 @@ jobs:
             ./deploy.sh
           last_ssh: |
             echo 배포 완료
-          
-          
+

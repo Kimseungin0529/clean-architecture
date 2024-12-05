@@ -187,6 +187,8 @@ tasks.register<Copy>("copyPrivate") {
     into("src/main/resources")     // 복사 대상 경로 (resources 폴더)
 }
 
-tasks.named("processResources") {
-    dependsOn("copyPrivate")       // processResources 전에 copyPrivate 실행
+// build 작업이 실행될 때만 copyPrivate 작업을 먼저 실행
+tasks.named("build") {
+    dependsOn("copyPrivate") // build 시에만 copyPrivate 작업이 실행되도록 설정
 }
+
