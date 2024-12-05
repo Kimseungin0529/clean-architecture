@@ -152,7 +152,7 @@ tasks.jacocoTestCoverageVerification {
                 element = "BUNDLE" // 전체 모듈 수준에서 통합 커버리지 검증
 
                 limit {
-                    counter = "LINE" // 라인 커버리지 기준
+                    counter = "INSTRUCTION" // 라인 커버리지 기준
                     value = "COVEREDRATIO"
                     minimum = 0.50.toBigDecimal()
                 }
