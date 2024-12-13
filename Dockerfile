@@ -14,5 +14,5 @@ COPY ${JAR_FILE} app.jar
 EXPOSE 8080
 
 # 컨테이너 실행 시 자동으로 실행되는 명령어를 정의합니다.
-ENV SPRING_PROFILES_ACTIVE=prod
+ENV SPRING_PROFILES_ACTIVE=dev
 CMD ["java", "-jar", "app.jar", "--spring.profiles.active=${SPRING_PROFILES_ACTIVE}"]
