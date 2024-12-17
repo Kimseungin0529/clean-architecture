@@ -5,6 +5,7 @@ plugins {
 	id("org.springframework.boot") version "3.2.1"
 	id("io.spring.dependency-management") version "1.1.4"
 	id("org.asciidoctor.jvm.convert") version "3.3.2"
+    id("org.sonarqube") version "6.0.1.5171"
 }
 
 group = "com.project"
@@ -28,7 +29,6 @@ repositories {
 dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-data-jpa")
 	implementation("org.springframework.boot:spring-boot-starter-data-redis")
-	implementation("org.springframework.boot:spring-boot-starter-oauth2-client")
 	implementation("org.springframework.boot:spring-boot-starter-security")
 	implementation("org.springframework.boot:spring-boot-starter-validation")
 	implementation("org.springframework.boot:spring-boot-starter-web")
@@ -39,18 +39,13 @@ dependencies {
 
 	implementation ("com.google.cloud:google-cloud-texttospeech:2.42.0") // 구글 TTS 라이브러리
 
-
-
 	//jwt
 	implementation("io.jsonwebtoken:jjwt-api:0.11.1")
 	runtimeOnly("io.jsonwebtoken:jjwt-impl:0.11.1")
 	runtimeOnly("io.jsonwebtoken:jjwt-jackson:0.11.1")
 
-	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.0.2") // webmvc-ui는 json 형식을 보여주기 위함.
-
 	implementation("org.springframework.cloud:spring-cloud-starter-aws:2.2.6.RELEASE") // amazon cloud 사용
 	implementation ("org.springframework.boot:spring-boot-starter-webflux") // webflux, 모바일 사용
-
 
     implementation("io.netty:netty-resolver-dns-native-macos:4.1.96.Final:osx-aarch_64")
 
@@ -58,10 +53,8 @@ dependencies {
 	implementation("com.querydsl:querydsl-jpa:5.0.0:jakarta")
 	annotationProcessor("com.querydsl:querydsl-apt:5.0.0:jakarta")
 
-
 	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
-
 
 	compileOnly("org.projectlombok:lombok")
 	developmentOnly("org.springframework.boot:spring-boot-devtools")
@@ -79,7 +72,6 @@ dependencies {
 }
 tasks.withType<Test> {
     useJUnitPlatform()
-    //systemProperty("spring.profiles.active", "test")
 }
 
 // Querydsl 빌드 옵션 (옵셔널)
@@ -112,6 +104,13 @@ tasks.test {
     }
     outputs.dir(snippetsDir) // 테스트 결과를 Snippets 디렉터리에 저장
     finalizedBy("jacocoTestReport") // 테스트 후 JaCoCo 리포트 생성
+}
+
+sonar {
+  properties {
+    property("sonar.projectKey", "poda")
+    property("sonar.projectName", "poda")
+  }
 }
 
 jacoco {
