@@ -136,7 +136,7 @@ tasks.jacocoTestReport {
     classDirectories.setFrom( // 리포트 생성에서 제외할 디렉토리와 파일 설정
                     files(classDirectories.files.map {
                         fileTree(it) {
-                            exclude(jacocoExcludes)
+                            //exclude(jacocoExcludes)
                         }
                     })
                 )
