@@ -87,7 +87,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: jacoco-html-report
-          path: ${{ github.workspace }}/build/jacocoReport/test/html
+          path: ${{ github.workspace }}/build/reports/jacoco/test/html
 
       - name: Docker Buildx 설치
         uses: docker/setup-buildx-action@v2
