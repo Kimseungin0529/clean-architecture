@@ -81,6 +81,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 50
           min-coverage-changed-files: 50
+
           #update-comment: true
           debug-mode: true  # 디버그 모드 활성화
 
@@ -119,5 +120,6 @@ jobs:
 #          tags: ${{env.DOCKERHUB_USERNAME}}/${{env.IMAGE_NAME}}:${{env.TAG}}
 #          cache-from: type=gha # GitHub Actions 캐싱 활성화
 #          cache-to: type=gha,mode=max # 최대 캐싱 활성화
+
   
     
