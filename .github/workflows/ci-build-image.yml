@@ -72,9 +72,6 @@ jobs:
           report_paths: '**/build/test-results/test/TEST-*.xml'
           token: ${{ github.token }}
 
-      - name: Run Coverage
-        run: ./gradlew testCoverage
-
       - name: 테스트 커버리지를 PR에 코멘트로 등록합니다
         id: jacoco
         uses: Madrapps/jacoco-report@v1.7.1
