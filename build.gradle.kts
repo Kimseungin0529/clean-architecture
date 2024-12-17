@@ -155,7 +155,7 @@ tasks.jacocoTestCoverageVerification {
                     value = "COVEREDRATIO"
                     minimum = 0.50.toBigDecimal()
                 }
-                excludes = jacocoExcludes
+                //excludes = jacocoExcludes
         }
     }
 }
