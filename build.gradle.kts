@@ -133,13 +133,13 @@ tasks.jacocoTestReport {
         html.required.set(true) // 사람이 읽기 쉬운 HTML 리포트 생성
         csv.required.set(false) // CSV 리포트는 비활성화
     }
-    //classDirectories.setFrom( // 리포트 생성에서 제외할 디렉토리와 파일 설정
-    //                files(classDirectories.files.map {
-    //                    fileTree(it) {
-    //                        //exclude(jacocoExcludes)
-    //                    }
-    //                })
-    //            )
+    classDirectories.setFrom( // 리포트 생성에서 제외할 디렉토리와 파일 설정
+                    files(classDirectories.files.map {
+                        fileTree(it) {
+                            exclude(jacocoExcludes)
+                        }
+                    })
+                )
 
     finalizedBy("jacocoTestCoverageVerification") // 리포트 생성 후 검증
 }
@@ -155,7 +155,7 @@ tasks.jacocoTestCoverageVerification {
                     value = "COVEREDRATIO"
                     minimum = 0.50.toBigDecimal()
                 }
-                //excludes = jacocoExcludes
+                excludes = jacocoExcludes
         }
     }
 }
