@@ -81,8 +81,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           min-coverage-overall: 50
           min-coverage-changed-files: 50
-
-          #update-comment: true
+          update-comment: true
           debug-mode: true  # 디버그 모드 활성화
 
 
