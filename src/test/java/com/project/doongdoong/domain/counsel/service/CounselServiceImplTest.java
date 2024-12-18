@@ -235,7 +235,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
         Counsel counsel11 = createCounsel(user, "상담 질문 내용12", CounselType.LOVE);
 
         counselRepository.saveAll(List.of(counsel1, counsel2, counsel3, counsel4, counsel5
-        , counsel6, counsel7, counsel8, counsel9, counsel10, counsel11));
+                , counsel6, counsel7, counsel8, counsel9, counsel10, counsel11));
 
         String uniqueValue = socialId + "_" + socialType;
         DateTimeFormatter datePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
