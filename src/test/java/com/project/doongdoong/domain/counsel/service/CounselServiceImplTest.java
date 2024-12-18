@@ -6,7 +6,9 @@ import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
+import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
+import com.project.doongdoong.domain.counsel.exception.CounselNotExistPageException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
@@ -22,12 +24,12 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.assertj.core.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
@@ -210,6 +212,77 @@ class CounselServiceImplTest extends IntegrationSupportTest {
         );
 
     }
+
+    @DisplayName("상담 목록을 조회 시나리오")
+    @TestFactory
+    Collection<DynamicTest> findCounsels_시나리오() {
+        // given
+        String socialId = "123456";
+        SocialType socialType = SocialType.APPLE;
+        User user = createUser(socialId, socialType);
+        userRepository.save(user);
+
+        Counsel counsel1 = createCounsel(user, "상담 질문 내용1", CounselType.LOVE);
+        Counsel counsel2 = createCounsel(user, "상담 질문 내용2", CounselType.JOB);
+        Counsel counsel3 = createCounsel(user, "상담 질문 내용3", CounselType.LOVE);
+        Counsel counsel4 = createCounsel(user, "상담 질문 내용4", CounselType.LOVE);
+        Counsel counsel5 = createCounsel(user, "상담 질문 내용5", CounselType.MENTAL_HEALTH);
+        Counsel counsel6 = createCounsel(user, "상담 질문 내용6", CounselType.LOVE);
+        Counsel counsel7 = createCounsel(user, "상담 질문 내용7", CounselType.LOVE);
+        Counsel counsel8 = createCounsel(user, "상담 질문 내용8", CounselType.LOVE);
+        Counsel counsel9 = createCounsel(user, "상담 질문 내용9", CounselType.LOVE);
+        Counsel counsel10 = createCounsel(user, "상담 질문 내용10", CounselType.LOVE);
+        Counsel counsel11 = createCounsel(user, "상담 질문 내용12", CounselType.LOVE);
+
+        counselRepository.saveAll(List.of(counsel1, counsel2, counsel3, counsel4, counsel5
+        , counsel6, counsel7, counsel8, counsel9, counsel10, counsel11));
+
+        String uniqueValue = socialId + "_" + socialType;
+        DateTimeFormatter datePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+
+        //when & then
+        return List.of(
+                DynamicTest.dynamicTest("상담 목록을 조회합니다.", () -> {
+                    //given
+                    int validPageNumber = 1;
+                    //when
+                    CounselListResponse result = counselService.findCounsels(uniqueValue, validPageNumber);
+                    // then
+                    assertThat(result)
+                            .extracting("currentPage", "numberPerPage", "totalPage", "totalElements")
+                            .containsExactly(1, 10, 2, 11L);
+                    assertThat(result.getCounselContent())
+                            .hasSize(10)
+                            .extracting("date", "counselId", "isAnalysisUsed", "counselType")
+                            .containsExactly(
+                                    tuple(getDateFormatBy(counsel1, datePattern), counsel1.getId(), false, counsel1.getCounselType().getContent()),
+                                    tuple(getDateFormatBy(counsel2, datePattern), counsel2.getId(), false, counsel2.getCounselType().getContent()),
+                                    tuple(getDateFormatBy(counsel3, datePattern), counsel3.getId(), false, counsel3.getCounselType().getContent()),
+                                    tuple(getDateFormatBy(counsel4, datePattern), counsel4.getId(), false, counsel4.getCounselType().getContent()),
+                                    tuple(getDateFormatBy(counsel5, datePattern), counsel5.getId(), false, counsel5.getCounselType().getContent()),
+                                    tuple(getDateFormatBy(counsel6, datePattern), counsel6.getId(), false, counsel6.getCounselType().getContent()),
+                                    tuple(getDateFormatBy(counsel7, datePattern), counsel7.getId(), false, counsel7.getCounselType().getContent()),
+                                    tuple(getDateFormatBy(counsel8, datePattern), counsel8.getId(), false, counsel8.getCounselType().getContent()),
+                                    tuple(getDateFormatBy(counsel9, datePattern), counsel9.getId(), false, counsel9.getCounselType().getContent()),
+                                    tuple(getDateFormatBy(counsel10, datePattern), counsel10.getId(), false, counsel10.getCounselType().getContent())
+                            );
+                }),
+                DynamicTest.dynamicTest("존재하지 않는 페이지에 접근할 수 없습니다.", () -> {
+                    //given
+                    int unValidPageNumber = 3;
+                    //when & then
+                    assertThatThrownBy(() ->
+                            counselService.findCounsels(uniqueValue, unValidPageNumber))
+                            .isInstanceOf(CounselNotExistPageException.class)
+                            .hasMessage("존재하지 않는 페이지입니다.");
+                })
+        );
+    }
+
+    private String getDateFormatBy(Counsel counsel, DateTimeFormatter datePattern) {
+        return counsel.getCreatedTime().format(datePattern);
+    }
+
 
     private Answer createAnswer() {
         return Answer.builder()

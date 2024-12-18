@@ -162,7 +162,7 @@ public class CounselServiceImpl implements CounselService {
                                 CounselResponse.builder()
                                         .date(counsel.getCreatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                                         .counselId(counsel.getId())
-                                        .isAnalysisUsed(counsel.hasAnaylsis())
+                                        .isAnalysisUsed(counsel.hasAnalysis())
                                         .counselType(counsel.getCounselType().getContent())
                                         .build()
                         )

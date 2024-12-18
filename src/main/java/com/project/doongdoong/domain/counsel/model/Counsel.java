@@ -56,7 +56,7 @@ public class Counsel extends BaseEntity {
         this.answer = answer;
     }
 
-    public boolean hasAnaylsis() {
+    public boolean hasAnalysis() {
         return this.getAnalysis() != null;
     }
 
