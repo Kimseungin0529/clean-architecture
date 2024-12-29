@@ -12,7 +12,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 class QuestionContentTest {
     @Test
-    @DisplayName("고정 QuestionContent을 랜덤으로 하나 반환한다. ")
+    @DisplayName("고정 질문 항목 중 임의로 하나 반환한다.")
     void provideFixedQuestionContent(){
         //given
         List<QuestionContent> values = QuestionContent.getFixedQuestionContents();
@@ -29,7 +29,7 @@ class QuestionContentTest {
     }
 
     @Test
-    @DisplayName("고정되지 않은 QuestionContent을 랜덤으로 하나 반환한다. ")
+    @DisplayName("비고정 질문 항목 중 임의로 하나 반환한다.")
     void provideUnFixedQuestionContent(){
         //give
         List<QuestionContent> values = QuestionContent.getUnFixedQuestionContents();

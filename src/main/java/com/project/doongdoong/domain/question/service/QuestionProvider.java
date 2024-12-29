@@ -51,7 +51,7 @@ public class QuestionProvider implements QuestionProvidable {
 
     private List<Question> getQuestionListFrom(List<QuestionContent> questionContents) {
         return questionContents.stream()
-                .map(questionContent -> Question.of(questionContent))
+                .map(Question::of)
                 .collect(Collectors.toList());
     }
 

@@ -44,7 +44,7 @@ public class CounselController {
     @GetMapping("/{id}")
     public ApiResponse<?> findCounselContent(@CurrentUser String uniqueValue, @PathVariable("id") Long counselId) {
 
-        return ApiResponse.of(HttpStatus.OK, null, counselService.findCouselContent(uniqueValue, counselId));
+        return ApiResponse.of(HttpStatus.OK, null, counselService.findCounselContent(uniqueValue, counselId));
     }
 
     @GetMapping
@@ -52,7 +52,7 @@ public class CounselController {
                                        @RequestParam(name = "pageNumber", required = false, defaultValue = "1")
                                        @Valid @Min(value = 1, message = "페이지 시작은 최소 1입니다.") int pageNumber) {
 
-        return ApiResponse.of(HttpStatus.OK, null, counselService.findConusels(uniqueValue, pageNumber));
+        return ApiResponse.of(HttpStatus.OK, null, counselService.findCounsels(uniqueValue, pageNumber));
     }
 
 

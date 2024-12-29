@@ -9,7 +9,7 @@ import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
 public interface CounselService {
     public CounselResultResponse consult(String socialId, CounselCreateRequest request);
 
-    public CounselDetailResponse findCouselContent(String socialId, Long counselId);
+    public CounselDetailResponse findCounselContent(String socialId, Long counselId);
 
-    public CounselListResponse findConusels(String uniqueValue, int pageNumber);
+    public CounselListResponse findCounsels(String uniqueValue, int pageNumber);
 }

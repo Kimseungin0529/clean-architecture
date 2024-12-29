@@ -117,7 +117,7 @@ public class CounselServiceImpl implements CounselService {
     }
 
     @Override
-    public CounselDetailResponse findCouselContent(String socialId, Long counselId) {
+    public CounselDetailResponse findCounselContent(String socialId, Long counselId) {
         String[] value = parseUniqueValue(socialId);
         log.info(value[0], value[1]);
         User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(value[1]), value[0])
@@ -139,7 +139,7 @@ public class CounselServiceImpl implements CounselService {
     }
 
     @Override
-    public CounselListResponse findConusels(String uniqueValue, int pageNumber) {
+    public CounselListResponse findCounsels(String uniqueValue, int pageNumber) {
         String[] value = parseUniqueValue(uniqueValue);
         User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(value[1]), value[0])
                 .orElseThrow(() -> new UserNotFoundException());
@@ -162,7 +162,7 @@ public class CounselServiceImpl implements CounselService {
                                 CounselResponse.builder()
                                         .date(counsel.getCreatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                                         .counselId(counsel.getId())
-                                        .isAnalysisUsed(counsel.hasAnaylsis())
+                                        .isAnalysisUsed(counsel.hasAnalysis())
                                         .counselType(counsel.getCounselType().getContent())
                                         .build()
                         )
