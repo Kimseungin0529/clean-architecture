@@ -129,7 +129,7 @@ public class CounselServiceImpl implements CounselService {
         }
 
         return CounselDetailResponse.builder()
-                .data(findCounsel.getCreatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .date(findCounsel.getCreatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .counselId(findCounsel.getId())
                 .question(findCounsel.getQuestion())
                 .answer(findCounsel.getAnswer())
@@ -146,8 +146,10 @@ public class CounselServiceImpl implements CounselService {
 
         pageNumber -= 1;
         PageRequest pageRequest = PageRequest.of(pageNumber, COUNSEL_PAGE_SIZE);
+        log.info("pageNumber = {}", pageNumber);
         Page<Counsel> counselsPage = counselRepository.searchPageCounselList(findUser, pageRequest);
-
+        log.info("getTotalPages = {}", counselsPage.getTotalPages());
+        log.info("getTotalElements() = {}", counselsPage.getTotalElements());
         if (pageNumber + 1 > counselsPage.getTotalPages()) { // 존재하지 않는 페이지에 접근하는 경우
             throw new CounselNotExistPageException();
         }
