@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.user.controller;
 
+import com.project.doongdoong.domain.user.dto.UserInformationResponseDto;
 import com.project.doongdoong.global.dto.request.LogoutDto;
 import com.project.doongdoong.global.dto.request.OAuthTokenDto;
 import com.project.doongdoong.global.dto.request.ReissueDto;
@@ -209,6 +210,42 @@ class UserControllerTest extends ControllerTestSupport {
                 .andExpect(jsonPath("$.details",
                         containsInAnyOrder("refreshToken이 비어 있습니다.")
                 ));
+
+    }
+
+
+    @Test
+    @DisplayName("마이페이지 정보를 조회합니다.")
+    @WithMockUser(username = "123456_APPLE")
+    void userMyPage() throws Exception {
+        // given
+        String nickname = "진22";
+        String email = "hong@example.com";
+        String socialType = "APPLE";
+        Long analysisCount = 5L;
+        UserInformationResponseDto response = UserInformationResponseDto.builder()
+                .nickname(nickname)
+                .email(email)
+                .socialType(socialType)
+                .analysisCount(analysisCount)
+                .build();
+
+        given(userService.getMyPage(any()))
+                .willReturn(response);
+
+        // when & then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/v1/user/my-page")
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.data.nickname").value(response.getNickname()))
+                .andExpect(jsonPath("$.data.email").value(response.getEmail()))
+                .andExpect(jsonPath("$.data.socialType").value(response.getSocialType()))
+                .andExpect(jsonPath("$.data.analysisCount").value(response.getAnalysisCount()));
 
     }
 
