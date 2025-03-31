@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.user.controller;
 
+import com.project.doongdoong.global.dto.request.LogoutDto;
 import com.project.doongdoong.global.dto.request.OAuthTokenDto;
 import com.project.doongdoong.global.dto.response.TokenDto;
 import com.project.doongdoong.module.ControllerTestSupport;
@@ -12,7 +13,9 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.willDoNothing;
 import static org.springframework.security.test.web.servlet.request.SecurityMockMvcRequestPostProcessors.csrf;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -91,5 +94,65 @@ class UserControllerTest extends ControllerTestSupport {
 
 
     }
+
+    @Test
+    @DisplayName("사용자가 로그아웃합니다.")
+    @WithMockUser(username = "123456_APPLE")
+    void userLogout() throws Exception {
+        // given
+        String accessToken = "Bearer aaaa.bbbb.cccc";
+        String refreshToken = "Bearer aaa.bbb.ccc";
+        LogoutDto request = new LogoutDto(refreshToken);
+
+        String response = "logout success";
+
+        willDoNothing().given(userService).logout(any(LogoutDto.class), anyString());
+
+        // when & then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/v1/user/logout-oauth")
+                                .with(csrf())
+                                .header("Authorization", accessToken)
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isNoContent())
+                .andExpect(jsonPath("$.code").value(HttpStatus.NO_CONTENT.value()))
+                .andExpect(jsonPath("$.data").value(response));
+
+    }
+
+    @Test
+    @DisplayName("사용자가 로그아웃합니다.")
+    @WithMockUser(username = "123456_APPLE")
+    void userLogoutExceptionOf() throws Exception {
+        // given
+        String accessToken = "Bearer aaaa.bbbb.cccc";
+        String refreshToken = " ";
+        LogoutDto request = new LogoutDto(refreshToken);
+
+
+        willDoNothing().given(userService).logout(any(LogoutDto.class), anyString());
+
+        // when & then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/v1/user/logout-oauth")
+                                .with(csrf())
+                                .header("Authorization", accessToken)
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value(0))
+                .andExpect(jsonPath("$.message").value("잘못된 입력 형식이 존재합니다."))
+                .andExpect(jsonPath("$.details").isArray())
+                .andExpect(jsonPath("$.details",
+                        containsInAnyOrder("refreshToken이 비어 있습니다.")
+                ));
+
+    }
+
 
 }
