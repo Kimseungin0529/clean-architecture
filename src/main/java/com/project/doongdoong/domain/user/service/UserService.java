@@ -104,10 +104,12 @@ public class UserService {
             String socialId = jwtProvider.extractSocialId(token);
             String socialType = jwtProvider.extractSocialType(token);
             String role = jwtProvider.extractRole(token);
-            String accessToken = jwtProvider.createAccessToken(socialId, socialType, role); // act 갱신
+            String newAccessToken = jwtProvider.createAccessToken(socialId, socialType, role); // act 갱신
+            String newRefreshToken = jwtProvider.createAccessToken(socialId, socialType, role);
 
             return TokenDto.builder()
-                    .accessToken(accessToken)
+                    .accessToken(newAccessToken)
+                    .refreshToken(newRefreshToken)
                     .build();
         } else {
             throw new RefreshTokenNoutFoundException();

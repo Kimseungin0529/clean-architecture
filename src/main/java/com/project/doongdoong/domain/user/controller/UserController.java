@@ -44,9 +44,8 @@ public class UserController {
 
     @PostMapping("/reissue")
     public ApiResponse<TokenDto> userReissue(@Valid @RequestBody ReissueDto reissueDto) {
-        TokenDto reissuedToken = userService.reissue(reissueDto);
 
-        return ApiResponse.of(HttpStatus.OK, null, reissuedToken);
+        return ApiResponse.of(HttpStatus.OK, null, userService.reissue(reissueDto));
     }
 
     @GetMapping("/my-page")

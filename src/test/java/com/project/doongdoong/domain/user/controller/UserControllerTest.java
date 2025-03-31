@@ -2,6 +2,7 @@ package com.project.doongdoong.domain.user.controller;
 
 import com.project.doongdoong.global.dto.request.LogoutDto;
 import com.project.doongdoong.global.dto.request.OAuthTokenDto;
+import com.project.doongdoong.global.dto.request.ReissueDto;
 import com.project.doongdoong.global.dto.response.TokenDto;
 import com.project.doongdoong.module.ControllerTestSupport;
 import org.junit.jupiter.api.DisplayName;
@@ -124,9 +125,9 @@ class UserControllerTest extends ControllerTestSupport {
     }
 
     @Test
-    @DisplayName("사용자가 로그아웃합니다.")
+    @DisplayName("로그아웃에는 refresh token 정보가 필요합니다.")
     @WithMockUser(username = "123456_APPLE")
-    void userLogoutExceptionOf() throws Exception {
+    void userLogoutExceptionOfLogoutDto() throws Exception {
         // given
         String accessToken = "Bearer aaaa.bbbb.cccc";
         String refreshToken = " ";
@@ -154,5 +155,61 @@ class UserControllerTest extends ControllerTestSupport {
 
     }
 
+    @Test
+    @DisplayName("사용자가 토큰을 재발급합니다.")
+    @WithMockUser(username = "123456_APPLE")
+    void userReissue() throws Exception {
+        // given
+        String refreshToken = "Bearer aaa.bbb.ccc";
+        ReissueDto request = new ReissueDto(refreshToken);
+
+        String newAccessToken = "Bearer aaaa.bbbb.cccc";
+        String newRefreshToken = "Bearer qqqqq.wwww.eee";
+        TokenDto response = TokenDto.of(newAccessToken, newRefreshToken);
+
+        given(userService.reissue(any(ReissueDto.class)))
+                .willReturn(response);
+
+        // when & then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/v1/user/reissue")
+                                .with(csrf())
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.data.accessToken").value(response.getAccessToken()))
+                .andExpect(jsonPath("$.data.refreshToken").value(response.getRefreshToken()));
+
+    }
+
+    @Test
+    @DisplayName("토큰 재발급에는 refresh token 정보가 필수입니다.")
+    @WithMockUser(username = "123456_APPLE")
+    void userReissueExceptionOf() throws Exception {
+        // given
+        String refreshToken = " ";
+        ReissueDto request = new ReissueDto(refreshToken);
+
+
+        // when & then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.post("/api/v1/user/reissue")
+                                .with(csrf())
+                                .content(objectMapper.writeValueAsString(request))
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isBadRequest())
+                .andExpect(jsonPath("$.errorCode").value(0))
+                .andExpect(jsonPath("$.message").value("잘못된 입력 형식이 존재합니다."))
+                .andExpect(jsonPath("$.details").isArray())
+                .andExpect(jsonPath("$.details",
+                        containsInAnyOrder("refreshToken이 비어 있습니다.")
+                ));
+
+    }
 
 }
