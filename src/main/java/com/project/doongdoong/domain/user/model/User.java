@@ -58,9 +58,7 @@ public class User extends BaseEntity {
     }
 
     public void checkRoles() {
-        if (this.roles.isEmpty()) {
-            this.roles = Collections.singletonList(Role.ROLE_USER.toString());
-        }
+        this.roles = roles.isEmpty() ? Collections.singletonList(Role.ROLE_USER.toString()) : roles;
 
     }
 
