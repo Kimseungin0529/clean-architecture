@@ -249,4 +249,25 @@ class UserControllerTest extends ControllerTestSupport {
 
     }
 
+    @Test
+    @DisplayName("서버 ping 확인 API")
+    @WithMockUser(username = "123456_APPLE")
+    void testPing() throws Exception {
+        // given
+        String response = "ping";
+        // when & then
+        mockMvc.perform(
+                        MockMvcRequestBuilders.get("/api/v1/user/ping")
+                                .with(csrf())
+                                .contentType(MediaType.APPLICATION_JSON)
+                )
+                .andDo(print())
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.code").value(HttpStatus.OK.value()))
+                .andExpect(jsonPath("$.data").value(response));
+
+    }
+
+
+
 }
