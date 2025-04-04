@@ -116,7 +116,7 @@ public class AnalysisServiceImp implements AnalysisService {
     @Override
     public FeelingStateResponseListDto getAnalysisListGroupByDay(String uniqueValue) {
         String[] values = parseUniqueValue(uniqueValue);
-        User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
+        User user = userRepository.findBySocialTypeAndSocialId(SocialType.findSocialTypeBy(values[1]), values[0])
                 .orElseThrow(() -> new UserNotFoundException());
 
         Optional<Analysis> analysis = analysisRepository.findFirstByUserOrderByAnalyzeTimeDesc(user);
@@ -211,7 +211,7 @@ public class AnalysisServiceImp implements AnalysisService {
     private User findUserBy(String uniqueValue) {
         String[] values = parseUniqueValue(uniqueValue);
 
-        return userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
+        return userRepository.findBySocialTypeAndSocialId(SocialType.findSocialTypeBy(values[1]), values[0])
                 .orElseThrow(UserNotFoundException::new);
     }
 
@@ -282,7 +282,7 @@ public class AnalysisServiceImp implements AnalysisService {
     private User findUserWithAnalysisBy(String uniqueValue) {
         String[] values = parseUniqueValue(uniqueValue); // 사용자 정보 찾기
 
-        return userRepository.findUserWithAnalysisBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
+        return userRepository.findUserWithAnalysisBySocialTypeAndSocialId(SocialType.findSocialTypeBy(values[1]), values[0])
                 .orElseThrow(UserNotFoundException::new);
     }
 

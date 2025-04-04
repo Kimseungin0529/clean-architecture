@@ -2,7 +2,6 @@ package com.project.doongdoong.domain.user.service;
 
 import com.project.doongdoong.domain.user.dto.UserInformationResponseDto;
 import com.project.doongdoong.domain.user.exeception.RefreshTokenNoutFoundException;
-import com.project.doongdoong.domain.user.exeception.SocialTypeNotFoundException;
 import com.project.doongdoong.domain.user.exeception.TokenInfoFobiddenException;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialType;
@@ -41,12 +40,8 @@ public class UserServiceImpl implements UserService {
         String socialId = oAuthTokenInfo.getSocialId();
         String email = oAuthTokenInfo.getEmail();
         String nickname = oAuthTokenInfo.getNickname();
-        SocialType socialType = SocialType.customValueOf(oAuthTokenInfo.getSocialType());
-        if (socialType == null) {
-            new SocialTypeNotFoundException();
-        }
-        log.info("socialType = {}", socialType);
-        log.info("socialId = {}", socialId);
+        SocialType socialType = SocialType.findSocialTypeBy(oAuthTokenInfo.getSocialType());
+
         User user = userRepository.findBySocialTypeAndSocialId(socialType, socialId)
                 .orElse(toEntity(socialId, email, nickname, socialType));
         checkChange(email, nickname, user); // 기존 회원 정보와 달라졌는지 확인
@@ -54,15 +49,15 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user); // 새롭게 생성된 경우에는 영속화 필요
 
         Optional<BlackAccessToken> blackAccessToken =
-                blackAccessTokenRepository.findById(BlackAccessToken.findUniqueId(socialId, socialType.getText()));
+                blackAccessTokenRepository.findById(BlackAccessToken.findUniqueId(socialId, socialType.getDescription()));
         if (blackAccessToken.isPresent()) {
             blackAccessTokenRepository.delete(blackAccessToken.get());
             log.info("blackAccessToken 존재해서 삭제");
         }
 
-        TokenDto tokenInfoResponse = jwtProvider.generateToken(socialId, socialType.getText(), user.getRoles());
+        TokenDto tokenInfoResponse = jwtProvider.generateToken(socialId, socialType.getDescription(), user.getRoles());
 
-        RefreshToken refresh = RefreshToken.of(user.getSocialId(), user.getSocialType().getText(), tokenInfoResponse.getRefreshToken());
+        RefreshToken refresh = RefreshToken.of(user.getSocialId(), user.getSocialType().getDescription(), tokenInfoResponse.getRefreshToken());
         Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByUniqueId(refresh.getUniqueId());
         if (findRefreshToken.isPresent()) { // 기존 rft이 존재한다면 삭제하고 새롭게 저장
             refreshTokenRepository.delete(findRefreshToken.get());
@@ -141,13 +136,13 @@ public class UserServiceImpl implements UserService {
 
     public UserInformationResponseDto getMyPage(String uniqueValue) {
         String[] value = parseUniqueValue(uniqueValue);
-        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(value[1]), value[0])
+        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.findSocialTypeBy(value[1]), value[0])
                 .orElseThrow(() -> new UserNotFoundException());
 
         return UserInformationResponseDto.builder()
                 .nickname(findUser.getNickname())
                 .email(findUser.getEmail())
-                .socialType(findUser.getSocialType().getText())
+                .socialType(findUser.getSocialType().getDescription())
                 .analysisCount(findUser.getEmotionGrowth())
                 .build();
     }

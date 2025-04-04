@@ -52,7 +52,7 @@ public class CounselServiceImpl implements CounselService {
     @Override
     public CounselResultResponse consult(String uniqueValue, CounselCreateRequest request) {
         String[] values = parseUniqueValue(uniqueValue); // 사용자 정보 찾기
-        User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
+        User user = userRepository.findBySocialTypeAndSocialId(SocialType.findSocialTypeBy(values[1]), values[0])
                 .orElseThrow(() -> new UserNotFoundException());
 
         Counsel counsel = Counsel.builder() // 상담 객체 생성
@@ -120,7 +120,7 @@ public class CounselServiceImpl implements CounselService {
     public CounselDetailResponse findCounselContent(String socialId, Long counselId) {
         String[] value = parseUniqueValue(socialId);
         log.info(value[0], value[1]);
-        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(value[1]), value[0])
+        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.findSocialTypeBy(value[1]), value[0])
                 .orElseThrow(() -> new UserNotFoundException());
         Counsel findCounsel = counselRepository.findWithAnalysisById(counselId).orElseThrow(() -> new CounselNotFoundException());
 
@@ -141,7 +141,7 @@ public class CounselServiceImpl implements CounselService {
     @Override
     public CounselListResponse findCounsels(String uniqueValue, int pageNumber) {
         String[] value = parseUniqueValue(uniqueValue);
-        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(value[1]), value[0])
+        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.findSocialTypeBy(value[1]), value[0])
                 .orElseThrow(() -> new UserNotFoundException());
 
         pageNumber -= 1;
