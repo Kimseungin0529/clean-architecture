@@ -70,11 +70,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private void checkChange(String email, String nickname, User user) {
-        if (email == null)
-            return;
 
-        if (!user.getEmail().equals(email) || !user.getNickname().equals(nickname)) {
+        if (!user.isSameEmail(email)) {
             user.changeEmail(email);
+        }
+
+        if (!user.isSameNickname(nickname)) {
             user.changeNickname(nickname);
         }
     }

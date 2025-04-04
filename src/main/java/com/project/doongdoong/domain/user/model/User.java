@@ -64,6 +64,15 @@ public class User extends BaseEntity {
 
     }
 
+    public boolean isSameEmail(String email) {
+        return this.email.equals(email);
+    }
+
+    public boolean isSameNickname(String nickname) {
+        return this.nickname.equals(nickname);
+    }
+
+
     public void growUp() {
         this.emotionGrowth++;
         checkGrowth();
@@ -73,5 +82,6 @@ public class User extends BaseEntity {
         if (getEmotionGrowth() == 101L)
             this.emotionGrowth %= 101;
     }
+
 
 }
