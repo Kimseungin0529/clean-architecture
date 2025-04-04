@@ -138,7 +138,7 @@ public class AnalysisServiceImp implements AnalysisService {
     @Override
     public FellingStateCreateResponse analyzeEmotion(Long analysisId, String uniqueValue) {
         // 사용자 찾기
-        User user = findUserBy(uniqueValue, LocalDate.now().atStartOfDay());
+        User user = findUserWithAnalysisBy(uniqueValue);
         // 오늘
         if (checkToAnalyzeTodayFirstBy(user)) {
             user.growUp();
@@ -279,10 +279,10 @@ public class AnalysisServiceImp implements AnalysisService {
     }
 
 
-    private User findUserBy(String uniqueValue, LocalDateTime time) {
+    private User findUserWithAnalysisBy(String uniqueValue) {
         String[] values = parseUniqueValue(uniqueValue); // 사용자 정보 찾기
 
-        return userRepository.findUserWithAnalysisBySocialTypeAndSocialIdSinceTime(SocialType.customValueOf(values[1]), values[0], time)
+        return userRepository.findUserWithAnalysisBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
                 .orElseThrow(UserNotFoundException::new);
     }
 
