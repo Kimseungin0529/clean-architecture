@@ -54,13 +54,9 @@ public class UserServiceImpl implements UserService {
         TokenDto tokenInfoResponse = jwtProvider.generateToken(socialId, socialType.getDescription(), user.getRoles());
 
         RefreshToken refresh = RefreshToken.of(user.getSocialId(), user.getSocialType().getDescription(), tokenInfoResponse.getRefreshToken());
-        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByUniqueId(refresh.getUniqueId());
-        if (findRefreshToken.isPresent()) { // 기존 rft이 존재한다면 삭제하고 새롭게 저장
-            refreshTokenRepository.delete(findRefreshToken.get());
-            log.info("기존 RefreshToken 삭제");
-        }
+        refreshTokenRepository.findByUniqueId(refresh.getUniqueId())
+                .ifPresent(refreshTokenRepository::delete);
         refreshTokenRepository.save(refresh);
-        log.info("새로운 RefreshToken 저장");
 
         return tokenInfoResponse;
     }
