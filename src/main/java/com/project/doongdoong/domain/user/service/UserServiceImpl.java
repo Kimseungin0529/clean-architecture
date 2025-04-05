@@ -48,12 +48,8 @@ public class UserServiceImpl implements UserService {
         user.checkRoles(); // 새롭게 생성된 경우 사용자 권한 제공
         userRepository.save(user); // 새롭게 생성된 경우에는 영속화 필요
 
-        Optional<BlackAccessToken> blackAccessToken =
-                blackAccessTokenRepository.findById(BlackAccessToken.findUniqueId(socialId, socialType.getDescription()));
-        if (blackAccessToken.isPresent()) {
-            blackAccessTokenRepository.delete(blackAccessToken.get());
-            log.info("blackAccessToken 존재해서 삭제");
-        }
+        blackAccessTokenRepository.findById(BlackAccessToken.findUniqueId(socialId, socialType.getDescription()))
+                .ifPresent(blackAccessTokenRepository::delete);
 
         TokenDto tokenInfoResponse = jwtProvider.generateToken(socialId, socialType.getDescription(), user.getRoles());
 
