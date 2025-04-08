@@ -21,6 +21,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -91,24 +92,15 @@ public class UserServiceImpl implements UserService {
     @Transactional
     public TokenDto reissue(ReissueDto reissueTokenDto) {
         String refreshToken = reissueTokenDto.getRefreshToken();
-        Optional<RefreshToken> findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken);
+        RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(RefreshTokenNoutFoundException::new);
 
-        if (findRefreshToken.isPresent()) { // rft이 존재한다면
-            String token = findRefreshToken.get().getRefreshToken().substring(7);
-            String socialId = jwtProvider.extractSocialId(token);
-            String socialType = jwtProvider.extractSocialType(token);
-            String role = jwtProvider.extractRole(token);
-            String newAccessToken = jwtProvider.createAccessToken(socialId, socialType, role); // act 갱신
-            String newRefreshToken = jwtProvider.createAccessToken(socialId, socialType, role);
+        String token = findRefreshToken.getRefreshToken();
+        String socialId = jwtProvider.extractSocialId(token);
+        String socialType = jwtProvider.extractSocialType(token);
+        String role = jwtProvider.extractRole(token);
 
-            return TokenDto.builder()
-                    .accessToken(newAccessToken)
-                    .refreshToken(newRefreshToken)
-                    .build();
-        } else {
-            throw new RefreshTokenNoutFoundException();
-        }
-
+        return jwtProvider.generateToken(socialId, socialType, List.of(role));
     }
 
     @Transactional

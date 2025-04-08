@@ -133,16 +133,19 @@ public class JwtProvider {
 
     // 토큰에서 Email을 추출한다.
     public String extractSocialId(String token) {
-        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().getSubject();
+        String value = token.substring(BEARER_PREFIX.length());
+        return Jwts.parser().setSigningKey(key).parseClaimsJws(value).getBody().getSubject();
     }
 
     // 토큰에서 ROLE(권한)만 추출한다.
     public String extractRole(String token) {
-        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().get("role", String.class);
+        String value = token.substring(BEARER_PREFIX.length());
+        return Jwts.parser().setSigningKey(key).parseClaimsJws(value).getBody().get("role", String.class);
     }
 
     public String extractSocialType(String token) {
-        return Jwts.parser().setSigningKey(key).parseClaimsJws(token).getBody().get("socialType", String.class);
+        String value = token.substring(BEARER_PREFIX.length());
+        return Jwts.parser().setSigningKey(key).parseClaimsJws(value).getBody().get("socialType", String.class);
     }
     public boolean checkLogoutToken(String token) { // blackAccessToken의 존재 유무 반환 메소드 -> 존재한다면 해당 토큰은 인가 권한 X
         Optional<BlackAccessToken> findBlackToken = blackAccessTokenRepository.findByAccessToken(BEARER_PREFIX + token);

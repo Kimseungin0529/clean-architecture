@@ -2,11 +2,12 @@ package com.project.doongdoong.global.dto.response;
 
 import lombok.*;
 
-@Getter @Builder
+@Getter
 public class TokenDto {
     private String accessToken;
     private String refreshToken;
 
+    @Builder
     private TokenDto(String refreshToken, String accessToken) {
         this.refreshToken = refreshToken;
         this.accessToken = accessToken;
