@@ -42,13 +42,10 @@ public class UserServiceImpl implements UserService {
         String nickname = oAuthTokenInfo.getNickname();
         SocialType socialType = SocialType.findSocialTypeBy(oAuthTokenInfo.getSocialType());
 
-        User user = userRepository.findBySocialTypeAndSocialId(socialType, socialId)
-                .orElse(toEntity(socialId, email, nickname, socialType));
-        checkChange(email, nickname, user); // 기존 회원 정보와 달라졌는지 확인
-        user.checkRoles(); // 새롭게 생성된 경우 사용자 권한 제공
-        userRepository.save(user); // 새롭게 생성된 경우에는 영속화 필요
+        User user = findOrRegisterUserBy(socialType, socialId, email, nickname);
 
-        blackAccessTokenRepository.findById(BlackAccessToken.findUniqueId(socialId, socialType.getDescription()))
+        // TODO generateUniqueKeyWith 기능에 대한 책임은 BlackAccessToken 이 아닌 것으로 느껴짐. 고민 요소
+        blackAccessTokenRepository.findById(BlackAccessToken.generateUniqueKeyWith(socialId, socialType.getDescription()))
                 .ifPresent(blackAccessTokenRepository::delete);
 
         TokenDto tokenInfoResponse = jwtProvider.generateToken(socialId, socialType.getDescription(), user.getRoles());
@@ -59,6 +56,15 @@ public class UserServiceImpl implements UserService {
         refreshTokenRepository.save(refresh);
 
         return tokenInfoResponse;
+    }
+
+    private User findOrRegisterUserBy(SocialType socialType, String socialId, String email, String nickname) {
+        User user = userRepository.findBySocialTypeAndSocialId(socialType, socialId)
+                .orElse(toEntity(socialId, email, nickname, socialType));
+        checkChange(email, nickname, user); // 기존 회원 정보와 달라졌는지 확인
+        user.checkRoles(); // 새롭게 생성된 경우 사용자 권한 제공
+        userRepository.save(user); // 새롭게 생성된 경우에는 영속화 필요
+        return user;
     }
 
     private void checkChange(String email, String nickname, User user) {

@@ -74,7 +74,7 @@ public class JwtProvider {
 
         /*// 토큰을 Redis에 저장한다.
         tokenService.saveTokenInfo(email, refreshToken, accessToken);*/
-        return new TokenDto(accessToken, refreshToken);
+        return TokenDto.of(accessToken, refreshToken);
     }
 
     public String createRefreshToken(String socialId, String socialType, String role) {
