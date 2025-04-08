@@ -1,5 +1,8 @@
 package com.project.doongdoong.domain.user.service.spring;
 
+import com.project.doongdoong.domain.user.dto.UserInformationResponseDto;
+import com.project.doongdoong.domain.user.model.User;
+import com.project.doongdoong.domain.user.repository.UserRepository;
 import com.project.doongdoong.domain.user.service.UserService;
 import com.project.doongdoong.global.common.BlackAccessToken;
 import com.project.doongdoong.global.dto.request.LogoutDto;
@@ -18,12 +21,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collection;
 import java.util.List;
 
+import static com.project.doongdoong.domain.user.model.SocialType.APPLE;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class UserServiceImplSpringTest extends IntegrationSupportTest {
 
     @Autowired
     UserService userService;
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     RefreshTokenRepository refreshTokenRepository;
     @Autowired
@@ -95,6 +101,34 @@ class UserServiceImplSpringTest extends IntegrationSupportTest {
 
                 })
         );
+
+    }
+
+
+    @DisplayName("사용자의 상세 정보를 반환합니다.")
+    @Test
+    void getMyPage() {
+        // given
+        User user = User.builder()
+                .socialId("123456789")
+                .socialType(APPLE)
+                .email("exam@test.com")
+                .nickname("testName")
+                .build();
+
+        User savedUser = userRepository.save(user);
+        String uniqueValue = savedUser.getSocialId() + "_" + savedUser.getSocialType().getDescription();
+
+        // when
+        UserInformationResponseDto result = userService.getMyPage(uniqueValue);
+
+        // then
+        assertThat(result)
+                .extracting(UserInformationResponseDto::getNickname,
+                        UserInformationResponseDto::getEmail,
+                        UserInformationResponseDto::getSocialType,
+                        UserInformationResponseDto::getAnalysisCount)
+                .contains("testName", "exam@test.com", APPLE.getDescription(), 0L);
 
     }
 
