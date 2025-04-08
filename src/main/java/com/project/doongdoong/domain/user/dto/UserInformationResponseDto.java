@@ -17,10 +17,19 @@ public class UserInformationResponseDto {
 
 
     @Builder
-    public UserInformationResponseDto(String nickname, String email, String socialType, Long analysisCount) {
+    private UserInformationResponseDto(String nickname, String email, String socialType, Long analysisCount) {
         this.nickname = nickname;
         this.email = email;
         this.socialType = socialType;
         this.analysisCount = analysisCount;
+    }
+
+    public static UserInformationResponseDto of(String nickname, String email, String socialType, Long analysisCount) {
+        return UserInformationResponseDto.builder()
+                .nickname(nickname)
+                .email(email)
+                .socialType(socialType)
+                .analysisCount(analysisCount)
+                .build();
     }
 }

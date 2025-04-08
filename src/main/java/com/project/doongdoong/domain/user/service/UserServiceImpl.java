@@ -22,7 +22,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @Slf4j
@@ -45,7 +44,6 @@ public class UserServiceImpl implements UserService {
 
         User user = findOrRegisterUserBy(socialType, socialId, email, nickname);
 
-        // TODO generateUniqueKeyWith 기능에 대한 책임은 BlackAccessToken 이 아닌 것으로 느껴짐. 고민 요소
         blackAccessTokenRepository.findById(BlackAccessToken.generateUniqueKeyWith(socialId, socialType.getDescription()))
                 .ifPresent(blackAccessTokenRepository::delete);
 
@@ -61,11 +59,11 @@ public class UserServiceImpl implements UserService {
 
     private User findOrRegisterUserBy(SocialType socialType, String socialId, String email, String nickname) {
         User user = userRepository.findBySocialTypeAndSocialId(socialType, socialId)
-                .orElse(toEntity(socialId, email, nickname, socialType));
-        checkChange(email, nickname, user); // 기존 회원 정보와 달라졌는지 확인
-        user.checkRoles(); // 새롭게 생성된 경우 사용자 권한 제공
-        userRepository.save(user); // 새롭게 생성된 경우에는 영속화 필요
-        return user;
+                .orElse(createUser(socialId, email, nickname, socialType));
+        checkChange(email, nickname, user);
+        user.checkRoles();
+
+        return userRepository.save(user);
     }
 
     private void checkChange(String email, String nickname, User user) {
@@ -79,7 +77,7 @@ public class UserServiceImpl implements UserService {
         }
     }
 
-    private User toEntity(String socialId, String email, String nickname, SocialType socialType) {
+    private User createUser(String socialId, String email, String nickname, SocialType socialType) {
         return User
                 .builder()
                 .socialId(socialId)
@@ -128,28 +126,13 @@ public class UserServiceImpl implements UserService {
     public UserInformationResponseDto getMyPage(String uniqueValue) {
         String[] value = parseUniqueValue(uniqueValue);
         User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.findSocialTypeBy(value[1]), value[0])
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
-        return UserInformationResponseDto.builder()
-                .nickname(findUser.getNickname())
-                .email(findUser.getEmail())
-                .socialType(findUser.getSocialType().getDescription())
-                .analysisCount(findUser.getEmotionGrowth())
-                .build();
+        return UserInformationResponseDto.of(findUser.getNickname(), findUser.getEmail(), findUser.getSocialType().getDescription(), findUser.getEmotionGrowth());
     }
 
     private static String[] parseUniqueValue(String uniqueValue) {
-        String[] values = uniqueValue.split("_"); // 사용자 찾기
-        return values;
+        return uniqueValue.split("_");
     }
-
-    /*public boolean checkBlackToken(HttpServletRequest request){
-        String accessToken = request.getHeader("Authorization");
-        Optional<BlackAccessToken> findBlackToken = blackAccessTokenRepository.findByAccessToken(accessToken);
-        if(findBlackToken.isPresent()){
-            throw new CustomException.UnauthorizedException(HttpStatus.UNAUTHORIZED, "로그아웃으로 인해 인가 권한이 없습니다.");
-        }
-    }*/
-
 
 }
