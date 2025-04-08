@@ -4,6 +4,7 @@ import com.project.doongdoong.domain.user.dto.UserInformationResponseDto;
 import com.project.doongdoong.domain.user.exeception.RefreshTokenNoutFoundException;
 import com.project.doongdoong.domain.user.exeception.TokenInfoFobiddenException;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
+import com.project.doongdoong.domain.user.model.SocialIdentifier;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
@@ -124,15 +125,12 @@ public class UserServiceImpl implements UserService {
     }
 
     public UserInformationResponseDto getMyPage(String uniqueValue) {
-        String[] value = parseUniqueValue(uniqueValue);
-        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.findSocialTypeBy(value[1]), value[0])
+        SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
+        User findUser = userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
                 .orElseThrow(UserNotFoundException::new);
 
         return UserInformationResponseDto.of(findUser.getNickname(), findUser.getEmail(), findUser.getSocialType().getDescription(), findUser.getEmotionGrowth());
     }
 
-    private static String[] parseUniqueValue(String uniqueValue) {
-        return uniqueValue.split("_");
-    }
 
 }

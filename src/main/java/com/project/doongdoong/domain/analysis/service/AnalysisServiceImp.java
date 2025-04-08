@@ -13,6 +13,7 @@ import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.question.repository.QuestionRepository;
 import com.project.doongdoong.domain.question.service.QuestionProvidable;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
+import com.project.doongdoong.domain.user.model.SocialIdentifier;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
@@ -115,9 +116,10 @@ public class AnalysisServiceImp implements AnalysisService {
 
     @Override
     public FeelingStateResponseListDto getAnalysisListGroupByDay(String uniqueValue) {
-        String[] values = parseUniqueValue(uniqueValue);
-        User user = userRepository.findBySocialTypeAndSocialId(SocialType.findSocialTypeBy(values[1]), values[0])
-                .orElseThrow(() -> new UserNotFoundException());
+        SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
+        User user = userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
+                .orElseThrow(UserNotFoundException::new);
+
 
         Optional<Analysis> analysis = analysisRepository.findFirstByUserOrderByAnalyzeTimeDesc(user);
         List<FeelingStateResponseDto> result = null;
@@ -209,10 +211,10 @@ public class AnalysisServiceImp implements AnalysisService {
     }
 
     private User findUserBy(String uniqueValue) {
-        String[] values = parseUniqueValue(uniqueValue);
-
-        return userRepository.findBySocialTypeAndSocialId(SocialType.findSocialTypeBy(values[1]), values[0])
+        SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
+        return userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
                 .orElseThrow(UserNotFoundException::new);
+
     }
 
     private String[] parseUniqueValue(String uniqueValue) {
@@ -280,9 +282,8 @@ public class AnalysisServiceImp implements AnalysisService {
 
 
     private User findUserWithAnalysisBy(String uniqueValue) {
-        String[] values = parseUniqueValue(uniqueValue); // 사용자 정보 찾기
-
-        return userRepository.findUserWithAnalysisBySocialTypeAndSocialId(SocialType.findSocialTypeBy(values[1]), values[0])
+        SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
+        return userRepository.findUserWithAnalysisBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
                 .orElseThrow(UserNotFoundException::new);
     }
 
