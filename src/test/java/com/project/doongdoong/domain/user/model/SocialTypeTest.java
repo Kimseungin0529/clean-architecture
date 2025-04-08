@@ -45,7 +45,7 @@ class SocialTypeTest {
                     // when
                     SocialType result = SocialType.findSocialTypeBy(stringNaverType);
                     // then
-                    assertThat(result).isEqualTo(SocialType.GOOGLE);
+                    assertThat(result).isEqualTo(SocialType.NAVER);
                 }),
                 DynamicTest.dynamicTest("구글 타입을 반환합니다.", () -> {
                     // given
@@ -53,7 +53,7 @@ class SocialTypeTest {
                     // when
                     SocialType result = SocialType.findSocialTypeBy(stringGoogleType);
                     // then
-                    assertThat(result).isEqualTo(SocialType.NAVER);
+                    assertThat(result).isEqualTo(SocialType.GOOGLE);
                 }),
                 DynamicTest.dynamicTest("애플 타입을 반환합니다.", () -> {
                     // given
