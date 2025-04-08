@@ -106,24 +106,23 @@ public class UserServiceImpl implements UserService {
 
     @Transactional
     public void logout(LogoutDto tokenInfoDto, String accessToken) {
-        String socialType = jwtProvider.extractSocialType(accessToken.substring(7));
-        String socialId = jwtProvider.extractSocialId(accessToken.substring(7));
-        Optional<RefreshToken> refreshToken = refreshTokenRepository.findByRefreshToken(tokenInfoDto.getRefreshToken());
-        if (refreshToken.isPresent()) {       // blackAccessToken으로 이미 접근 권한을 막았지만 더 안전한 보안으로 rft도 삭제
-            refreshTokenRepository.delete(refreshToken.get()); // rft이 존재한다면 삭제
-        }
+        String socialType = jwtProvider.extractSocialType(accessToken);
+        String socialId = jwtProvider.extractSocialId(accessToken);
+        refreshTokenRepository.findByRefreshToken(tokenInfoDto.getRefreshToken())
+                .ifPresent(refreshTokenRepository::delete);
 
-        String accessSocialId = jwtProvider.extractSocialId(accessToken.substring(7));
-        String accessSocailType = jwtProvider.extractSocialType(accessToken.substring(7));
-        if (!accessSocialId.equals(socialId)) {
-            new TokenInfoFobiddenException();
-        }
-        if (!accessSocailType.equals(socialType)) {
-            new TokenInfoFobiddenException();
-        }
+        String accessSocialId = jwtProvider.extractSocialId(accessToken);
+        String accessSocialType = jwtProvider.extractSocialType(accessToken);
+        validateTokenConsistency(accessSocialId, socialId, accessSocialType, socialType);
 
         BlackAccessToken blackAccessToken = BlackAccessToken.of(socialId, socialType, accessToken);
-        blackAccessTokenRepository.save(blackAccessToken); // blackAccessToken 저장 -> 해당 act은 만료기간 남았더라도 접근 불가
+        blackAccessTokenRepository.save(blackAccessToken);
+    }
+
+    private void validateTokenConsistency(String accessSocialId, String socialId, String accessSocialType, String socialType) {
+        if (!accessSocialId.equals(socialId) || !accessSocialType.equals(socialType)) {
+            throw new TokenInfoFobiddenException();
+        }
     }
 
     public UserInformationResponseDto getMyPage(String uniqueValue) {
