@@ -95,6 +95,7 @@ public class JwtProvider {
         Claims claims = Jwts.claims().setSubject(socialId);
         claims.put("socialType",socialType); // 새로운 클레임 객체를 생성하고, 이메일과 역할(권한)을 셋팅
         claims.put("role",role);
+        claims.put("unique",UUID.randomUUID().toString());
 
         return BEARER_PREFIX + Jwts.builder()
                         .setClaims(claims)

@@ -19,4 +19,10 @@ public class TokenDto {
                 .refreshToken(rft)
                 .build();
     }
+
+    public static TokenDto of(String act){
+        return TokenDto.builder()
+                .accessToken(act)
+                .build();
+    }
 }

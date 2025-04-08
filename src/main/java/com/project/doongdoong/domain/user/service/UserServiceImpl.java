@@ -100,7 +100,8 @@ public class UserServiceImpl implements UserService {
         String socialType = jwtProvider.extractSocialType(token);
         String role = jwtProvider.extractRole(token);
 
-        return jwtProvider.generateToken(socialId, socialType, List.of(role));
+        TokenDto tokenDto = jwtProvider.generateToken(socialId, socialType, List.of(role));
+        return TokenDto.of(tokenDto.getAccessToken());
     }
 
     @Transactional
