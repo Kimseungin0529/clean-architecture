@@ -38,6 +38,9 @@ public class WebClientUtil {
     private String lambdaVoiceApiUrl;
 
     private static final String VOICE_KEY = "voice/";
+    private static final String CATEGORY_PARAMETER = "category";
+    private static final String QUESTION_PARAMETER = "question";
+    private static final String ANALYSIS_CONTENT_PARAMETER = "analysisContent";
 
 
     @PostConstruct
@@ -100,7 +103,7 @@ public class WebClientUtil {
                 .onStatus(
                         HttpStatusCode::isError,
                         clientResponse -> clientResponse.bodyToMono(String.class)
-                                .map(bodyText -> new ExternalApiCallException("Lambda API 호출 실패: " + bodyText))
+                                .map(ExternalApiCallException::new)
                 )
                 .bodyToMono(FellingStateCreateResponse.class);
 
@@ -134,7 +137,7 @@ public class WebClientUtil {
                 .onStatus(
                         HttpStatusCode::isError,
                         clientResponse -> clientResponse.bodyToMono(String.class)
-                                .map(bodyText -> new ExternalApiCallException("Lambda API 호출 실패: " + bodyText))
+                                .map(ExternalApiCallException::new)
                 )
                 .bodyToMono(FellingStateCreateResponse.class);
 
@@ -143,9 +146,9 @@ public class WebClientUtil {
     public CounselAiResponse callConsult(HashMap<String, Object> parameters) {
 
         ConsultRequest body = ConsultRequest.builder()
-                .category(parameters.get("category").toString())
-                .question(parameters.get("question").toString())
-                .analysisContent(parameters.get("analysisContent").toString())
+                .category(parameters.get(CATEGORY_PARAMETER).toString())
+                .question(parameters.get(QUESTION_PARAMETER).toString())
+                .analysisContent(parameters.get(ANALYSIS_CONTENT_PARAMETER).toString())
                 .build();
 
         /**
@@ -161,7 +164,7 @@ public class WebClientUtil {
                 .onStatus(
                         HttpStatusCode::isError,
                         clientResponse -> clientResponse.bodyToMono(String.class)
-                                .map(bodyText -> new ExternalApiCallException("Lambda API 호출 실패: " + bodyText))
+                                .map(ExternalApiCallException::new)
                 )
                 .bodyToMono(CounselAiResponse.class)
                 .block();
