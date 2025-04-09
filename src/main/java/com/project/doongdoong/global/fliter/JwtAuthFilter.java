@@ -1,9 +1,11 @@
 package com.project.doongdoong.global.fliter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.doongdoong.global.util.JwtProvider;
 import com.project.doongdoong.global.common.ApiResponse;
-import io.jsonwebtoken.*;
+import com.project.doongdoong.global.util.JwtProvider;
+import io.jsonwebtoken.ExpiredJwtException;
+import io.jsonwebtoken.MalformedJwtException;
+import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.SecurityException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -47,7 +49,7 @@ public class JwtAuthFilter extends OncePerRequestFilter {
                 log.info("Bearer 삭제한 token 값 = {}", token);
 
                 //토큰이 존재하면서 유효하다면 Authentication 객체 생성, 시큐리티 컨텍스트 홀더에 Authentication 저장
-                if(jwtProvider.validateToken(token) && !jwtProvider.checkLogout(token)) {
+                if(jwtProvider.validateToken(token) && !jwtProvider.isBlackToken(token)) {
                     Authentication authentication = jwtProvider.generateAuthentication(token);
                     SecurityContextHolder.getContext().setAuthentication(authentication);
                 }

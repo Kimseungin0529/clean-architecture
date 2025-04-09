@@ -93,7 +93,7 @@ public class JwtProvider {
         return true;
     }
 
-    public boolean checkLogout(String token) {
+    public boolean isBlackToken(String token) {
         return blackAccessTokenRepository.findByAccessToken(BEARER_PREFIX + token).isPresent();
     }
 
