@@ -104,14 +104,14 @@ public class VoiceServiceImp implements VoiceService {
 
     private ObjectMetadata initObjectMetadata(String originalName, MultipartFile multipartFile) throws IOException {
         ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(FileExtension.getExtensionFrom(originalName));
+        objectMetadata.setContentType(FileExtension.getMineTypeFrom(originalName));
         objectMetadata.setContentLength(multipartFile.getInputStream().available());
         return objectMetadata;
     }
 
     private ObjectMetadata initObjectMetadata(byte[] content) {
         ObjectMetadata objectMetadata = new ObjectMetadata();
-        objectMetadata.setContentType(MP3.getExtension());
+        objectMetadata.setContentType(MP3.getMineType());
         objectMetadata.setContentLength(content.length);
         return objectMetadata;
     }

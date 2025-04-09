@@ -15,15 +15,15 @@ public enum FileExtension {
     M4A("audio/mp4"),
     WAV("audio/wav"),
     ;
-    private final String extension;
+    private final String mineType;
 
-    public static String getExtensionFrom(String filename) {
+    public static String getMineTypeFrom(String filename) {
         String findExtension = FilenameUtils.getExtension(filename).toUpperCase();
 
         return Arrays.stream(values())
                 .filter(extension -> extension.name().equals(findExtension))
                 .findFirst()
-                .map(FileExtension::getExtension)
+                .map(FileExtension::getMineType)
                 .orElseThrow(() -> new NotFoundFileExtension(findExtension));
     }
 }
