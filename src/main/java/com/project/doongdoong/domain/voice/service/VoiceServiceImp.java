@@ -5,11 +5,8 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.project.doongdoong.domain.question.model.QuestionContent;
-import com.project.doongdoong.domain.voice.dto.request.VoiceSaveRequestDto;
 import com.project.doongdoong.domain.voice.dto.response.VoiceDetailResponseDto;
-import com.project.doongdoong.domain.voice.dto.response.VoicesResponseDto;
 import com.project.doongdoong.domain.voice.exception.FileUploadException;
-import com.project.doongdoong.domain.voice.exception.VoiceNotFoundException;
 import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.domain.voice.repository.VoiceRepository;
 import com.project.doongdoong.global.exception.ErrorType;
@@ -38,21 +35,6 @@ public class VoiceServiceImp implements VoiceService {
     private String bucketName;
     private final AmazonS3Client amazonS3Client;
     private final VoiceRepository voiceRepository;
-
-    @Override
-    @Transactional
-    public VoicesResponseDto saveVoices(VoiceSaveRequestDto saveDto) {
-        VoicesResponseDto resultList = new VoicesResponseDto();
-        for (MultipartFile multipartFile : saveDto.getVoices()) {
-            if (multipartFile.isEmpty()) {
-                throw new FileUploadException(ErrorType.ServerError.FILE_UPLOAD_FAIL, "해당 파일은 비어 있습니다.");
-            }
-            VoiceDetailResponseDto detailResponseDto = saveVoice(multipartFile);
-            resultList.getVoicesResponse().add(detailResponseDto);
-        }
-        return resultList;
-    }
-
 
     @Override
     public VoiceDetailResponseDto saveVoice(MultipartFile multipartFile) {
@@ -93,24 +75,6 @@ public class VoiceServiceImp implements VoiceService {
                 return "audio/wav";
             default:
                 throw new IllegalArgumentException("Unsupported file format");
-        }
-    }
-
-    @Override
-    public void deleteVoice(String imageUrl) {
-        Voice voice = voiceRepository.findByAccessUrl(imageUrl).orElseThrow(() -> new VoiceNotFoundException());
-        try {
-            voiceRepository.delete(voice);
-            String filename = getObjectKeyFrom(voice);
-            boolean isObjectExist = amazonS3Client.doesObjectExist(bucketName, filename);
-            if (isObjectExist) {
-                amazonS3Client.deleteObject(bucketName, filename);
-            } else {
-                log.info("s3 파일이 존재하지 않습니다.");
-            }
-        } catch (SdkClientException e) {
-            log.error("음성 파일 삭제 오류 -> {}", e.getMessage());
-            throw new FileUploadException(ErrorType.ServerError.FILE_UPLOAD_FAIL, e.getMessage());
         }
     }
 
