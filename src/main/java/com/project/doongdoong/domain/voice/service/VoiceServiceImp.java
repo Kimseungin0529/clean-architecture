@@ -7,13 +7,13 @@ import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.voice.dto.response.VoiceDetailResponseDto;
 import com.project.doongdoong.domain.voice.exception.FileUploadException;
+import com.project.doongdoong.domain.voice.model.FileExtension;
 import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.domain.voice.repository.VoiceRepository;
 import com.project.doongdoong.global.exception.ErrorType;
 import com.project.doongdoong.global.exception.servererror.ExternalApiCallException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.io.FilenameUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,116 +23,105 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
+import static com.project.doongdoong.domain.voice.model.FileExtension.MP3;
+
 @Service
 @Slf4j
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
 public class VoiceServiceImp implements VoiceService {
 
-    private static final String VOICE_KEY = "voice/";
-
-    @Value("${cloud.aws.bucket}")
-    private String bucketName;
     private final AmazonS3Client amazonS3Client;
     private final VoiceRepository voiceRepository;
 
+    @Value("${cloud.aws.bucket}")
+    private String bucketName;
+    private static final String VOICE_KEY = "voice/";
+
+
     @Override
+    @Transactional
     public VoiceDetailResponseDto saveVoice(MultipartFile multipartFile) {
         String originalName = multipartFile.getOriginalFilename();
-        Voice voice = new Voice(originalName);
+        Voice voice = Voice.commonBuilder()
+                .originName(originalName)
+                .build();
+
         String filename = getObjectKeyFrom(voice);
-
-        log.info("음성 파일 저장 시작");
         try {
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            String contentType = getContentTypeFromFilename(originalName); // 확장자를 기반으로 MIME 타입 결정
-            objectMetadata.setContentType(contentType); // MIME 타입 설정
-            objectMetadata.setContentLength(multipartFile.getInputStream().available());
-
+            ObjectMetadata objectMetadata = initObjectMetadata(originalName, multipartFile);
             amazonS3Client.putObject(bucketName, filename, multipartFile.getInputStream(), objectMetadata);
+            voice.changeAccessUrl(amazonS3Client.getUrl(bucketName, filename).toString());
 
-            String accessUrl = amazonS3Client.getUrl(bucketName, filename).toString();
-            voice.changeAccessUrl(accessUrl);
         } catch (SdkClientException | IOException e) {
-            log.error("음성 파일 업로드 오류 -> {}", e.getMessage());
             throw new FileUploadException(ErrorType.ServerError.FILE_UPLOAD_FAIL, e.getMessage());
         }
-        log.info("음성 파일 저장 종료");
-
         voiceRepository.save(voice);
 
         return VoiceDetailResponseDto.of(voice.getAccessUrl());
     }
 
     @Override
+    @Transactional
     public void saveVoice(byte[] audioContent, String originName, QuestionContent questionContent) {
-
-        Voice voice = new Voice(originName, questionContent);
+        Voice voice = Voice.initVoiceContentBuilder()
+                .originName(originName)
+                .questionContent(questionContent)
+                .build();
         String filename = getObjectKeyFrom(voice);
 
         try {
-            log.info("TTS 음성 파일 저장 시작");
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentType("audio/mpeg"); // MP3 파일의 MIME 타입 설정
-            objectMetadata.setContentLength(audioContent.length);
+            ObjectMetadata objectMetadata = initObjectMetadata(audioContent);
+            amazonS3Client.putObject(bucketName, filename, new ByteArrayInputStream(audioContent), objectMetadata);
 
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(audioContent);
-            amazonS3Client.putObject(bucketName, filename, byteArrayInputStream, objectMetadata);
-
-            String accessUrl = amazonS3Client.getUrl(bucketName, filename).toString();
-            voice.changeAccessUrl(accessUrl);
+            voice.changeAccessUrl(amazonS3Client.getUrl(bucketName, filename).toString());
             voiceRepository.save(voice);
 
         } catch (SdkClientException e) {
-            log.error("TTS 음성 파일 업로드 오류 -> {}", e.getMessage());
             throw new FileUploadException(ErrorType.ServerError.FILE_UPLOAD_FAIL, e.getMessage());
-        }
-
-    }
-
-    private String getContentTypeFromFilename(String filename) {
-        String extension = FilenameUtils.getExtension(filename).toLowerCase();
-        switch (extension) {
-            case "mp3":
-                return "audio/mpeg";
-            case "m4a":
-                return "audio/mp4";
-            case "wav":
-                return "audio/wav";
-            default:
-                throw new IllegalArgumentException("Unsupported file format");
         }
     }
 
     @Override
     @Transactional
     public void deleteVoices(List<Voice> voices) {
-
         List<Long> voiceIds = getIdsFrom(voices);
         if (voiceIds.isEmpty()) {
             return;
         }
 
-        List<DeleteObjectsRequest.KeyVersion> keys = getRequestFrom(voices);
-
+        List<DeleteObjectsRequest.KeyVersion> keys = getRequestKeysFrom(voices);
         try {
             DeleteObjectsRequest deleteRequest = new DeleteObjectsRequest(bucketName)
                     .withKeys(keys);
             amazonS3Client.deleteObjects(deleteRequest);
 
         } catch (SdkClientException e) {
-            log.error("S3 다중 객체 삭제 오류: {}", e.getMessage());
             throw new ExternalApiCallException("S3 파일 삭제 실패 : " + e.getMessage());
         }
         voiceRepository.deleteVoicesByUrls(voiceIds);
-
     }
+
+    private ObjectMetadata initObjectMetadata(String originalName, MultipartFile multipartFile) throws IOException {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(FileExtension.getExtensionFrom(originalName));
+        objectMetadata.setContentLength(multipartFile.getInputStream().available());
+        return objectMetadata;
+    }
+
+    private ObjectMetadata initObjectMetadata(byte[] content) {
+        ObjectMetadata objectMetadata = new ObjectMetadata();
+        objectMetadata.setContentType(MP3.getExtension());
+        objectMetadata.setContentLength(content.length);
+        return objectMetadata;
+    }
+
 
     private List<Long> getIdsFrom(List<Voice> voices) {
         return voices.stream().map(Voice::getVoiceId).toList();
     }
 
-    private List<DeleteObjectsRequest.KeyVersion> getRequestFrom(List<Voice> voices) {
+    private List<DeleteObjectsRequest.KeyVersion> getRequestKeysFrom(List<Voice> voices) {
         return voices.stream()
                 .map(voice -> new DeleteObjectsRequest.KeyVersion(getObjectKeyFrom(voice)))
                 .toList();

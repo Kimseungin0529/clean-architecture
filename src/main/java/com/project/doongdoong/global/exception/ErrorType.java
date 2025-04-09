@@ -71,7 +71,9 @@ public interface ErrorType {
         QUESTION_NOT_FOUND(4007),
         ANSWER_NOT_FOUND(4008),
         ALL_ANSWER_NOT_FOUND(4009),
-        COUNSEL_NOT_FOUND(4010);
+        COUNSEL_NOT_FOUND(4010),
+        EXTENSION_NOT_FOUND(4011),
+        ;
         private final int errorCode;
 
         NotFound(int errorCode) {
