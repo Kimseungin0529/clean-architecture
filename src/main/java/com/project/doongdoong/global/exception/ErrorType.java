@@ -25,7 +25,10 @@ public interface ErrorType {
     enum Unauthorized implements ErrorType {
         UNAUTHORIZED_DEFAULT(1000),
         LOGIN_FAILED(1001),
-        UNAUTHORIZED_COUNSEL(1002);
+        UNAUTHORIZED_COUNSEL(1002),
+        UNAUTHORIZED_ROLE_CLAIM(1003),
+        UNAUTHORIZED_SOCIAL_TYPE_CLAIM(1004)
+        ;
 
         private final int errorCode;
 
