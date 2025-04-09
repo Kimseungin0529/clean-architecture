@@ -102,7 +102,7 @@ class JwtProviderTest extends IntegrationSupportTest {
         List<String> roles = List.of("ROLE_USER");
 
         TokenDto tokenDto = jwtProvider.generateToken(socialId, socialType, roles);
-        String accessToken = tokenDto.getAccessToken().replace("Bearer ", ""); //
+        String accessToken = tokenDto.getAccessToken().replace("Bearer ", "");
 
         // when & then
         return List.of(
@@ -123,6 +123,44 @@ class JwtProviderTest extends IntegrationSupportTest {
 
                     // then
                     assertThat(isValid).isTrue();
+                })
+        );
+    }
+
+
+    @DisplayName("JWT 토큰 값 추출 시나리오")
+    @TestFactory
+    Collection<DynamicTest> extractValueFromToken() {
+        // given
+        String socialId = "123462671";
+        String socialType = "APPLE";
+        List<String> roles = List.of("ROLE_USER", "ROLE_ADMIN" );
+
+        TokenDto tokenDto = jwtProvider.generateToken(socialId, socialType, roles);
+        String accessToken = tokenDto.getAccessToken();
+
+        // when & then
+        return List.of(
+                DynamicTest.dynamicTest("JWT 토큰에서 socialId 를 추출합니다." , () -> {
+                    // when
+                    String result = jwtProvider.extractSocialId(accessToken);
+
+                    // then
+                    assertThat(result).isEqualTo(socialId);
+                }),
+                DynamicTest.dynamicTest("JWT 토큰에서 social type 을 추출합니다.",() -> {
+                    // when
+                    String result = jwtProvider.extractSocialType(accessToken);
+
+                    // then
+                    assertThat(result).isEqualTo(socialType);
+                }),
+                DynamicTest.dynamicTest("JWT 토큰에서 권한을 추출합니다.", () -> {
+                    // when
+                    List<String> result = jwtProvider.extractRole(accessToken);
+
+                    // then
+                    assertThat(result).isEqualTo(roles);
                 })
         );
     }

@@ -97,9 +97,9 @@ public class UserServiceImpl implements UserService {
         String token = findRefreshToken.getRefreshToken();
         String socialId = jwtProvider.extractSocialId(token);
         String socialType = jwtProvider.extractSocialType(token);
-        String role = jwtProvider.extractRole(token);
+        List<String> roleList = jwtProvider.extractRole(token);
 
-        TokenDto tokenDto = jwtProvider.generateToken(socialId, socialType, List.of(role));
+        TokenDto tokenDto = jwtProvider.generateToken(socialId, socialType, roleList);
         return TokenDto.of(tokenDto.getAccessToken());
     }
 

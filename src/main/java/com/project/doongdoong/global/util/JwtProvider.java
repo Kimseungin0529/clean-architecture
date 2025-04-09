@@ -14,6 +14,7 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.hibernate.mapping.Join;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -102,9 +103,13 @@ public class JwtProvider {
         return Jwts.parser().setSigningKey(key).parseClaimsJws(value).getBody().getSubject();
     }
 
-    public String extractRole(String token) {
+    public List<String> extractRole(String token) {
         String value = token.substring(BEARER_PREFIX.length());
-        return Jwts.parser().setSigningKey(key).parseClaimsJws(value).getBody().get(ROLE_PREFIX, String.class);
+        String roleString = Jwts.parser().setSigningKey(key).parseClaimsJws(value).getBody().get(ROLE_PREFIX, String.class);
+
+        return Arrays
+                .stream(roleString.split(JOINING_PREFIX))
+                .toList();
     }
 
     public String extractSocialType(String token) {
