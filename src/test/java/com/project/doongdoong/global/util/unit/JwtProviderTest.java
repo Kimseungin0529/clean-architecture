@@ -1,5 +1,7 @@
 package com.project.doongdoong.global.util.unit;
 
+import com.project.doongdoong.domain.user.service.UserService;
+import com.project.doongdoong.global.dto.request.LogoutDto;
 import com.project.doongdoong.global.dto.response.TokenDto;
 import com.project.doongdoong.global.util.JwtProvider;
 import com.project.doongdoong.module.IntegrationSupportTest;
@@ -23,6 +25,8 @@ class JwtProviderTest extends IntegrationSupportTest {
 
     @Autowired
     JwtProvider jwtProvider;
+    @Autowired
+    UserService userService;
 
     @DisplayName("JWT 토큰을 생성합니다.")
     @Test
@@ -73,7 +77,6 @@ class JwtProviderTest extends IntegrationSupportTest {
                             });
                 }),
                 DynamicTest.dynamicTest("JWT 토큰이 올바른지 검증합니다.", () -> {
-                    // given
                     // when
                     boolean isValid = jwtProvider.validateToken(accessToken);
                     // then
@@ -90,7 +93,39 @@ class JwtProviderTest extends IntegrationSupportTest {
 
     }
 
+    @DisplayName("JWT 토큰 생성 이후, 블랙 토큰 확인 시나리오")
+    @TestFactory
+    Collection<DynamicTest> isBlackToken() {
+        // given
+        String socialId = "123462671";
+        String socialType = "APPLE";
+        List<String> roles = List.of("ROLE_USER");
 
+        TokenDto tokenDto = jwtProvider.generateToken(socialId, socialType, roles);
+        String accessToken = tokenDto.getAccessToken().replace("Bearer ", ""); //
+
+        // when & then
+        return List.of(
+                DynamicTest.dynamicTest("생성된 JWT 토큰은 블랙 토큰이 아닙니다.", () -> {
+                    // when
+                    boolean isBlackToken = jwtProvider.isBlackToken(accessToken);
+
+                    // then
+                    assertThat(isBlackToken).isFalse();
+                }),
+                DynamicTest.dynamicTest("로그아웃에 사용된 JWT 토큰은 블랙 토큰입니다.", () -> {
+                    //given
+                    LogoutDto logoutDto = new LogoutDto(tokenDto.getRefreshToken());
+                    userService.logout(logoutDto, tokenDto.getAccessToken());
+
+                    // when
+                    boolean isValid = jwtProvider.isBlackToken(accessToken);
+
+                    // then
+                    assertThat(isValid).isTrue();
+                })
+        );
+    }
 
 
 }
