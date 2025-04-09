@@ -32,7 +32,7 @@ public class InitProvider {
             if (!existingVoice.isPresent()) {
                 byte[] audioContent = googleTtsProvider.convertTextToSpeech(questionContent.getText());
                 String filename = VOICE_QUESTION + questionContent.getNumber();
-                voiceService.saveTtsVoice(audioContent, filename, questionContent);
+                voiceService.saveVoice(audioContent, filename, questionContent);
                 log.info("Voice for question {} created and saved.", questionContent.getNumber());
             }
         }

@@ -64,6 +64,32 @@ public class VoiceServiceImp implements VoiceService {
         return VoiceDetailResponseDto.of(voice.getAccessUrl());
     }
 
+    @Override
+    public void saveVoice(byte[] audioContent, String originName, QuestionContent questionContent) {
+
+        Voice voice = new Voice(originName, questionContent);
+        String filename = getObjectKeyFrom(voice);
+
+        try {
+            log.info("TTS 음성 파일 저장 시작");
+            ObjectMetadata objectMetadata = new ObjectMetadata();
+            objectMetadata.setContentType("audio/mpeg"); // MP3 파일의 MIME 타입 설정
+            objectMetadata.setContentLength(audioContent.length);
+
+            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(audioContent);
+            amazonS3Client.putObject(bucketName, filename, byteArrayInputStream, objectMetadata);
+
+            String accessUrl = amazonS3Client.getUrl(bucketName, filename).toString();
+            voice.changeAccessUrl(accessUrl);
+            voiceRepository.save(voice);
+
+        } catch (SdkClientException e) {
+            log.error("TTS 음성 파일 업로드 오류 -> {}", e.getMessage());
+            throw new FileUploadException(ErrorType.ServerError.FILE_UPLOAD_FAIL, e.getMessage());
+        }
+
+    }
+
     private String getContentTypeFromFilename(String filename) {
         String extension = FilenameUtils.getExtension(filename).toLowerCase();
         switch (extension) {
@@ -116,31 +142,5 @@ public class VoiceServiceImp implements VoiceService {
         return VOICE_KEY + voice.getStoredName();
     }
 
-    @Override
-    public VoiceDetailResponseDto saveTtsVoice(byte[] audioContent, String originName, QuestionContent questionContent) {
-
-        Voice voice = new Voice(originName, questionContent);
-        String filename = getObjectKeyFrom(voice);
-
-        try {
-            log.info("TTS 음성 파일 저장 시작");
-            ObjectMetadata objectMetadata = new ObjectMetadata();
-            objectMetadata.setContentType("audio/mpeg"); // MP3 파일의 MIME 타입 설정
-            objectMetadata.setContentLength(audioContent.length);
-
-            ByteArrayInputStream byteArrayInputStream = new ByteArrayInputStream(audioContent);
-            amazonS3Client.putObject(bucketName, filename, byteArrayInputStream, objectMetadata);
-
-            String accessUrl = amazonS3Client.getUrl(bucketName, filename).toString();
-            voice.changeAccessUrl(accessUrl);
-            voiceRepository.save(voice);
-
-        } catch (SdkClientException e) {
-            log.error("TTS 음성 파일 업로드 오류 -> {}", e.getMessage());
-            throw new FileUploadException(ErrorType.ServerError.FILE_UPLOAD_FAIL, e.getMessage());
-        }
-
-        return VoiceDetailResponseDto.of(voice.getAccessUrl());
-    }
 
 }

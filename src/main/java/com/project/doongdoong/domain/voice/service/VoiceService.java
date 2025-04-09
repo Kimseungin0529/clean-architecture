@@ -9,10 +9,10 @@ import java.util.List;
 
 public interface VoiceService {
 
-    public VoiceDetailResponseDto saveVoice(MultipartFile multipartFile);
+    VoiceDetailResponseDto saveVoice(MultipartFile multipartFile);
 
-    public void deleteVoices(List<Voice> voices);
+    void saveVoice(byte[] audioContent, String originName, QuestionContent questionContent);
 
-    public VoiceDetailResponseDto saveTtsVoice(byte[] bytes, String originName, QuestionContent questionContent);
+    void deleteVoices(List<Voice> voices);
 
 }
