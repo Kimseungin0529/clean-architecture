@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.user.service.spring;
 
 import com.project.doongdoong.domain.user.dto.UserInformationResponseDto;
+import com.project.doongdoong.domain.user.exeception.RefreshTokenNotFoundException;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
 import com.project.doongdoong.domain.user.service.UserService;
@@ -23,6 +24,7 @@ import java.util.List;
 
 import static com.project.doongdoong.domain.user.model.SocialType.APPLE;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class UserServiceImplSpringTest extends IntegrationSupportTest {
 
@@ -82,6 +84,14 @@ class UserServiceImplSpringTest extends IntegrationSupportTest {
                     assertThat(newTokenDto)
                             .extracting(TokenDto::getAccessToken)
                             .isNotEqualTo(tokenDto.getAccessToken());
+                }),
+                DynamicTest.dynamicTest("인증/인가 토큰을 재발급이 실패합니다..", () -> {
+                    // given
+                    ReissueDto reissueDto = new ReissueDto("Bearer ax2ha.bant7SQs19.cahzZ1oXQ4");
+                    // when & then
+                    assertThatThrownBy(() -> userService.reissue(reissueDto))
+                            .isInstanceOf(RefreshTokenNotFoundException.class)
+                                    .hasMessage("refresh Token 이 존재하지 않아 토큰 갱신에 실패했습니다.");
                 }),
                 DynamicTest.dynamicTest("사용자 로그아웃 처리합니다.", () -> {
                     // given

@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.user.service;
 
 import com.project.doongdoong.domain.user.dto.UserInformationResponseDto;
-import com.project.doongdoong.domain.user.exeception.RefreshTokenNoutFoundException;
+import com.project.doongdoong.domain.user.exeception.RefreshTokenNotFoundException;
 import com.project.doongdoong.domain.user.exeception.TokenInfoFobiddenException;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialIdentifier;
@@ -92,7 +92,7 @@ public class UserServiceImpl implements UserService {
     public TokenDto reissue(ReissueDto reissueTokenDto) {
         String refreshToken = reissueTokenDto.getRefreshToken();
         RefreshToken findRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
-                .orElseThrow(RefreshTokenNoutFoundException::new);
+                .orElseThrow(RefreshTokenNotFoundException::new);
 
         String token = findRefreshToken.getRefreshToken();
         String socialId = jwtProvider.extractSocialId(token);
