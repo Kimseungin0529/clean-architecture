@@ -18,7 +18,7 @@ import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
-import com.project.doongdoong.domain.user.model.SocialType;
+import com.project.doongdoong.domain.user.model.SocialIdentifier;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
 import com.project.doongdoong.global.dto.response.CounselAiResponse;
@@ -51,9 +51,9 @@ public class CounselServiceImpl implements CounselService {
     @Transactional
     @Override
     public CounselResultResponse consult(String uniqueValue, CounselCreateRequest request) {
-        String[] values = parseUniqueValue(uniqueValue); // 사용자 정보 찾기
-        User user = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(values[1]), values[0])
-                .orElseThrow(() -> new UserNotFoundException());
+        SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
+        User user = userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
+                .orElseThrow(UserNotFoundException::new);
 
         Counsel counsel = Counsel.builder() // 상담 객체 생성
                 .question(request.getQuestion())
@@ -117,11 +117,10 @@ public class CounselServiceImpl implements CounselService {
     }
 
     @Override
-    public CounselDetailResponse findCounselContent(String socialId, Long counselId) {
-        String[] value = parseUniqueValue(socialId);
-        log.info(value[0], value[1]);
-        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(value[1]), value[0])
-                .orElseThrow(() -> new UserNotFoundException());
+    public CounselDetailResponse findCounselContent(String uniqueValue, Long counselId) {
+        SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
+        User findUser = userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
+                .orElseThrow(UserNotFoundException::new);
         Counsel findCounsel = counselRepository.findWithAnalysisById(counselId).orElseThrow(() -> new CounselNotFoundException());
 
         if (!findCounsel.getUser().getId().equals(findUser.getId())) { // 사용자 본인의 상담만 확인 가능
@@ -129,7 +128,7 @@ public class CounselServiceImpl implements CounselService {
         }
 
         return CounselDetailResponse.builder()
-                .data(findCounsel.getCreatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
+                .date(findCounsel.getCreatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                 .counselId(findCounsel.getId())
                 .question(findCounsel.getQuestion())
                 .answer(findCounsel.getAnswer())
@@ -140,14 +139,17 @@ public class CounselServiceImpl implements CounselService {
 
     @Override
     public CounselListResponse findCounsels(String uniqueValue, int pageNumber) {
-        String[] value = parseUniqueValue(uniqueValue);
-        User findUser = userRepository.findBySocialTypeAndSocialId(SocialType.customValueOf(value[1]), value[0])
-                .orElseThrow(() -> new UserNotFoundException());
+        SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
+        User findUser = userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
+                .orElseThrow(UserNotFoundException::new);
+
 
         pageNumber -= 1;
         PageRequest pageRequest = PageRequest.of(pageNumber, COUNSEL_PAGE_SIZE);
+        log.info("pageNumber = {}", pageNumber);
         Page<Counsel> counselsPage = counselRepository.searchPageCounselList(findUser, pageRequest);
-
+        log.info("getTotalPages = {}", counselsPage.getTotalPages());
+        log.info("getTotalElements() = {}", counselsPage.getTotalElements());
         if (pageNumber + 1 > counselsPage.getTotalPages()) { // 존재하지 않는 페이지에 접근하는 경우
             throw new CounselNotExistPageException();
         }
@@ -173,8 +175,4 @@ public class CounselServiceImpl implements CounselService {
         return response;
     }
 
-    private static String[] parseUniqueValue(String uniqueValue) {
-        String[] values = uniqueValue.split("_"); // 사용자 찾기
-        return values;
-    }
 }

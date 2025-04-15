@@ -60,7 +60,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                 "개발자가 되기 위해서는 꾸준한 학습과 프로젝트 경험이 필요합니다.",
                 "http://example.com/image.jpg"
         );
-        String uniqueValue = savedUser.getSocialId() + "_" + savedUser.getSocialType().getText();
+        String uniqueValue = savedUser.getSocialId() + "_" + savedUser.getSocialType().getDescription();
 
         when(webClientUtil.callConsult(any(HashMap.class)))
                 .thenReturn(mockResponse);
@@ -106,7 +106,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                 "개발자가 되기 위해서는 꾸준한 학습과 프로젝트 경험이 필요합니다.",
                 "http://example.com/image.jpg"
         );
-        String uniqueValue = savedUser.getSocialId() + "_" + savedUser.getSocialType().getText();
+        String uniqueValue = savedUser.getSocialId() + "_" + savedUser.getSocialType().getDescription();
 
         when(webClientUtil.callConsult(any(HashMap.class)))
                 .thenReturn(mockResponse);
@@ -158,7 +158,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                 "개발자가 되기 위해서는 꾸준한 학습과 프로젝트 경험이 필요합니다.",
                 "http://example.com/image.jpg"
         );
-        String otherUniqueValue = savedOtherUser.getSocialId() + "_" + savedOtherUser.getSocialType().getText();
+        String otherUniqueValue = savedOtherUser.getSocialId() + "_" + savedOtherUser.getSocialType().getDescription();
 
         when(webClientUtil.callConsult(any(HashMap.class)))
                 .thenReturn(mockResponse);
@@ -189,7 +189,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
         return List.of(
                 DynamicTest.dynamicTest("상담 내용을 조회합니다.", () -> {
                             //given
-                            String uniqueValue = user1.getSocialId() + "_" + user1.getSocialType().getText();
+                            String uniqueValue = user1.getSocialId() + "_" + user1.getSocialType().getDescription();
                             //when
                             CounselDetailResponse result = counselService.findCounselContent(uniqueValue, savedCounsel.getId());
                             //then
@@ -201,7 +201,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                 ),
                 DynamicTest.dynamicTest("남의 상담 내용을 조회할 수 없습니다.", () -> {
                     // given
-                    String otherUniqueValue = user2.getSocialId() + "_" + user2.getSocialType().getText();
+                    String otherUniqueValue = user2.getSocialId() + "_" + user2.getSocialType().getDescription();
                     // when & then
                     assertThatThrownBy(() ->
                             counselService.findCounselContent(otherUniqueValue, savedCounsel.getId()))
