@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 @Service
 @RequiredArgsConstructor
@@ -16,7 +17,7 @@ public class CounselStatisticsServiceImpl implements CounselStatisticsService {
 
     private final CounselCachingRepository counselCachingRepository;
 
-    private static final int PLUS = 1;
+    private static final int PLUS = 1, WEEKS = 7;
 
     @Override
     public void incrementCategoryCount(CounselType counselType) {
@@ -25,6 +26,7 @@ public class CounselStatisticsServiceImpl implements CounselStatisticsService {
 
         String dailyKey = CounselCacheKey.generateDailyKey(LocalDate.now(), counselType);
         counselCachingRepository.incrementValue(dailyKey, PLUS);
+        counselCachingRepository.expire(dailyKey, WEEKS, TimeUnit.DAYS);
     }
 
     @Override
