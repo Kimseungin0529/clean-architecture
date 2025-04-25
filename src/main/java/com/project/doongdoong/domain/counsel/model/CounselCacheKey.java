@@ -9,12 +9,12 @@ import java.time.LocalDate;
 @RequiredArgsConstructor
 public enum CounselCacheKey {
     TOTAL_COUNT("counseling:count:total:%s"),
-    WEEKLY_COUNT("counseling:count:week:%s");
+    DAY_COUNT("counseling:count:%s:%s");
 
     private final String pattern;
 
     public static String generateDailyKey(LocalDate localDate, CounselType counselType) {
-        return String.format(WEEKLY_COUNT.pattern, localDate.toString(), counselType.name());
+        return String.format(DAY_COUNT.pattern, localDate.toString(), counselType.name());
     }
 
     public static String generateTotalKey(CounselType counselType) {
