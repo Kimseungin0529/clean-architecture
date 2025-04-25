@@ -6,6 +6,7 @@ import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
 import com.project.doongdoong.domain.counsel.service.CounselService;
+import com.project.doongdoong.domain.counsel.service.CounselStatisticsService;
 import com.project.doongdoong.global.annotation.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;
@@ -26,6 +27,7 @@ import java.net.URI;
 public class CounselController {
 
     private final CounselService counselService;
+    private final CounselStatisticsService counselStatisticsService;
 
 
     @ResponseStatus(HttpStatus.CREATED)
@@ -60,8 +62,8 @@ public class CounselController {
 
 
     @GetMapping("/popular")
-    public ApiResponse<CounselRankResponse> findCounselRankList(){
-        return ApiResponse.of(HttpStatus.OK, null, counselService.getCounselTopicLank());
+    public ApiResponse<CounselRankResponse> findCounselRankList() {
+        return ApiResponse.of(HttpStatus.OK, null, null);
     }
 
 
