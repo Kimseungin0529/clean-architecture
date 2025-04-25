@@ -9,5 +9,9 @@ import org.springframework.stereotype.Repository;
 public class CounselCachingRepository {
 
     private final RedisTemplate<String, Object> redisTemplate;
+
+    public void incrementValue(String key, int integer){
+        redisTemplate.opsForValue().increment(key, integer);
+    }
 }
 
