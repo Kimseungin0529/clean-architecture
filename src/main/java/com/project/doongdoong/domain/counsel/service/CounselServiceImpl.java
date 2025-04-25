@@ -45,6 +45,7 @@ public class CounselServiceImpl implements CounselService {
     private final CounselRepository counselRepository;
     private final UserRepository userRepository;
     private final WebClientUtil webClientUtil;
+
     private final static int COUNSEL_PAGE_SIZE = 10;
 
 

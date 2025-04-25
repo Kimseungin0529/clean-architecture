@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.counsel.controller;
 
+import com.project.doongdoong.domain.counsel.dto.CounselRankResponse;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
@@ -55,6 +56,12 @@ public class CounselController {
                                                          @Valid @Min(value = 1, message = "페이지 시작은 최소 1입니다.") int pageNumber) {
 
         return ApiResponse.of(HttpStatus.OK, null, counselService.findCounsels(uniqueValue, pageNumber));
+    }
+
+
+    @GetMapping("/popular")
+    public ApiResponse<CounselRankResponse> findCounselRankList(){
+        return ApiResponse.of(HttpStatus.OK, null, counselService.getCounselTopicLank());
     }
 
 
