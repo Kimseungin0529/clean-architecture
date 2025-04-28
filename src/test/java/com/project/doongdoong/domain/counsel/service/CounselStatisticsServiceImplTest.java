@@ -22,53 +22,58 @@ class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
     CounselStatisticsService counselStatisticsService;
 
     @Autowired
-    RedisTemplate<String, String> redisTemplate;
+    RedisTemplate<String, Object> redisTemplate;
 
     @BeforeEach
-    void clearRedisKeys() {
-        redisTemplate.delete(CounselCacheKey.generateTotalKey(CounselType.JOB));
-        redisTemplate.delete(CounselCacheKey.generateDailyKey(LocalDate.now(), CounselType.JOB));
-
-        redisTemplate.delete(CounselCacheKey.generateTotalKey(CounselType.LOVE));
-        redisTemplate.delete(CounselCacheKey.generateDailyKey(LocalDate.of(2020, 1, 15), CounselType.LOVE));
-        redisTemplate.delete(CounselCacheKey.generateDailyKey(LocalDate.now(), CounselType.LOVE));
+    void clear() {
+        redisTemplate.getConnectionFactory().getConnection().flushDb();
     }
 
 
-    @DisplayName("카테고리 별 주제 개수 통계 시나리오")
+    @DisplayName("상담 주제 별 개수 통계 시나리오")
     @TestFactory
     Collection<DynamicTest> incrementCategoryCount() {
         // given
-        String jobTotalKey = CounselCacheKey.generateTotalKey(CounselType.JOB);
-        String loveTotalKey = CounselCacheKey.generateTotalKey(CounselType.LOVE);
-        String pastLoveDailyKey = CounselCacheKey.generateDailyKey(LocalDate.of(2020, 1, 15), CounselType.LOVE);
+        String totalKey = CounselCacheKey.generateTotalKey();
+        LocalDate now = LocalDate.now();
+        String dailyKey = CounselCacheKey.generateDailyKey(now);
 
-        redisTemplate.opsForValue().set(jobTotalKey, "1");
-        redisTemplate.opsForValue().set(loveTotalKey, "5");
-        redisTemplate.opsForValue().set(pastLoveDailyKey, "3");
+        CounselType counselTypeLove = CounselType.LOVE;
+        redisTemplate.opsForHash().increment(totalKey, counselTypeLove.name(), 21);
+        redisTemplate.opsForZSet().add(dailyKey, counselTypeLove.name(), 3);
+        int days = 0;
+        for (int i = 0; i < 7; i++) {
+            days += i;
+            redisTemplate.opsForZSet().add(CounselCacheKey.generateDailyKey(now.minusDays(i)), counselTypeLove.name(), i);
+        }
+        int finalDays = days;
 
         // when & then
         return List.of(
-                DynamicTest.dynamicTest("데일리 진로 유형 키가 없는 경우에 진로 상담 유형 항목 수를 증가시킵니다.", () -> {
+                DynamicTest.dynamicTest("상담 유형이 JOB 인 관련 값을 증가시킵니다.", () -> {
                     //given
                     CounselType counselType = CounselType.JOB;
-                    String jobDailyKey = CounselCacheKey.generateDailyKey(LocalDate.now(), CounselType.JOB);
                     // when
                     counselStatisticsService.incrementCategoryCount(counselType);
                     // then
-                    assertThat(redisTemplate.opsForValue().get(jobDailyKey)).isEqualTo("1");
-                    assertThat(redisTemplate.opsForValue().get(jobTotalKey)).isEqualTo("2");
+
+                    assertThat(redisTemplate.opsForHash().get(totalKey, counselTypeLove.name()))
+                            .isEqualTo(String.valueOf(finalDays));
+                    assertThat(redisTemplate.opsForHash().get(totalKey, counselType.name()))
+                            .isEqualTo("1");
+                    assertThat(redisTemplate.opsForZSet().score(dailyKey, counselType.name()))
+                            .isEqualTo(1.0);
                 }),
-                DynamicTest.dynamicTest("연애 유형 키가 전부 있는 경우에 연애 상담 유형 항목 수를 증가시킵니다.", () -> {
-                            //given
-                            String loveDailyKey = CounselCacheKey.generateDailyKey(LocalDate.now(), CounselType.LOVE);
-                            // when
-                            counselStatisticsService.incrementCategoryCount(CounselType.LOVE);
-                            // then
-                            assertThat(redisTemplate.opsForValue().get(loveDailyKey)).isEqualTo("1");
-                            assertThat(redisTemplate.opsForValue().get(loveTotalKey)).isEqualTo("6");
-                        }
-                ));
+                DynamicTest.dynamicTest("상담 유형이 LOVE 인 관련 값을 증가시킵니다", () -> {
+                    // when
+                    counselStatisticsService.incrementCategoryCount(counselTypeLove);
+                    // then
+                    assertThat(redisTemplate.opsForHash().get(totalKey, counselTypeLove.name()))
+                            .isEqualTo(String.valueOf(finalDays + 1));
+                    assertThat(redisTemplate.opsForZSet().score(dailyKey, counselTypeLove.name()))
+                            .isEqualTo(1.0);
+                })
+        );
 
 
     }
