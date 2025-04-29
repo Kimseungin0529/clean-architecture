@@ -7,4 +7,5 @@ public record CounselRank(
     public static CounselRank of(String counselType, double count) {
         return new CounselRank(counselType, count);
     }
+
 }

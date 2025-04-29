@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.counsel.controller;
 
-import com.project.doongdoong.domain.counsel.dto.CounselRankResponse;
+import com.project.doongdoong.domain.counsel.dto.CounselRankList;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
@@ -59,7 +59,7 @@ public class CounselController {
 
 
     @GetMapping("/popular")
-    public ApiResponse<CounselRankResponse> findCounselRankList() {
+    public ApiResponse<CounselRankList> findCounselRankList() {
         return ApiResponse.of(HttpStatus.OK, null, null);
     }
 

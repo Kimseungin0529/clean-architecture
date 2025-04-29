@@ -32,7 +32,7 @@ class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
 
     @DisplayName("상담 주제 별 개수 통계 시나리오")
     @TestFactory
-    Collection<DynamicTest> incrementCategoryCount() {
+    Collection<DynamicTest> incrementTypeCount() {
         // given
         String totalKey = CounselCacheKey.generateTotalKey();
         LocalDate now = LocalDate.now();
@@ -54,7 +54,7 @@ class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
                     //given
                     CounselType counselType = CounselType.JOB;
                     // when
-                    counselStatisticsService.incrementCategoryCount(counselType);
+                    counselStatisticsService.incrementTypeCount(counselType);
                     // then
 
                     assertThat(redisTemplate.opsForHash().get(totalKey, counselTypeLove.name()))
@@ -66,7 +66,7 @@ class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
                 }),
                 DynamicTest.dynamicTest("상담 유형이 LOVE 인 관련 값을 증가시킵니다", () -> {
                     // when
-                    counselStatisticsService.incrementCategoryCount(counselTypeLove);
+                    counselStatisticsService.incrementTypeCount(counselTypeLove);
                     // then
                     assertThat(redisTemplate.opsForHash().get(totalKey, counselTypeLove.name()))
                             .isEqualTo(String.valueOf(finalDays + 1));

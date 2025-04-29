@@ -12,7 +12,7 @@ import java.util.List;
 public enum CounselCacheKey {
     TOTAL_COUNT("counsel:count:total"),
     DAY_COUNT("counsel:count:%s"),
-    COMBINED_COUNT("counsel:combined:count"),
+    WEEKS_COUNT("counsel:weeks:count"),
     ;
 
     private final String pattern;
