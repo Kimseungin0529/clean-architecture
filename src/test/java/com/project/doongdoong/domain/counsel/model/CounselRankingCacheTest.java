@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CounselRankCacheTest {
+class CounselRankingCacheTest {
 
     @DisplayName("날짜와 상담 유형에 대한 상담 키를 발급합니다.")
     @Test
@@ -18,7 +18,7 @@ class CounselRankCacheTest {
         String result = CounselCacheKey.generateDailyKey(localDate);
         // then
         assertThat(result)
-                .isEqualTo("counsel:count:" + localDate);
+                .isEqualTo("counsel:" + localDate + ":count");
     }
 
     @DisplayName("상담 유형에 대한 상담 키를 발급합니다.")
@@ -28,7 +28,7 @@ class CounselRankCacheTest {
         String result = CounselCacheKey.generateTotalKey();
         // then
         assertThat(result)
-                .isEqualTo("counsel:count:total");
+                .isEqualTo("counsel:total:count");
     }
 
 
