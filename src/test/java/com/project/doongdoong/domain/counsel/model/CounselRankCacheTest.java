@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CounselCacheKeyTest {
+class CounselRankCacheTest {
 
     @DisplayName("날짜와 상담 유형에 대한 상담 키를 발급합니다.")
     @Test
