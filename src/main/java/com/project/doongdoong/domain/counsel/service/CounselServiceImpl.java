@@ -45,6 +45,7 @@ public class CounselServiceImpl implements CounselService {
     private final CounselRepository counselRepository;
     private final UserRepository userRepository;
     private final WebClientUtil webClientUtil;
+
     private final static int COUNSEL_PAGE_SIZE = 10;
 
 
@@ -57,7 +58,7 @@ public class CounselServiceImpl implements CounselService {
 
         Counsel counsel = Counsel.builder() // 상담 객체 생성
                 .question(request.getQuestion())
-                .counselType(CounselType.from(request.getCounselType()))
+                .counselType(CounselType.generateCounselTypeFrom(request.getCounselType()))
                 .user(user)
                 .build();
         /**
@@ -90,7 +91,7 @@ public class CounselServiceImpl implements CounselService {
     private HashMap<String, Object> setupParameters(Counsel counsel) {
         HashMap<String, Object> parameters = new HashMap<String, Object>(); // 외부 API request 설정
         parameters.put("question", counsel.getQuestion()); // 고민은 필수
-        parameters.put("category", counsel.getCounselType().getContent());
+        parameters.put("category", counsel.getCounselType().getDescription());
 
 
         Optional.ofNullable(counsel.getAnalysis()) // 분석 -> 상담 으로 연결되는 경우, 분석에 대한 답변 항목 추가
@@ -133,7 +134,7 @@ public class CounselServiceImpl implements CounselService {
                 .question(findCounsel.getQuestion())
                 .answer(findCounsel.getAnswer())
                 .imageUrl(findCounsel.getImageUrl())
-                .counselType(findCounsel.getCounselType().getContent())
+                .counselType(findCounsel.getCounselType().getDescription())
                 .build();
     }
 
@@ -165,7 +166,7 @@ public class CounselServiceImpl implements CounselService {
                                         .date(counsel.getCreatedTime().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")))
                                         .counselId(counsel.getId())
                                         .isAnalysisUsed(counsel.hasAnalysis())
-                                        .counselType(counsel.getCounselType().getContent())
+                                        .counselType(counsel.getCounselType().getDescription())
                                         .build()
                         )
                         .collect(Collectors.toList())
