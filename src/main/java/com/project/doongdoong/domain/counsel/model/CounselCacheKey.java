@@ -27,7 +27,7 @@ public enum CounselCacheKey {
 
     public static List<String> generateKeysBefore(LocalDate localDate, int days){
         List<String> keys = new ArrayList<>();
-        for(int i=0; i<days; i++){
+        for(int i=1; i<=days; i++){
             String key = String.format(DAY_COUNT.pattern, localDate.minusDays(i).toString());
             keys.add(key);
         }
