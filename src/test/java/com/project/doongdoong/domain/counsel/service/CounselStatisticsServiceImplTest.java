@@ -39,7 +39,7 @@ class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
         String dailyKey = CounselCacheKey.generateDailyKey(now);
 
         CounselType counselTypeLove = CounselType.LOVE;
-        redisTemplate.opsForHash().increment(totalKey, counselTypeLove.name(), 21);
+        redisTemplate.opsForZSet().incrementScore(totalKey, counselTypeLove.name(), 21);
         redisTemplate.opsForZSet().add(dailyKey, counselTypeLove.name(), 3);
         int days = 0;
         for (int i = 0; i < 7; i++) {
@@ -57,10 +57,10 @@ class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
                     counselStatisticsService.incrementTypeCount(counselType);
                     // then
 
-                    assertThat(redisTemplate.opsForHash().get(totalKey, counselTypeLove.name()))
-                            .isEqualTo(String.valueOf(finalDays));
-                    assertThat(redisTemplate.opsForHash().get(totalKey, counselType.name()))
-                            .isEqualTo("1");
+                    assertThat(redisTemplate.opsForZSet().score(totalKey, counselTypeLove.name()))
+                            .isEqualTo(finalDays);
+                    assertThat(redisTemplate.opsForZSet().score(totalKey, counselType.name()))
+                            .isEqualTo(1.0);
                     assertThat(redisTemplate.opsForZSet().score(dailyKey, counselType.name()))
                             .isEqualTo(1.0);
                 }),
@@ -68,8 +68,8 @@ class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
                     // when
                     counselStatisticsService.incrementTypeCount(counselTypeLove);
                     // then
-                    assertThat(redisTemplate.opsForHash().get(totalKey, counselTypeLove.name()))
-                            .isEqualTo(String.valueOf(finalDays + 1));
+                    assertThat(redisTemplate.opsForZSet().score(totalKey, counselTypeLove.name()))
+                            .isEqualTo(finalDays + 1);
                     assertThat(redisTemplate.opsForZSet().score(dailyKey, counselTypeLove.name()))
                             .isEqualTo(1.0);
                 })

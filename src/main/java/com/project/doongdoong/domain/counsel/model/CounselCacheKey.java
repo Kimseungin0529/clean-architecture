@@ -10,8 +10,8 @@ import java.util.List;
 @Getter
 @RequiredArgsConstructor
 public enum CounselCacheKey {
-    TOTAL_COUNT("counsel:count:total"),
-    DAY_COUNT("counsel:count:%s"),
+    TOTAL_COUNT("counsel:total:count"),
+    DAY_COUNT("counsel:%s:count"),
     WEEKS_COUNT("counsel:weeks:count"),
     ;
 
