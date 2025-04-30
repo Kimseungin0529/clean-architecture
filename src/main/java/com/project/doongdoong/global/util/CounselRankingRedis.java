@@ -36,7 +36,7 @@ public class CounselRankingRedis implements CounselRankingCache {
     @Override
     public List<CounselRank> getTotalRanking() {
         Set<ZSetOperations.TypedTuple<Object>> entries = redisTemplate.opsForZSet()
-                .rangeWithScores(CounselCacheKey.generateTotalKey(), 0, -1);
+                .reverseRangeWithScores(CounselCacheKey.generateTotalKey(), 0, -1);
         return mapToCounselRanks(entries);
     }
 
@@ -50,7 +50,7 @@ public class CounselRankingRedis implements CounselRankingCache {
             redisTemplate.expire(key, ONE, TimeUnit.DAYS);
         }
 
-        Set<ZSetOperations.TypedTuple<Object>> entries = redisTemplate.opsForZSet().rangeWithScores(key, 0, -1);
+        Set<ZSetOperations.TypedTuple<Object>> entries = redisTemplate.opsForZSet().reverseRangeWithScores(key, 0, -1);
         return mapToCounselRanks(entries);
     }
 

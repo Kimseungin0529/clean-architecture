@@ -1,12 +1,11 @@
 package com.project.doongdoong.domain.counsel.service;
 
+import com.project.doongdoong.domain.counsel.dto.CounselRankList;
 import com.project.doongdoong.domain.counsel.model.CounselCacheKey;
+import com.project.doongdoong.domain.counsel.model.CounselRank;
 import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.module.IntegrationSupportTest;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.DynamicTest;
-import org.junit.jupiter.api.TestFactory;
+import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 
@@ -15,6 +14,7 @@ import java.util.Collection;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.tuple;
 
 class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
 
@@ -50,7 +50,7 @@ class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
 
         // when & then
         return List.of(
-                DynamicTest.dynamicTest("상담 유형이 JOB 인 관련 값을 증가시킵니다.", () -> {
+                DynamicTest.dynamicTest("상담 유형에 해당하는 값을 증가시킵니다.", () -> {
                     //given
                     CounselType counselType = CounselType.JOB;
                     // when
@@ -64,7 +64,7 @@ class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
                     assertThat(redisTemplate.opsForZSet().score(dailyKey, counselType.name()))
                             .isEqualTo(1.0);
                 }),
-                DynamicTest.dynamicTest("상담 유형이 LOVE 인 관련 값을 증가시킵니다", () -> {
+                DynamicTest.dynamicTest("이어서 상담 유형에 해당하는 값을 증가시킵니다", () -> {
                     // when
                     counselStatisticsService.incrementTypeCount(counselTypeLove);
                     // then
@@ -77,5 +77,52 @@ class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
 
 
     }
+
+    @Test
+    @DisplayName("종합한 순위 정보를 반환한다.")
+    void getCombinedRanking() {
+        // given
+        String totalKey = CounselCacheKey.generateTotalKey();
+        String weekKey = CounselCacheKey.WEEKS_COUNT.getPattern();
+
+        redisTemplate.opsForZSet().add(totalKey, "LOVE", 42);
+        redisTemplate.opsForZSet().add(weekKey, "LOVE", 20);
+        redisTemplate.opsForZSet().add(weekKey, "JOB", 24);
+
+        // when
+        CounselRankList result = counselStatisticsService.getCombinedRanking();
+
+        // then
+        Assertions.assertAll(
+                () -> assertThat(result.totalRanking())
+                        .extracting(CounselRank::count, CounselRank::counselType)
+                        .containsExactly(
+                                tuple(42.0, "LOVE")
+                        ),
+                () -> assertThat(result.weeksRanking())
+                        .extracting(CounselRank::count, CounselRank::counselType)
+                        .containsExactly(
+                                tuple(24.0, "JOB"),
+                                tuple(20.0, "LOVE")
+                        )
+        );
+
+    }
+
+    @Test
+    @DisplayName("종합된 순위 정보가 없으면 빈 값을 반환한다")
+    void getCombinedRanking_whenEmpty_shouldReturnEmptyList() {
+        // given
+        redisTemplate.delete(CounselCacheKey.generateTotalKey());
+        redisTemplate.delete(CounselCacheKey.WEEKS_COUNT.getPattern());
+
+        // when
+        CounselRankList result = counselStatisticsService.getCombinedRanking();
+
+        // then
+        assertThat(result.totalRanking()).isEmpty();
+        assertThat(result.weeksRanking()).isEmpty();
+    }
+
 
 }
