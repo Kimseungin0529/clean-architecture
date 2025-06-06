@@ -96,25 +96,15 @@ public class CounselServiceImpl implements CounselService {
 
         Optional.ofNullable(counsel.getAnalysis()) // 분석 -> 상담 으로 연결되는 경우, 분석에 대한 답변 항목 추가
                 .ifPresent(analysis -> {
-                    if (analysis.getAnswers().size() != 4) {
+                    if (!analysis.hasAllAnswer()) {
                         throw new AllAnswersNotFoundException();
                     }
-                    String content = "";
-                    for (Answer answer : analysis.getAnswers()) {
-                        content += answer.getContent() + " ";
-                    }
+                    String content = getConcatenatedAnswerText(analysis);
                     parameters.put("analysisContent", content);
                 });
-        if (parameters.get("analysisContent") == null) { // 없는 경우, 빈 문자열값
-            parameters.put("analysisContent", "");
-        }
-        return parameters;
-    }
 
-    private void checkCounselAlreadyProcessed(Analysis findAnalysis) {
-        if (findAnalysis.getCounsel() != null) {
-            throw new CounselAlreadyProcessedException();
-        }
+        parameters.putIfAbsent("analysisContent", ""); // 없는 경우, 빈 문자열값
+        return parameters;
     }
 
     @Override
@@ -145,17 +135,14 @@ public class CounselServiceImpl implements CounselService {
                 .orElseThrow(UserNotFoundException::new);
 
 
-        pageNumber -= 1;
-        PageRequest pageRequest = PageRequest.of(pageNumber, COUNSEL_PAGE_SIZE);
-        log.info("pageNumber = {}", pageNumber);
+        int pageIndex = convertPageIndexFrom(pageNumber);
+        PageRequest pageRequest = PageRequest.of(pageIndex, COUNSEL_PAGE_SIZE);
         Page<Counsel> counselsPage = counselRepository.searchPageCounselList(findUser, pageRequest);
-        log.info("getTotalPages = {}", counselsPage.getTotalPages());
-        log.info("getTotalElements() = {}", counselsPage.getTotalElements());
-        if (pageNumber + 1 > counselsPage.getTotalPages()) { // 존재하지 않는 페이지에 접근하는 경우
+        if (pageNumber > counselsPage.getTotalPages()) { // 존재하지 않는 페이지에 접근하는 경우
             throw new CounselNotExistPageException();
         }
 
-        CounselListResponse response = CounselListResponse.builder()
+        return CounselListResponse.builder()
                 .currentPage(counselsPage.getNumber() + 1)
                 .numberPerPage(counselsPage.getSize())
                 .totalPage(counselsPage.getTotalPages())
@@ -172,8 +159,24 @@ public class CounselServiceImpl implements CounselService {
                         .collect(Collectors.toList())
                 )
                 .build();
-
-        return response;
     }
 
+    private void checkCounselAlreadyProcessed(Analysis findAnalysis) {
+        if (findAnalysis.getCounsel() != null) {
+            throw new CounselAlreadyProcessedException();
+        }
+    }
+
+    private int convertPageIndexFrom(int pageNumber) {
+        return pageNumber - 1;
+    }
+
+
+    private String getConcatenatedAnswerText(Analysis analysis) {
+        StringBuilder content = new StringBuilder();
+        for (Answer answer : analysis.getAnswers()) {
+            content.append(answer.getContent()).append("\n");
+        }
+        return content.toString();
+    }
 }
