@@ -15,6 +15,7 @@ import com.project.doongdoong.domain.counsel.exception.CounselNotExistPageExcept
 import com.project.doongdoong.domain.counsel.exception.CounselNotFoundException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
 import com.project.doongdoong.domain.counsel.model.Counsel;
+import com.project.doongdoong.domain.counsel.model.CounselRank;
 import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
@@ -22,6 +23,7 @@ import com.project.doongdoong.domain.user.model.SocialIdentifier;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
 import com.project.doongdoong.global.dto.response.CounselAiResponse;
+import com.project.doongdoong.global.util.CounselRankingCache;
 import com.project.doongdoong.global.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -45,6 +47,7 @@ public class CounselServiceImpl implements CounselService {
     private final CounselRepository counselRepository;
     private final UserRepository userRepository;
     private final WebClientUtil webClientUtil;
+    private final CounselRankingCache counselRankingCache;
 
     private final static int COUNSEL_PAGE_SIZE = 10;
 
@@ -61,11 +64,7 @@ public class CounselServiceImpl implements CounselService {
                 .counselType(CounselType.generateCounselTypeFrom(request.getCounselType()))
                 .user(user)
                 .build();
-        /**
-         * 1. 고민은 무조건
-         * 2. analysisId 여부
-         * 3. 각 분석 답변 4개 -> 하나의 스트링 -> AI한테 (imformation)
-         */
+
         if (request.getAnalysisId() != null) { // 기존 분석 결과 반영하기
             Analysis findAnalysis = analysisRepository.findByUserAndId(user, request.getAnalysisId()).orElseThrow(() -> new AnalysisAccessDeny());
             checkCounselAlreadyProcessed(findAnalysis); // 해당 분석의 정보로 상담한 경우 예외
@@ -79,6 +78,11 @@ public class CounselServiceImpl implements CounselService {
         counsel.saveAnswer(counselAiResponse.getAnswer());
         counsel.saveImageUrl(counselAiResponse.getImageUrl());
         Counsel savedCounsel = counselRepository.save(counsel);
+
+        // TODO : 상담 유형 랭킹 도입
+        counselRankingCache.incrementTotalCount(counsel.getCounselType());
+        counselRankingCache.incrementTodayCount(counsel.getCounselType());
+
 
         return CounselResultResponse.builder()
                 .counselId(savedCounsel.getId())
