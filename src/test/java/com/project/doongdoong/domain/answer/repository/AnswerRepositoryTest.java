@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.answer.repository;
 
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.assertj.core.api.Assertions;
@@ -16,7 +16,7 @@ class AnswerRepositoryTest extends IntegrationSupportTest {
     @Autowired
     AnswerRepository answerRepository;
     @Autowired
-    AnalysisRepository analysisRepository;
+    AnalysisJpaRepository analysisJpaRepository;
 
     @DisplayName("해당하는 분석에 대한 모든 답변을 삭제한다.")
     @Test
@@ -35,7 +35,7 @@ class AnswerRepositoryTest extends IntegrationSupportTest {
         answer3.connectAnalysis(analysis);
         answer4.connectAnalysis(analysis);
 
-        analysisRepository.save(analysis);
+        analysisJpaRepository.save(analysis);
 
         Answer answer5 = createAnswer("답변 5입니다.");
         answerRepository.save(answer5);

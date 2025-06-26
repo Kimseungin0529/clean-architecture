@@ -2,7 +2,7 @@ package com.project.doongdoong.domain.counsel.service;
 
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
@@ -38,7 +38,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
     @Autowired
     CounselServiceImpl counselService;
     @Autowired
-    AnalysisRepository analysisRepository;
+    AnalysisJpaRepository analysisJpaRepository;
     @Autowired
     CounselRepository counselRepository;
     @Autowired
@@ -86,7 +86,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
         User savedUser = userRepository.save(user);
 
         Analysis analysis = createAnalysis(savedUser);
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
 
         Answer answer1 = createAnswer();
         Answer answer2 = createAnswer();
@@ -139,7 +139,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
         Analysis analysis = Analysis.builder()
                 .user(savedUser)
                 .build();
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
         Answer answer1 = createAnswer();
         Answer answer2 = createAnswer();
         Answer answer3 = createAnswer();

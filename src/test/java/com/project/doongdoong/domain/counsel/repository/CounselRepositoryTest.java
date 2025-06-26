@@ -2,7 +2,7 @@ package com.project.doongdoong.domain.counsel.repository;
 
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.user.model.User;
@@ -24,7 +24,7 @@ class CounselRepositoryTest extends IntegrationSupportTest{
     @Autowired
     CounselRepository counselRepository;
     @Autowired
-    AnalysisRepository analysisRepository;
+    AnalysisJpaRepository analysisJpaRepository;
     @Autowired
     UserRepository userRepository;
 
@@ -41,7 +41,7 @@ class CounselRepositoryTest extends IntegrationSupportTest{
                 .build();
 
         counsel.addAnalysis(analysis);
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
         Counsel savedCounsel = counselRepository.save(counsel);
 
 
@@ -68,7 +68,7 @@ class CounselRepositoryTest extends IntegrationSupportTest{
 
         Analysis analysis = Analysis.builder()
                 .build();
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
 
         Counsel counsel1 = Counsel.builder()
                 .user(savedUser)

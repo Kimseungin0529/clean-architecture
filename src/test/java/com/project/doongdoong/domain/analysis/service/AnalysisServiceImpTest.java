@@ -7,7 +7,7 @@ import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.answer.repository.AnswerRepository;
 import com.project.doongdoong.domain.question.model.Question;
@@ -47,7 +47,8 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
     @Autowired UserRepository userRepository;
     @Autowired VoiceRepository voiceRepository;
     @Autowired AnswerRepository answerRepository;
-    @Autowired AnalysisRepository analysisRepository;
+    @Autowired
+    AnalysisJpaRepository analysisJpaRepository;
 
     @TestFactory
     @DisplayName("서비스 회원 정보와 존재하지 않는 서비스 회원 정보의 경우, 분석에 관한 정보 접근 시나리오")
@@ -132,7 +133,7 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         question4.connectAnswer(answer4);
 
         userRepository.save(user);
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
 
         LocalDate analyzeTime = now();
         double feelingState = 72.1;
@@ -197,7 +198,7 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
 
         Analysis analysis = createAnalysis(savedUser, questions);
 
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
         Long analysisId = savedAnalysis.getId();
         Long anyLongValue = 10L;
         Long notFoundAnalysisId = analysisId + anyLongValue;
@@ -234,7 +235,7 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         Analysis analysis6 = createAnalysis(savedUser, questions2);
         Analysis analysis7 = createAnalysis(savedUser, questions2);
         List<Analysis> analysies = List.of(analysis1, analysis2, analysis3, analysis4, analysis5, analysis6, analysis7);
-        analysisRepository.saveAll(analysies);
+        analysisJpaRepository.saveAll(analysies);
 
         String uniqueValue = socialId + "_" + socialType.getDescription();
         int pageNumber = 0;
@@ -322,7 +323,7 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
             arrayList.add(analysis);
             analysis.changeFeelingStateAndAnalyzeTime(score5, dateSevenDaysAgo);
         }
-        analysisRepository.saveAll(arrayList);
+        analysisJpaRepository.saveAll(arrayList);
 
         //when
         FeelingStateResponseListDto result = analysisService.getAnalysisListGroupByDay(uniqueValue);
@@ -354,7 +355,7 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         Question question3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
         Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION2);
         Analysis analysis = createAnalysis(savedUser, List.of(question1, question2, question3, question4));
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
 
         //when & then
         return List.of(
@@ -449,11 +450,11 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         question4.connectAnswer(answer4);
 
         userRepository.save(user);
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
         //when
         analysisService.removeAnalysis(savedAnalysis.getId());
         //then
-        boolean exists = analysisRepository.existsById(savedAnalysis.getId());
+        boolean exists = analysisJpaRepository.existsById(savedAnalysis.getId());
         assertThat(exists).isFalse(); // 삭제되었음을 검증
     }
 

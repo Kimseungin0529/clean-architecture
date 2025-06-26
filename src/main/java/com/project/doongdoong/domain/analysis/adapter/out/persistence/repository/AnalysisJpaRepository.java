@@ -1,8 +1,8 @@
-package com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy;
+package com.project.doongdoong.domain.analysis.adapter.out.persistence.repository;
 
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.querydls.AnalysisRepositoryCustom;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.querydls.AnalysisJpaRepositoryCustom;
 import com.project.doongdoong.domain.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository // JPA가 @Repository 없이도 빈 등록해줌.
-public interface AnalysisRepository extends JpaRepository<Analysis, Long>, AnalysisRepositoryCustom {
+public interface AnalysisJpaRepository extends JpaRepository<Analysis, Long>, AnalysisJpaRepositoryCustom {
 
 
     @Query("select a from Analysis a left outer join fetch a.counsel where a.user = :user and a.id = :id")

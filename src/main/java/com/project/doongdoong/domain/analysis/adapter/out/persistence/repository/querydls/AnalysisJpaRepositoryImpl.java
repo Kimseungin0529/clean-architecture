@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.querydls;
+package com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.querydls;
 
 import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -11,10 +11,10 @@ import static com.project.doongdoong.domain.answer.model.QAnswer.answer;
 import static com.project.doongdoong.domain.counsel.model.QCounsel.counsel;
 import static com.project.doongdoong.domain.voice.model.QVoice.voice;
 
-public class AnalysisRepositoryImpl implements AnalysisRepositoryCustom {
+public class AnalysisJpaRepositoryImpl implements AnalysisJpaRepositoryCustom {
     private final JPAQueryFactory queryFactory;
 
-    public AnalysisRepositoryImpl(EntityManager em) {
+    public AnalysisJpaRepositoryImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
     }
 

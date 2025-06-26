@@ -3,7 +3,7 @@ package com.project.doongdoong.domain.counsel.service;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
@@ -42,7 +42,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CounselServiceImpl implements CounselService {
 
-    private final AnalysisRepository analysisRepository;
+    private final AnalysisJpaRepository analysisJpaRepository;
     private final CounselRepository counselRepository;
     private final UserRepository userRepository;
     private final WebClientUtil webClientUtil;
@@ -65,7 +65,7 @@ public class CounselServiceImpl implements CounselService {
                 .build();
 
         if (request.getAnalysisId() != null) { // 기존 분석 결과 반영하기
-            Analysis findAnalysis = analysisRepository.findByUserAndId(user, request.getAnalysisId()).orElseThrow(() -> new AnalysisAccessDeny());
+            Analysis findAnalysis = analysisJpaRepository.findByUserAndId(user, request.getAnalysisId()).orElseThrow(() -> new AnalysisAccessDeny());
             checkCounselAlreadyProcessed(findAnalysis); // 해당 분석의 정보로 상담한 경우 예외
             counsel.addAnalysis(findAnalysis); // 연관관계 매핑
         }

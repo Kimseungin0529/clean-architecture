@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.answer.service;
 
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
 import com.project.doongdoong.domain.answer.model.Answer;
@@ -33,7 +33,7 @@ class AnswerServiceImpTest extends IntegrationSupportTest {
     @Autowired
     AnswerService answerService;
     @Autowired
-    AnalysisRepository analysisRepository;
+    AnalysisJpaRepository analysisJpaRepository;
     @Autowired
     UserRepository userRepository;
 
@@ -79,7 +79,7 @@ class AnswerServiceImpTest extends IntegrationSupportTest {
                 .build();
 
         answer.connectAnalysis(analysis);
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
         Long questionId = question2.getId();
 
         MultipartFile multipartFile = new MockMultipartFile("file",
@@ -120,7 +120,7 @@ class AnswerServiceImpTest extends IntegrationSupportTest {
         answer.connectAnalysis(analysis);
         question2.connectAnswer(answer);
 
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
         Long questionId = question2.getId();
 
         MultipartFile multipartFile = new MockMultipartFile("file",

@@ -2,7 +2,7 @@ package com.project.doongdoong.domain.answer.service;
 
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
 import com.project.doongdoong.domain.answer.model.Answer;
@@ -29,7 +29,7 @@ public class AnswerServiceImp implements AnswerService {
     private final VoiceRepository voiceRepository;
     private final VoiceService voiceService;
     private final AnswerRepository answerRepository;
-    private final AnalysisRepository analysisRepository;
+    private final AnalysisJpaRepository analysisJpaRepository;
 
     public final static int MAX_ANSWER_COUNT = 4;
 
@@ -44,7 +44,7 @@ public class AnswerServiceImp implements AnswerService {
         }
         Voice voice = saveVoiceFrom(file);
         Answer answer = linkAndSaveToAnswer(voice, matchedQuestion);
-        Analysis findAnalysis = analysisRepository.findById(analysisId).orElseThrow(AnalysisNotFoundException::new);
+        Analysis findAnalysis = analysisJpaRepository.findById(analysisId).orElseThrow(AnalysisNotFoundException::new);
         answer.connectAnalysis(findAnalysis);
 
         return AnswerCreateResponseDto.builder()
@@ -69,7 +69,7 @@ public class AnswerServiceImp implements AnswerService {
     }
 
     private Question findQuestionFromAnalysis(Long analysisId, Long questionId) {
-        Analysis findAnalysis = analysisRepository.findAnalysisWithQuestion(analysisId)
+        Analysis findAnalysis = analysisJpaRepository.findAnalysisWithQuestion(analysisId)
                 .orElseThrow(AnalysisNotFoundException::new);
 
         return findAnalysis.getQuestions().stream()

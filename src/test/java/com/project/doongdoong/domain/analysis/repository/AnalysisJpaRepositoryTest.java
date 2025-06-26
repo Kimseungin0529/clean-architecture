@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.analysis.repository;
 
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
@@ -31,10 +31,10 @@ import static com.project.doongdoong.domain.question.model.QuestionContent.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-class AnalysisRepositoryTest extends IntegrationSupportTest {
+class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
 
     @Autowired
-    AnalysisRepository analysisRepository;
+    AnalysisJpaRepository analysisJpaRepository;
     @Autowired QuestionRepository questionRepository;
     @Autowired UserRepository userRepository;
     @Autowired AnswerRepository answerRepository;
@@ -48,12 +48,12 @@ class AnalysisRepositoryTest extends IntegrationSupportTest {
         User savedUser = userRepository.save(user);
 
         Analysis analysis = createAnalysis(user);
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
 
         Long requestId = savedAnalysis.getId();
 
         //when
-        Optional<Analysis> findAnalysis = analysisRepository.findByUserAndId(savedUser, requestId);
+        Optional<Analysis> findAnalysis = analysisJpaRepository.findByUserAndId(savedUser, requestId);
 
         //then
         assertThat(findAnalysis.get())
@@ -90,10 +90,10 @@ class AnalysisRepositoryTest extends IntegrationSupportTest {
         analysis6.changeFeelingStateAndAnalyzeTime(60, null);
         analysis7.changeFeelingStateAndAnalyzeTime(70, null);
 
-        analysisRepository.saveAll(List.of(analysis1, analysis2, analysis3, analysis4, analysis5, analysis6, analysis7));
+        analysisJpaRepository.saveAll(List.of(analysis1, analysis2, analysis3, analysis4, analysis5, analysis6, analysis7));
 
         //when
-        Page<Analysis> result = analysisRepository.findAllByUserOrderByCreatedTime(savedUser, pageRequest);
+        Page<Analysis> result = analysisJpaRepository.findAllByUserOrderByCreatedTime(savedUser, pageRequest);
 
         //then
         assertThat(result.hasNext()).isFalse();
@@ -131,10 +131,10 @@ class AnalysisRepositoryTest extends IntegrationSupportTest {
         analysis4.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 3, 15));
         analysis5.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 3, 31));
 
-        analysisRepository.saveAll(List.of(analysis1, analysis2, analysis3, analysis4, analysis5));
+        analysisJpaRepository.saveAll(List.of(analysis1, analysis2, analysis3, analysis4, analysis5));
 
         //when
-        List<FeelingStateResponseDto> result = analysisRepository.findAllByDateBetween(savedUser, startTime, endTime);
+        List<FeelingStateResponseDto> result = analysisJpaRepository.findAllByDateBetween(savedUser, startTime, endTime);
         //then
         assertThat(result).hasSize(2)
                 .extracting("date", "avgFeelingState")
@@ -162,10 +162,10 @@ class AnalysisRepositoryTest extends IntegrationSupportTest {
         analysis3.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 6, 27));
         analysis4.changeFeelingStateAndAnalyzeTime(90, LocalDate.of(2024, 11, 19));
 
-        analysisRepository.saveAll(List.of(analysis1, analysis2, analysis3, analysis4));
+        analysisJpaRepository.saveAll(List.of(analysis1, analysis2, analysis3, analysis4));
 
         //when
-        Optional<Analysis> result = analysisRepository.findFirstByUserOrderByAnalyzeTimeDesc(savedUser);
+        Optional<Analysis> result = analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(savedUser);
 
         //then
         assertThat(result.get()).isNotNull()
@@ -194,10 +194,10 @@ class AnalysisRepositoryTest extends IntegrationSupportTest {
         question3.connectAnalysis(analysis);
         question4.connectAnalysis(analysis);
 
-        Analysis savedAnalysis = analysisRepository.save(analysis);
+        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
 
         //when
-        Optional<Analysis> result = analysisRepository.findAnalysisWithQuestion(savedAnalysis.getId());
+        Optional<Analysis> result = analysisJpaRepository.findAnalysisWithQuestion(savedAnalysis.getId());
         //then
         assertThat(result.get()).isNotNull()
                 .isEqualTo(savedAnalysis)
@@ -238,10 +238,10 @@ class AnalysisRepositoryTest extends IntegrationSupportTest {
 
         voiceRepository.saveAll(List.of(voice1,voice2,voice3));
         answerRepository.saveAll(List.of(answer1,answer2,answer3));
-        analysisRepository.save(analysis);
+        analysisJpaRepository.save(analysis);
 
         //when
-        Optional<Analysis> result = analysisRepository.searchFullAnalysisBy(analysis.getId());
+        Optional<Analysis> result = analysisJpaRepository.searchFullAnalysisBy(analysis.getId());
 
         //then
         Analysis findAnalysis = result.get();
@@ -306,10 +306,10 @@ class AnalysisRepositoryTest extends IntegrationSupportTest {
         question4.connectAnswer(answer4);
 
         answerRepository.saveAll(List.of(answer1,answer2, answer3, answer4));
-        analysisRepository.save(analysis);
+        analysisJpaRepository.save(analysis);
 
         // when
-        Optional<Analysis> result = analysisRepository.searchAnalysisWithVoiceOfAnswer(analysis.getId());
+        Optional<Analysis> result = analysisJpaRepository.searchAnalysisWithVoiceOfAnswer(analysis.getId());
 
         // then
         assertThat(result).isPresent();
