@@ -1,11 +1,12 @@
-package com.project.doongdoong.domain.analysis.service;
+package com.project.doongdoong.domain.analysis.application.port;
 
-import com.project.doongdoong.domain.analysis.dto.response.*;
+import com.project.doongdoong.domain.analysis.adapter.in.dto.*;
+import com.project.doongdoong.domain.analysis.application.port.in.AnalysisService;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
-import com.project.doongdoong.domain.analysis.model.Analysis;
-import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.answer.repository.AnswerRepository;
 import com.project.doongdoong.domain.question.model.Question;

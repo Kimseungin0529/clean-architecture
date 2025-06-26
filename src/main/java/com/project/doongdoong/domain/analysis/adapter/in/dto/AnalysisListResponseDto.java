@@ -1,6 +1,6 @@
-package com.project.doongdoong.domain.analysis.dto.response;
+package com.project.doongdoong.domain.analysis.adapter.in.dto;
 
-import com.project.doongdoong.domain.analysis.model.Analysis;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

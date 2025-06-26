@@ -1,8 +1,8 @@
 package com.project.doongdoong.domain.counsel.repository;
 
 import com.project.doongdoong.module.IntegrationSupportTest;
-import com.project.doongdoong.domain.analysis.model.Analysis;
-import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.user.model.User;

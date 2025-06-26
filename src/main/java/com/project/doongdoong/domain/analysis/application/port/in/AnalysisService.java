@@ -1,6 +1,6 @@
-package com.project.doongdoong.domain.analysis.service;
+package com.project.doongdoong.domain.analysis.application.port.in;
 
-import com.project.doongdoong.domain.analysis.dto.response.*;
+import com.project.doongdoong.domain.analysis.adapter.in.dto.*;
 
 public interface AnalysisService {
 

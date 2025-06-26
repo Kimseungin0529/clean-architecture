@@ -1,12 +1,12 @@
-package com.project.doongdoong.domain.analysis.repository.querydls;
+package com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.querydls;
 
-import com.project.doongdoong.domain.analysis.model.Analysis;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
 import java.util.Optional;
 
-import static com.project.doongdoong.domain.analysis.model.QAnalysis.analysis;
+import static com.project.doongdoong.domain.analysis.domain.QAnalysis.analysis;
 import static com.project.doongdoong.domain.answer.model.QAnswer.answer;
 import static com.project.doongdoong.domain.counsel.model.QCounsel.counsel;
 import static com.project.doongdoong.domain.voice.model.QVoice.voice;

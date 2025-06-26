@@ -1,9 +1,10 @@
 package com.project.doongdoong.domain.analysis.repository;
 
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.module.IntegrationSupportTest;
-import com.project.doongdoong.domain.analysis.dto.response.FeelingStateResponseDto;
-import com.project.doongdoong.domain.analysis.model.Analysis;
+import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.answer.repository.AnswerRepository;
 import com.project.doongdoong.domain.question.model.Question;
@@ -32,7 +33,8 @@ import static org.assertj.core.api.Assertions.tuple;
 
 class AnalysisRepositoryTest extends IntegrationSupportTest {
 
-    @Autowired AnalysisRepository analysisRepository;
+    @Autowired
+    AnalysisRepository analysisRepository;
     @Autowired QuestionRepository questionRepository;
     @Autowired UserRepository userRepository;
     @Autowired AnswerRepository answerRepository;

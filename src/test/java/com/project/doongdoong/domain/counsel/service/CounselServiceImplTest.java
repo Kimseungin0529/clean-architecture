@@ -1,8 +1,8 @@
 package com.project.doongdoong.domain.counsel.service;
 
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
-import com.project.doongdoong.domain.analysis.model.Analysis;
-import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;

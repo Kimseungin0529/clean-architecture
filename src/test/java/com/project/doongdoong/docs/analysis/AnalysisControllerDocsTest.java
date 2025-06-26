@@ -1,9 +1,9 @@
 package com.project.doongdoong.docs.analysis;
 
 import com.project.doongdoong.docs.RestDocsSupport;
-import com.project.doongdoong.domain.analysis.controller.AnalysisController;
-import com.project.doongdoong.domain.analysis.dto.response.*;
-import com.project.doongdoong.domain.analysis.service.AnalysisService;
+import com.project.doongdoong.domain.analysis.adapter.in.dto.*;
+import com.project.doongdoong.domain.analysis.adapter.in.web.AnalysisController;
+import com.project.doongdoong.domain.analysis.application.port.in.AnalysisService;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
 import com.project.doongdoong.domain.answer.service.AnswerService;
 import org.junit.jupiter.api.DisplayName;

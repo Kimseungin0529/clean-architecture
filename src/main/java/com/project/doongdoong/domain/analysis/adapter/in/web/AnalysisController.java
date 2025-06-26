@@ -1,13 +1,11 @@
-package com.project.doongdoong.domain.analysis.controller;
+package com.project.doongdoong.domain.analysis.adapter.in.web;
 
-import com.project.doongdoong.domain.analysis.dto.response.*;
-import com.project.doongdoong.domain.analysis.service.AnalysisService;
+import com.project.doongdoong.domain.analysis.adapter.in.dto.*;
+import com.project.doongdoong.domain.analysis.application.port.in.AnalysisService;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
 import com.project.doongdoong.domain.answer.service.AnswerService;
-import com.project.doongdoong.domain.voice.exception.FileUploadException;
 import com.project.doongdoong.global.annotation.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
-import com.project.doongdoong.global.exception.CustomException;
 import com.project.doongdoong.global.exception.ErrorType;
 import com.project.doongdoong.global.exception.FileEmptyException;
 import lombok.RequiredArgsConstructor;

@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.analysis.dto.response;
+package com.project.doongdoong.domain.analysis.adapter.in.dto;
 
 import lombok.*;
 

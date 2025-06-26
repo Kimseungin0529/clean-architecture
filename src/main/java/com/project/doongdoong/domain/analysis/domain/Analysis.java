@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.analysis.model;
+package com.project.doongdoong.domain.analysis.domain;
 
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.counsel.model.Counsel;

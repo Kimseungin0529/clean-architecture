@@ -1,7 +1,7 @@
 package com.project.doongdoong.global.util;
 
 
-import com.project.doongdoong.domain.analysis.dto.response.FellingStateCreateResponse;
+import com.project.doongdoong.domain.analysis.adapter.in.dto.FellingStateCreateResponse;
 import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.global.dto.request.ConsultRequest;
 import com.project.doongdoong.global.dto.request.VoiceToS3Request;

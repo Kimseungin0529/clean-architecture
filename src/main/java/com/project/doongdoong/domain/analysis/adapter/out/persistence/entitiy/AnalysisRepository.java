@@ -1,8 +1,8 @@
-package com.project.doongdoong.domain.analysis.repository;
+package com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy;
 
-import com.project.doongdoong.domain.analysis.dto.response.FeelingStateResponseDto;
-import com.project.doongdoong.domain.analysis.model.Analysis;
-import com.project.doongdoong.domain.analysis.repository.querydls.AnalysisRepositoryCustom;
+import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.querydls.AnalysisRepositoryCustom;
 import com.project.doongdoong.domain.user.model.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -27,7 +27,7 @@ public interface AnalysisRepository extends JpaRepository<Analysis, Long>, Analy
 
     // 현재 시간 기준으로 일주일 치 분석값 하루 기준으로 그룹핑해서 가져오기
     // between보다 <= >= 이게 속도 빠르다그랫음
-    @Query("select new com.project.doongdoong.domain.analysis.dto.response.FeelingStateResponseDto" +
+    @Query("select new com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto" +
             "(CONCAT(YEAR(a.analyzeTime), '-', MONTH(a.analyzeTime), '-', DAY(a.analyzeTime)), avg(a.feelingState))" +
             "from Analysis a where a.user = :user " +
             "and a.analyzeTime between :startTime AND :endTime" +

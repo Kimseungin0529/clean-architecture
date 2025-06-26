@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.analysis.model;
 
+import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.answer.model.Answer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

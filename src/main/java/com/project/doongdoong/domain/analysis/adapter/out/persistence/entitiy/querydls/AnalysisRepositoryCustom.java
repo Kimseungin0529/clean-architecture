@@ -1,6 +1,6 @@
-package com.project.doongdoong.domain.analysis.repository.querydls;
+package com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.querydls;
 
-import com.project.doongdoong.domain.analysis.model.Analysis;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
 
 import java.util.Optional;
 

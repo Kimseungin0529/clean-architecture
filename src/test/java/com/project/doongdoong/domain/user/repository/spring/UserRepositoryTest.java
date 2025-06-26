@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.user.repository.spring;
 
-import com.project.doongdoong.domain.analysis.model.Analysis;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;

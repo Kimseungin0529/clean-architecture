@@ -2,8 +2,8 @@ package com.project.doongdoong.domain.counsel.service;
 
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
-import com.project.doongdoong.domain.analysis.model.Analysis;
-import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
@@ -15,7 +15,6 @@ import com.project.doongdoong.domain.counsel.exception.CounselNotExistPageExcept
 import com.project.doongdoong.domain.counsel.exception.CounselNotFoundException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
 import com.project.doongdoong.domain.counsel.model.Counsel;
-import com.project.doongdoong.domain.counsel.model.CounselRank;
 import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.counsel.repository.CounselRepository;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;

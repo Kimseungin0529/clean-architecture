@@ -13,7 +13,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
-import static com.project.doongdoong.domain.analysis.model.QAnalysis.analysis;
+import static com.project.doongdoong.domain.analysis.domain.QAnalysis.analysis;
 import static com.project.doongdoong.domain.counsel.model.QCounsel.counsel;
 
 public class CounselCustomRepositoryImpl implements CounselCustomRepository {
@@ -37,7 +37,7 @@ public class CounselCustomRepositoryImpl implements CounselCustomRepository {
         JPAQuery<Long> countQuery = queryFactory
                 .select(counsel.count())
                 .from(counsel);
-                //.where(userEq(user));
+        //.where(userEq(user));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }

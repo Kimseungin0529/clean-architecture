@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.question.repository;
 
-import com.project.doongdoong.domain.analysis.model.Analysis;
-import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.module.IntegrationSupportTest;

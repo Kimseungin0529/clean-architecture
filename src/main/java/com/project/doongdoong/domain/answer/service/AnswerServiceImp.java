@@ -1,8 +1,8 @@
 package com.project.doongdoong.domain.answer.service;
 
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
-import com.project.doongdoong.domain.analysis.model.Analysis;
-import com.project.doongdoong.domain.analysis.repository.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisRepository;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
 import com.project.doongdoong.domain.answer.model.Answer;
