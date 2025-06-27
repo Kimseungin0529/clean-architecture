@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.answer.model;
+package com.project.doongdoong.domain.answer.domain;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.voice.model.Voice;
@@ -15,7 +15,7 @@ import static lombok.AccessLevel.PROTECTED;
 @Entity
 @Getter
 @NoArgsConstructor(access = PROTECTED)
-public class Answer extends BaseEntity {
+public class AnswerEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -34,7 +34,7 @@ public class Answer extends BaseEntity {
     private Voice voice;
 
     @Builder
-    public Answer(String content, Voice voice) {
+    public AnswerEntity(String content, Voice voice) {
         this.content = content;
         this.voice = voice;
     }
@@ -44,7 +44,7 @@ public class Answer extends BaseEntity {
             return;
         }
         this.analysis = analysisEntity;
-        analysisEntity.getAnswers().add(this);
+        analysisEntity.getAnswerEntities().add(this);
     }
 
     public void disconnectWithVoice() {

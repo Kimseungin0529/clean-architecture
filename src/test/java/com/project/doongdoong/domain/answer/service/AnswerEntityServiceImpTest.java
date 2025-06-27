@@ -2,9 +2,10 @@ package com.project.doongdoong.domain.answer.service;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
-import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
+import com.project.doongdoong.domain.answer.adapter.in.dto.AnswerCreateResponseDto;
+import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
-import com.project.doongdoong.domain.answer.model.Answer;
+import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.user.model.SocialType;
@@ -28,7 +29,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class AnswerServiceImpTest extends IntegrationSupportTest {
+class AnswerEntityServiceImpTest extends IntegrationSupportTest {
 
     @Autowired
     AnswerService answerService;
@@ -75,10 +76,10 @@ class AnswerServiceImpTest extends IntegrationSupportTest {
         question2.connectAnalysis(analysisEntity);
         question3.connectAnalysis(analysisEntity);
         question4.connectAnalysis(analysisEntity);
-        Answer answer = Answer.builder()
+        AnswerEntity answerEntity = AnswerEntity.builder()
                 .build();
 
-        answer.connectAnalysis(analysisEntity);
+        answerEntity.connectAnalysis(analysisEntity);
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
         Long questionId = question2.getId();
 
@@ -114,11 +115,11 @@ class AnswerServiceImpTest extends IntegrationSupportTest {
         question2.connectAnalysis(analysisEntity);
         question3.connectAnalysis(analysisEntity);
         question4.connectAnalysis(analysisEntity);
-        Answer answer = Answer.builder()
+        AnswerEntity answerEntity = AnswerEntity.builder()
                 .build();
 
-        answer.connectAnalysis(analysisEntity);
-        question2.connectAnswer(answer);
+        answerEntity.connectAnalysis(analysisEntity);
+        question2.connectAnswer(answerEntity);
 
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
         Long questionId = question2.getId();

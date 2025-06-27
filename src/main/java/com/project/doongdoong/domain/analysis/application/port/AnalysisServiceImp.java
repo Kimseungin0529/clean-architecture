@@ -7,8 +7,8 @@ import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
-import com.project.doongdoong.domain.answer.model.Answer;
-import com.project.doongdoong.domain.answer.repository.AnswerRepository;
+import com.project.doongdoong.domain.answer.domain.AnswerEntity;
+import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.question.repository.QuestionRepository;
@@ -59,7 +59,7 @@ public class AnalysisServiceImp implements AnalysisService {
     private final static double ANALYSIS_TEXT_RATE = 0.35;
     private final static String DEFAULT_NO_ANSWER_MESSAGE = "질문에 대한 답변이 없습니다.";
     private final static String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
-    private final AnswerRepository answerRepository;
+    private final AnswerJpaRepository answerJpaRepository;
 
     @Transactional
     @Override
@@ -159,8 +159,8 @@ public class AnalysisServiceImp implements AnalysisService {
         List<FellingStateCreateResponse> responseByText = webClientUtil.callAnalyzeEmotion(voices); // 2. 파일을 request 값으로 외부 lambda API 비동기 처리(동일한 외부 API 4번 호출)
         List<FellingStateCreateResponse> responseByVoice = webClientUtil.callAnalyzeEmotionVoice(voices);
 
-        List<Answer> answers = getAnswersFrom(findAnalysisEntity);
-        updateContentWithTranscribedTextBy(answers, responseByText);
+        List<AnswerEntity> answerEntities = getAnswersFrom(findAnalysisEntity);
+        updateContentWithTranscribedTextBy(answerEntities, responseByText);
 
         double resultByText = calculateFellingStatusAverage(responseByText);
         double resultByVoice = calculateFellingStatusAverage(responseByVoice);
@@ -179,11 +179,11 @@ public class AnalysisServiceImp implements AnalysisService {
         AnalysisEntity findAnalysisEntity = analysisRepository.searchFullAnalysisBy(analysisId)
                 .orElseThrow(AnalysisNotFoundException::new);
 
-        answerRepository.detachVoiceFromAnswersBy(analysisId);
+        answerJpaRepository.detachVoiceFromAnswersBy(analysisId);
 
         voiceService.deleteVoices(getVoiceListFrom(findAnalysisEntity));
         questionRepository.deleteQuestionsById(analysisId);
-        answerRepository.deleteAnswersById(analysisId);
+        answerJpaRepository.deleteAnswersById(analysisId);
         analysisRepository.deleteAnalysis(analysisId);
     }
 
@@ -224,8 +224,8 @@ public class AnalysisServiceImp implements AnalysisService {
     private List<String> findAnswerContentsByMatchingQuestionWithAnswer(List<Question> questions) {
         return questions.stream()
                 .map(question ->
-                        Optional.ofNullable(question.getAnswer())
-                                .map(Answer::getContent)
+                        Optional.ofNullable(question.getAnswerEntity())
+                                .map(AnswerEntity::getContent)
                                 .orElse(DEFAULT_NO_ANSWER_MESSAGE))
                 .collect(Collectors.toList());
     }
@@ -263,16 +263,16 @@ public class AnalysisServiceImp implements AnalysisService {
     }
 
 
-    private List<Answer> getAnswersFrom(AnalysisEntity findAnalysisEntity) {
-        return findAnalysisEntity.getAnswers();
+    private List<AnswerEntity> getAnswersFrom(AnalysisEntity findAnalysisEntity) {
+        return findAnalysisEntity.getAnswerEntities();
     }
 
-    private void updateContentWithTranscribedTextBy(List<Answer> answers, List<FellingStateCreateResponse> responseByText) {
-        if (answers.size() != responseByText.size()) {
+    private void updateContentWithTranscribedTextBy(List<AnswerEntity> answerEntities, List<FellingStateCreateResponse> responseByText) {
+        if (answerEntities.size() != responseByText.size()) {
             throw new ExternalApiCallException();
         }
         for (int i = 0; i < responseByText.size(); i++) {
-            answers.get(i).changeContent(responseByText.get(i).getTranscribedText());
+            answerEntities.get(i).changeContent(responseByText.get(i).getTranscribedText());
         }
     }
 
@@ -303,8 +303,8 @@ public class AnalysisServiceImp implements AnalysisService {
 
 
     private List<Voice> getVoiceListFrom(AnalysisEntity findAnalysisEntity) {
-        return findAnalysisEntity.getAnswers().stream()
-                .map(Answer::getVoice).toList();
+        return findAnalysisEntity.getAnswerEntities().stream()
+                .map(AnswerEntity::getVoice).toList();
     }
 
 

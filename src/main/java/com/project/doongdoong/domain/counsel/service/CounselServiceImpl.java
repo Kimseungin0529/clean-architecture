@@ -4,7 +4,7 @@ import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundExcept
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
-import com.project.doongdoong.domain.answer.model.Answer;
+import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
@@ -177,8 +177,8 @@ public class CounselServiceImpl implements CounselService {
 
     private String getConcatenatedAnswerText(AnalysisEntity analysisEntity) {
         StringBuilder content = new StringBuilder();
-        for (Answer answer : analysisEntity.getAnswers()) {
-            content.append(answer.getContent()).append("\n");
+        for (AnswerEntity answerEntity : analysisEntity.getAnswerEntities()) {
+            content.append(answerEntity.getContent()).append("\n");
         }
         return content.toString();
     }

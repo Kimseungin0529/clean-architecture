@@ -61,13 +61,13 @@ include::{snippets}/analysisEntity-analyze-emotion/http-response.adoc[]
 include::{snippets}/analysisEntity-analyze-emotion/response-fields.adoc[]
 
 
-[[analysisEntity-save-answer]]
+[[analysisEntity-save-answerEntity]]
 === 분석 질문지에 대한 답변 저장
 
 ==== HTTP Request
-include::{snippets}/analysisEntity-save-answer/http-request.adoc[]
-include::{snippets}/analysisEntity-save-answer/request-headers.adoc[]
+include::{snippets}/analysisEntity-save-answerEntity/http-request.adoc[]
+include::{snippets}/analysisEntity-save-answerEntity/request-headers.adoc[]
 
 ==== HTTP Response
-include::{snippets}/analysisEntity-save-answer/http-response.adoc[]
-include::{snippets}/analysisEntity-save-answer/response-fields.adoc[]
+include::{snippets}/analysisEntity-save-answerEntity/http-response.adoc[]
+include::{snippets}/analysisEntity-save-answerEntity/response-fields.adoc[]

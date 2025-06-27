@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.answer.dto;
+package com.project.doongdoong.domain.answer.adapter.in.dto;
 
 
 import jakarta.validation.constraints.NotNull;

@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.question.model;
 
-import com.project.doongdoong.domain.answer.model.Answer;
+import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,10 +11,10 @@ class QuestionTest {
     void hasAnswer() {
         // given
         Question question = Question.of(QuestionContent.FIXED_QUESTION1);
-        Answer answer = Answer.builder()
+        AnswerEntity answerEntity = AnswerEntity.builder()
                 .build();
 
-        question.connectAnswer(answer);
+        question.connectAnswer(answerEntity);
 
         // when
         boolean result = question.hasAnswer();

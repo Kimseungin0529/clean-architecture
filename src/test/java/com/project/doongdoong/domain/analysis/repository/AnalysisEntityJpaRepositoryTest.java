@@ -2,11 +2,11 @@ package com.project.doongdoong.domain.analysis.repository;
 
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
-import com.project.doongdoong.domain.answer.model.Answer;
-import com.project.doongdoong.domain.answer.repository.AnswerRepository;
+import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.question.repository.QuestionRepository;
@@ -37,7 +37,8 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
     AnalysisJpaRepository analysisJpaRepository;
     @Autowired QuestionRepository questionRepository;
     @Autowired UserRepository userRepository;
-    @Autowired AnswerRepository answerRepository;
+    @Autowired
+    AnswerJpaRepository answerJpaRepository;
     @Autowired VoiceRepository voiceRepository;
 
     @Test
@@ -229,15 +230,15 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         Voice voice1 = createVoice("파일이름1", FIXED_QUESTION1);
         Voice voice2 = createVoice("파일이름2", FIXED_QUESTION2);
         Voice voice3 = createVoice("파일이름3", UNFIXED_QUESTION1);
-        Answer answer1 = createAnswer(voice1, "질문에 대한 답변 텍스트1");
-        Answer answer2 = createAnswer(voice2, "질문에 대한 답변 텍스트2");
-        Answer answer3 = createAnswer(voice3, "질문에 대한 답변 텍스트3");
-        answer1.connectAnalysis(analysisEntity);
-        answer2.connectAnalysis(analysisEntity);
-        answer3.connectAnalysis(analysisEntity);
+        AnswerEntity answerEntity1 = createAnswer(voice1, "질문에 대한 답변 텍스트1");
+        AnswerEntity answerEntity2 = createAnswer(voice2, "질문에 대한 답변 텍스트2");
+        AnswerEntity answerEntity3 = createAnswer(voice3, "질문에 대한 답변 텍스트3");
+        answerEntity1.connectAnalysis(analysisEntity);
+        answerEntity2.connectAnalysis(analysisEntity);
+        answerEntity3.connectAnalysis(analysisEntity);
 
         voiceRepository.saveAll(List.of(voice1,voice2,voice3));
-        answerRepository.saveAll(List.of(answer1,answer2,answer3));
+        answerJpaRepository.saveAll(List.of(answerEntity1, answerEntity2, answerEntity3));
         analysisJpaRepository.save(analysisEntity);
 
         //when
@@ -246,16 +247,16 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         //then
         AnalysisEntity findAnalysisEntity = result.get();
         assertThat(findAnalysisEntity).isNotNull();
-        List<Answer> answers = findAnalysisEntity.getAnswers();
-        assertThat(answers).hasSize(3);
-        assertThat(answers)
+        List<AnswerEntity> answerEntities = findAnalysisEntity.getAnswerEntities();
+        assertThat(answerEntities).hasSize(3);
+        assertThat(answerEntities)
                 .extracting("content")
                 .containsExactlyInAnyOrder(
                         "질문에 대한 답변 텍스트1",
                         "질문에 대한 답변 텍스트2",
                         "질문에 대한 답변 텍스트3"
                 );
-        assertThat(answers)
+        assertThat(answerEntities)
                 .extracting("voice.originName")
                 .containsExactlyInAnyOrder(
                         "파일이름1",
@@ -291,21 +292,21 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         Voice voice4 = createVoice("파일이름4", UNFIXED_QUESTION3);
         voiceRepository.saveAll(List.of(voice1, voice2, voice3, voice4));
 
-        Answer answer1 = createAnswer(voice1, "질문에 대한 답변 텍스트1");
-        Answer answer2 = createAnswer(voice2, "질문에 대한 답변 텍스트2");
-        Answer answer3 = createAnswer(voice3, "질문에 대한 답변 텍스트3");
-        Answer answer4 = createAnswer(voice4, "질문에 대한 답변 텍스트4");
-        answer1.connectAnalysis(analysisEntity);
-        answer2.connectAnalysis(analysisEntity);
-        answer3.connectAnalysis(analysisEntity);
-        answer4.connectAnalysis(analysisEntity);
+        AnswerEntity answerEntity1 = createAnswer(voice1, "질문에 대한 답변 텍스트1");
+        AnswerEntity answerEntity2 = createAnswer(voice2, "질문에 대한 답변 텍스트2");
+        AnswerEntity answerEntity3 = createAnswer(voice3, "질문에 대한 답변 텍스트3");
+        AnswerEntity answerEntity4 = createAnswer(voice4, "질문에 대한 답변 텍스트4");
+        answerEntity1.connectAnalysis(analysisEntity);
+        answerEntity2.connectAnalysis(analysisEntity);
+        answerEntity3.connectAnalysis(analysisEntity);
+        answerEntity4.connectAnalysis(analysisEntity);
 
-        question1.connectAnswer(answer1);
-        question2.connectAnswer(answer2);
-        question3.connectAnswer(answer3);
-        question4.connectAnswer(answer4);
+        question1.connectAnswer(answerEntity1);
+        question2.connectAnswer(answerEntity2);
+        question3.connectAnswer(answerEntity3);
+        question4.connectAnswer(answerEntity4);
 
-        answerRepository.saveAll(List.of(answer1,answer2, answer3, answer4));
+        answerJpaRepository.saveAll(List.of(answerEntity1, answerEntity2, answerEntity3, answerEntity4));
         analysisJpaRepository.save(analysisEntity);
 
         // when
@@ -315,9 +316,9 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         assertThat(result).isPresent();
         AnalysisEntity findAnalysisEntity = result.get();
 
-        List<Answer> answers = findAnalysisEntity.getAnswers();
-        assertThat(answers).hasSize(4);
-        assertThat(answers)
+        List<AnswerEntity> answerEntities = findAnalysisEntity.getAnswerEntities();
+        assertThat(answerEntities).hasSize(4);
+        assertThat(answerEntities)
                 .extracting("content", "voice.originName")
                 .containsExactlyInAnyOrder(
                         tuple("질문에 대한 답변 텍스트1", "파일이름1"),
@@ -347,8 +348,8 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
                 .build();
     }
 
-    private static Answer createAnswer(Voice voice, String content) {
-        return Answer.builder()
+    private static AnswerEntity createAnswer(Voice voice, String content) {
+        return AnswerEntity.builder()
                 .voice(voice)
                 .content(content)
                 .build();

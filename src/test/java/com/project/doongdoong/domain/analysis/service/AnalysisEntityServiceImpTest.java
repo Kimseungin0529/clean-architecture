@@ -8,8 +8,8 @@ import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
-import com.project.doongdoong.domain.answer.model.Answer;
-import com.project.doongdoong.domain.answer.repository.AnswerRepository;
+import com.project.doongdoong.domain.answer.domain.AnswerEntity;
+import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
@@ -46,7 +46,8 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
 
     @Autowired UserRepository userRepository;
     @Autowired VoiceRepository voiceRepository;
-    @Autowired AnswerRepository answerRepository;
+    @Autowired
+    AnswerJpaRepository answerJpaRepository;
     @Autowired
     AnalysisJpaRepository analysisJpaRepository;
 
@@ -112,12 +113,12 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
             voiceRepository.save(voice);
         }
 
-        Answer answer1 = createAnswer("답변1보이스를 STT로 변경한 텍스트");
-        Answer answer2 = createAnswer("답변2보이스를 STT로 변경한 텍스트");
-        Answer answer3 = createAnswer("답변3보이스를 STT로 변경한 텍스트");
-        Answer answer4 = createAnswer("답변4보이스를 STT로 변경한 텍스트");
-        List<Answer> answers = List.of(answer1, answer2, answer3, answer4);
-        answerRepository.saveAll(answers);
+        AnswerEntity answerEntity1 = createAnswer("답변1보이스를 STT로 변경한 텍스트");
+        AnswerEntity answerEntity2 = createAnswer("답변2보이스를 STT로 변경한 텍스트");
+        AnswerEntity answerEntity3 = createAnswer("답변3보이스를 STT로 변경한 텍스트");
+        AnswerEntity answerEntity4 = createAnswer("답변4보이스를 STT로 변경한 텍스트");
+        List<AnswerEntity> answerEntities = List.of(answerEntity1, answerEntity2, answerEntity3, answerEntity4);
+        answerJpaRepository.saveAll(answerEntities);
 
         User user = createUser("socialId", SocialType.APPLE);
         Question question1 = createQuestion(QuestionContent.FIXED_QUESTION1);
@@ -127,10 +128,10 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         List<Question> questions = List.of(question1, question2, question3, question4);
         AnalysisEntity analysisEntity = createAnalysis(user, questions);
 
-        question1.connectAnswer(answer1);
-        question2.connectAnswer(answer2);
-        question3.connectAnswer(answer3);
-        question4.connectAnswer(answer4);
+        question1.connectAnswer(answerEntity1);
+        question2.connectAnswer(answerEntity2);
+        question3.connectAnswer(answerEntity3);
+        question4.connectAnswer(answerEntity4);
 
         userRepository.save(user);
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
@@ -159,7 +160,7 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
                         questions.stream()
                                 .map(question -> question.getQuestionContent().getText())
                                 .collect(Collectors.toList()),
-                        answers.stream()
+                        answerEntities.stream()
                                 .map(answer -> answer.getContent())
                                 .collect(Collectors.toList())
                 );
@@ -177,12 +178,12 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
             voice.changeAccessUrl("임의의 접근 url 주소");
             voiceRepository.save(voice);
         }
-        Answer answer1 = createAnswer("답변1보이스를 STT로 변경한 텍스트");
-        Answer answer2 = createAnswer("답변2보이스를 STT로 변경한 텍스트");
-        Answer answer3 = createAnswer("답변3보이스를 STT로 변경한 텍스트");
-        Answer answer4 = createAnswer("답변4보이스를 STT로 변경한 텍스트");
-        List<Answer> answers = List.of(answer1, answer2, answer3, answer4);
-        answerRepository.saveAll(answers);
+        AnswerEntity answerEntity1 = createAnswer("답변1보이스를 STT로 변경한 텍스트");
+        AnswerEntity answerEntity2 = createAnswer("답변2보이스를 STT로 변경한 텍스트");
+        AnswerEntity answerEntity3 = createAnswer("답변3보이스를 STT로 변경한 텍스트");
+        AnswerEntity answerEntity4 = createAnswer("답변4보이스를 STT로 변경한 텍스트");
+        List<AnswerEntity> answerEntities = List.of(answerEntity1, answerEntity2, answerEntity3, answerEntity4);
+        answerJpaRepository.saveAll(answerEntities);
 
         Question question1 = createQuestion(QuestionContent.FIXED_QUESTION1);
         Question question2 = createQuestion(QuestionContent.FIXED_QUESTION2);
@@ -368,14 +369,14 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
                 }),
                 DynamicTest.dynamicTest("각 질문에 대한 모든 답변이 이뤄진 분석 정보는 감정 분석으로 감정 상태 결과값을 만든다.", () -> {
                     // given
-                    Answer answer1 = createAnswer("질문1에 대한 분석 완료");
-                    Answer answer2 = createAnswer("질문2에 대한 분석 완료");
-                    Answer answer3 = createAnswer("질문3에 대한 분석 완료");
-                    Answer answer4 = createAnswer("질문4에 대한 분석 완료");
-                    answer1.connectAnalysis(analysisEntity);
-                    answer2.connectAnalysis(analysisEntity);
-                    answer3.connectAnalysis(analysisEntity);
-                    answer4.connectAnalysis(analysisEntity);
+                    AnswerEntity answerEntity1 = createAnswer("질문1에 대한 분석 완료");
+                    AnswerEntity answerEntity2 = createAnswer("질문2에 대한 분석 완료");
+                    AnswerEntity answerEntity3 = createAnswer("질문3에 대한 분석 완료");
+                    AnswerEntity answerEntity4 = createAnswer("질문4에 대한 분석 완료");
+                    answerEntity1.connectAnalysis(analysisEntity);
+                    answerEntity2.connectAnalysis(analysisEntity);
+                    answerEntity3.connectAnalysis(analysisEntity);
+                    answerEntity4.connectAnalysis(analysisEntity);
 
                     List<FellingStateCreateResponse> responseListByText = new ArrayList<>();
                     List<FellingStateCreateResponse> responseListByVoice = new ArrayList<>();
@@ -429,12 +430,12 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
             voiceRepository.save(voice);
         }
 
-        Answer answer1 = createAnswer("답변1보이스를 STT로 변경한 텍스트");
-        Answer answer2 = createAnswer("답변2보이스를 STT로 변경한 텍스트");
-        Answer answer3 = createAnswer("답변3보이스를 STT로 변경한 텍스트");
-        Answer answer4 = createAnswer("답변4보이스를 STT로 변경한 텍스트");
-        List<Answer> answers = List.of(answer1, answer2, answer3, answer4);
-        answerRepository.saveAll(answers);
+        AnswerEntity answerEntity1 = createAnswer("답변1보이스를 STT로 변경한 텍스트");
+        AnswerEntity answerEntity2 = createAnswer("답변2보이스를 STT로 변경한 텍스트");
+        AnswerEntity answerEntity3 = createAnswer("답변3보이스를 STT로 변경한 텍스트");
+        AnswerEntity answerEntity4 = createAnswer("답변4보이스를 STT로 변경한 텍스트");
+        List<AnswerEntity> answerEntities = List.of(answerEntity1, answerEntity2, answerEntity3, answerEntity4);
+        answerJpaRepository.saveAll(answerEntities);
 
         User user = createUser("socialId", SocialType.APPLE);
         Question question1 = createQuestion(QuestionContent.FIXED_QUESTION1);
@@ -444,10 +445,10 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         List<Question> questions = List.of(question1, question2, question3, question4);
         AnalysisEntity analysisEntity = createAnalysis(user, questions);
 
-        question1.connectAnswer(answer1);
-        question2.connectAnswer(answer2);
-        question3.connectAnswer(answer3);
-        question4.connectAnswer(answer4);
+        question1.connectAnswer(answerEntity1);
+        question2.connectAnswer(answerEntity2);
+        question3.connectAnswer(answerEntity3);
+        question4.connectAnswer(answerEntity4);
 
         userRepository.save(user);
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
@@ -478,8 +479,8 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
     }
 
 
-    private static Answer createAnswer(String content) {
-        return Answer.builder()
+    private static AnswerEntity createAnswer(String content) {
+        return AnswerEntity.builder()
                 .content(content)
                 .build();
     }

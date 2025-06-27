@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.analysis.domain;
 
-import com.project.doongdoong.domain.answer.model.Answer;
+import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.user.model.User;
@@ -42,7 +42,7 @@ public class AnalysisEntity extends BaseEntity {
     private List<Question> questions = new ArrayList<>();
 
     @OneToMany(cascade = ALL, orphanRemoval = true, mappedBy = "analysis")
-    private List<Answer> answers = new ArrayList<>();
+    private List<AnswerEntity> answerEntities = new ArrayList<>();
 
     @OneToOne(fetch = LAZY, mappedBy = "analysis")
     private Counsel counsel;
@@ -64,7 +64,7 @@ public class AnalysisEntity extends BaseEntity {
     }
 
     public boolean hasAllAnswer() {
-        return this.answers.size() == MAX_ANSWER_COUNT;
+        return this.answerEntities.size() == MAX_ANSWER_COUNT;
     }
 
     public boolean isMissingAnswers() {

@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.analysis.controller;
 
 import com.project.doongdoong.domain.analysis.adapter.in.dto.*;
-import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
+import com.project.doongdoong.domain.answer.adapter.in.dto.AnswerCreateResponseDto;
 import com.project.doongdoong.module.ControllerTestSupport;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

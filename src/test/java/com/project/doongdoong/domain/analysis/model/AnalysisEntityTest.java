@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.analysis.model;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.answer.model.Answer;
+import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -43,15 +43,15 @@ class AnalysisEntityTest {
     void hasAllAnswer() {
         // given
         AnalysisEntity analysisEntity = createAnalysis();
-        Answer answer1 = createAnswer("답변 내용1");
-        Answer answer2 = createAnswer("답변 내용2");
-        Answer answer3 = createAnswer("답변 내용3");
-        Answer answer4 = createAnswer("답변 내용4");
+        AnswerEntity answerEntity1 = createAnswer("답변 내용1");
+        AnswerEntity answerEntity2 = createAnswer("답변 내용2");
+        AnswerEntity answerEntity3 = createAnswer("답변 내용3");
+        AnswerEntity answerEntity4 = createAnswer("답변 내용4");
 
-        answer1.connectAnalysis(analysisEntity);
-        answer2.connectAnalysis(analysisEntity);
-        answer3.connectAnalysis(analysisEntity);
-        answer4.connectAnalysis(analysisEntity);
+        answerEntity1.connectAnalysis(analysisEntity);
+        answerEntity2.connectAnalysis(analysisEntity);
+        answerEntity3.connectAnalysis(analysisEntity);
+        answerEntity4.connectAnalysis(analysisEntity);
 
         // when
         boolean result = analysisEntity.hasAllAnswer();
@@ -87,8 +87,8 @@ class AnalysisEntityTest {
                 .build();
     }
 
-    private Answer createAnswer(String content) {
-        return Answer.builder()
+    private AnswerEntity createAnswer(String content) {
+        return AnswerEntity.builder()
                 .content(content)
                 .build();
     }

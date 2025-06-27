@@ -1,12 +1,13 @@
-package com.project.doongdoong.domain.answer.service;
+package com.project.doongdoong.domain.answer.application;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
-import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
+import com.project.doongdoong.domain.answer.adapter.in.dto.AnswerCreateResponseDto;
+import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
-import com.project.doongdoong.domain.answer.model.Answer;
-import com.project.doongdoong.domain.answer.repository.AnswerRepository;
+import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
+import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
 import com.project.doongdoong.domain.question.exception.NoMatchingQuestionException;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.voice.dto.response.VoiceDetailResponseDto;
@@ -28,7 +29,7 @@ public class AnswerServiceImp implements AnswerService {
 
     private final VoiceRepository voiceRepository;
     private final VoiceService voiceService;
-    private final AnswerRepository answerRepository;
+    private final AnswerJpaRepository answerJpaRepository;
     private final AnalysisJpaRepository analysisJpaRepository;
 
     public final static int MAX_ANSWER_COUNT = 4;
@@ -43,24 +44,24 @@ public class AnswerServiceImp implements AnswerService {
             throw new AnswerConflictException();
         }
         Voice voice = saveVoiceFrom(file);
-        Answer answer = linkAndSaveToAnswer(voice, matchedQuestion);
+        AnswerEntity answerEntity = linkAndSaveToAnswer(voice, matchedQuestion);
         AnalysisEntity findAnalysisEntity = analysisJpaRepository.findById(analysisId).orElseThrow(AnalysisNotFoundException::new);
-        answer.connectAnalysis(findAnalysisEntity);
+        answerEntity.connectAnalysis(findAnalysisEntity);
 
         return AnswerCreateResponseDto.builder()
-                .answerId(answer.getId())
+                .answerId(answerEntity.getId())
                 .build();
     }
 
-    private Answer linkAndSaveToAnswer(Voice voice, Question matchedQuestion) {
-        Answer answer = Answer.builder()
+    private AnswerEntity linkAndSaveToAnswer(Voice voice, Question matchedQuestion) {
+        AnswerEntity answerEntity = AnswerEntity.builder()
                 .content(null)
                 .voice(voice)
                 .build();
 
-        matchedQuestion.connectAnswer(answer);
-        answerRepository.save(answer);
-        return answer;
+        matchedQuestion.connectAnswer(answerEntity);
+        answerJpaRepository.save(answerEntity);
+        return answerEntity;
     }
 
     private Voice saveVoiceFrom(MultipartFile file) {

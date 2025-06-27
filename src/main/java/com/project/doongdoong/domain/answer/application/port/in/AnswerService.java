@@ -1,7 +1,7 @@
-package com.project.doongdoong.domain.answer.service;
+package com.project.doongdoong.domain.answer.application.port.in;
 
 
-import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
+import com.project.doongdoong.domain.answer.adapter.in.dto.AnswerCreateResponseDto;
 import org.springframework.web.multipart.MultipartFile;
 
 public interface AnswerService {

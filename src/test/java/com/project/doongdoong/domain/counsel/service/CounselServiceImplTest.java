@@ -3,7 +3,7 @@ package com.project.doongdoong.domain.counsel.service;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
-import com.project.doongdoong.domain.answer.model.Answer;
+import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
@@ -88,14 +88,14 @@ class CounselServiceImplTest extends IntegrationSupportTest {
         AnalysisEntity analysisEntity = createAnalysis(savedUser);
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
-        Answer answer1 = createAnswer();
-        Answer answer2 = createAnswer();
-        Answer answer3 = createAnswer();
-        Answer answer4 = createAnswer();
-        answer1.connectAnalysis(savedAnalysisEntity);
-        answer2.connectAnalysis(savedAnalysisEntity);
-        answer3.connectAnalysis(savedAnalysisEntity);
-        answer4.connectAnalysis(savedAnalysisEntity);
+        AnswerEntity answerEntity1 = createAnswer();
+        AnswerEntity answerEntity2 = createAnswer();
+        AnswerEntity answerEntity3 = createAnswer();
+        AnswerEntity answerEntity4 = createAnswer();
+        answerEntity1.connectAnalysis(savedAnalysisEntity);
+        answerEntity2.connectAnalysis(savedAnalysisEntity);
+        answerEntity3.connectAnalysis(savedAnalysisEntity);
+        answerEntity4.connectAnalysis(savedAnalysisEntity);
 
         CounselCreateRequest request = new CounselCreateRequest(
                 savedAnalysisEntity.getId(),
@@ -140,14 +140,14 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                 .user(savedUser)
                 .build();
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
-        Answer answer1 = createAnswer();
-        Answer answer2 = createAnswer();
-        Answer answer3 = createAnswer();
-        Answer answer4 = createAnswer();
-        answer1.connectAnalysis(savedAnalysisEntity);
-        answer2.connectAnalysis(savedAnalysisEntity);
-        answer3.connectAnalysis(savedAnalysisEntity);
-        answer4.connectAnalysis(savedAnalysisEntity);
+        AnswerEntity answerEntity1 = createAnswer();
+        AnswerEntity answerEntity2 = createAnswer();
+        AnswerEntity answerEntity3 = createAnswer();
+        AnswerEntity answerEntity4 = createAnswer();
+        answerEntity1.connectAnalysis(savedAnalysisEntity);
+        answerEntity2.connectAnalysis(savedAnalysisEntity);
+        answerEntity3.connectAnalysis(savedAnalysisEntity);
+        answerEntity4.connectAnalysis(savedAnalysisEntity);
 
         CounselCreateRequest request = new CounselCreateRequest(
                 savedAnalysisEntity.getId(),
@@ -284,8 +284,8 @@ class CounselServiceImplTest extends IntegrationSupportTest {
     }
 
 
-    private Answer createAnswer() {
-        return Answer.builder()
+    private AnswerEntity createAnswer() {
+        return AnswerEntity.builder()
                 .build();
     }
 

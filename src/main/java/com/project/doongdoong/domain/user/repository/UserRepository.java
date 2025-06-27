@@ -13,7 +13,7 @@ public interface UserRepository extends JpaRepository<User, Long> {
     Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId); // OAuth2 로그인 시, 사용하는 메소드
 
 
-    @Query("select u from User u left join u.analysisList al left join al.answers an " +
+    @Query("select u from User u left join u.analysisList al left join al.answerEntities an " +
             "where u.socialType = :socialType and u.socialId = :socialId")
     Optional<User> findUserWithAnalysisBySocialTypeAndSocialId(@Param("socialType") SocialType socialType, @Param("socialId") String socialId);
 }

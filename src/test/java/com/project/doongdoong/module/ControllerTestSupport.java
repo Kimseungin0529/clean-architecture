@@ -3,7 +3,7 @@ package com.project.doongdoong.module;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.project.doongdoong.domain.analysis.adapter.in.web.AnalysisController;
 import com.project.doongdoong.domain.analysis.application.port.in.AnalysisService;
-import com.project.doongdoong.domain.answer.service.AnswerService;
+import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
 import com.project.doongdoong.domain.counsel.controller.CounselController;
 import com.project.doongdoong.domain.counsel.service.CounselService;
 import com.project.doongdoong.domain.counsel.service.CounselStatisticsService;
