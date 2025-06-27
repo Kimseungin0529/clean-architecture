@@ -30,7 +30,7 @@ import static org.springframework.restdocs.request.RequestDocumentation.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AnalysisControllerDocsTest extends RestDocsSupport {
+public class AnalysisEntityControllerDocsTest extends RestDocsSupport {
 
     private final AnalysisService analysisService = Mockito.mock(AnalysisService.class);
     private final AnswerService answerService = Mockito.mock(AnswerService.class);

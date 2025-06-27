@@ -3,7 +3,7 @@ package com.project.doongdoong.domain.analysis.adapter.out.persistence;
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.user.model.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -24,17 +24,17 @@ public class AnalysisRepositoryImpl implements AnalysisRepository {
     private final AnalysisJpaRepository analysisJpaRepository;
 
     @Override
-    public Analysis save(Analysis analysis) {
-        return analysisJpaRepository.save(analysis);
+    public AnalysisEntity save(AnalysisEntity analysisEntity) {
+        return analysisJpaRepository.save(analysisEntity);
     }
 
     @Override
-    public Optional<Analysis> findByUserAndId(User user, Long analysisId) {
+    public Optional<AnalysisEntity> findByUserAndId(User user, Long analysisId) {
         return analysisJpaRepository.findByUserAndId(user, analysisId);
     }
 
     @Override
-    public Page<Analysis> findAllByUserOrderByCreatedTime(User user, Pageable pageable) {
+    public Page<AnalysisEntity> findAllByUserOrderByCreatedTime(User user, Pageable pageable) {
         return analysisJpaRepository.findAllByUserOrderByCreatedTime(user, pageable);
     }
 
@@ -44,17 +44,17 @@ public class AnalysisRepositoryImpl implements AnalysisRepository {
     }
 
     @Override
-    public Optional<Analysis> findFirstByUserOrderByAnalyzeTimeDesc(User user) {
+    public Optional<AnalysisEntity> findFirstByUserOrderByAnalyzeTimeDesc(User user) {
         return analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(user);
     }
 
     @Override
-    public Optional<Analysis> findAnalysisWithQuestion(Long analysisId) {
+    public Optional<AnalysisEntity> findAnalysisWithQuestion(Long analysisId) {
         return analysisJpaRepository.findAnalysisWithQuestion(analysisId);
     }
 
     @Override
-    public Optional<Analysis> findAnalysis(Long id) {
+    public Optional<AnalysisEntity> findAnalysis(Long id) {
         return analysisJpaRepository.findAnalysis(id);
     }
 
@@ -64,12 +64,12 @@ public class AnalysisRepositoryImpl implements AnalysisRepository {
     }
 
     @Override
-    public Optional<Analysis> searchFullAnalysisBy(Long analysisId) {
+    public Optional<AnalysisEntity> searchFullAnalysisBy(Long analysisId) {
         return analysisJpaRepository.searchFullAnalysisBy(analysisId);
     }
 
     @Override
-    public Optional<Analysis> searchAnalysisWithVoiceOfAnswer(Long analysisId) {
+    public Optional<AnalysisEntity> searchAnalysisWithVoiceOfAnswer(Long analysisId) {
         return analysisJpaRepository.searchAnalysisWithVoiceOfAnswer(analysisId);
     }
 }

@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.counsel.repository;
 
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
-import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
@@ -32,7 +32,7 @@ class CounselRepositoryTest extends IntegrationSupportTest{
     @DisplayName("상담 고유 번호로 분석 정보가 담긴 상담 정보를 조회한다.")
     void findWithAnalysisById(){
         //given
-        Analysis analysis = Analysis.builder()
+        AnalysisEntity analysisEntity = AnalysisEntity.builder()
                 .build();
 
         Counsel counsel = Counsel.builder()
@@ -40,8 +40,8 @@ class CounselRepositoryTest extends IntegrationSupportTest{
                 .counselType(CounselType.FAMILY)
                 .build();
 
-        counsel.addAnalysis(analysis);
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
+        counsel.addAnalysis(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
         Counsel savedCounsel = counselRepository.save(counsel);
 
 
@@ -53,7 +53,7 @@ class CounselRepositoryTest extends IntegrationSupportTest{
                 .containsExactlyInAnyOrder(
                         "질문1", CounselType.FAMILY, savedCounsel.getId()
                 );
-        Assertions.assertThat(findCounsel.get().getAnalysis().getId()).isEqualTo(savedAnalysis.getId());
+        Assertions.assertThat(findCounsel.get().getAnalysis().getId()).isEqualTo(savedAnalysisEntity.getId());
     }
 
     @Test
@@ -66,9 +66,9 @@ class CounselRepositoryTest extends IntegrationSupportTest{
                 .build();
         User savedUser = userRepository.save(user);
 
-        Analysis analysis = Analysis.builder()
+        AnalysisEntity analysisEntity = AnalysisEntity.builder()
                 .build();
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
         Counsel counsel1 = Counsel.builder()
                 .user(savedUser)
@@ -86,7 +86,7 @@ class CounselRepositoryTest extends IntegrationSupportTest{
                 .counselType(CounselType.LOVE)
                 .build();
 
-        counsel2.addAnalysis(savedAnalysis);
+        counsel2.addAnalysis(savedAnalysisEntity);
         counselRepository.saveAll(List.of(counsel1, counsel2, counsel3));
 
         int pageNumber = 0;
@@ -104,7 +104,7 @@ class CounselRepositoryTest extends IntegrationSupportTest{
                 .extracting("user", "question", "counselType", "analysis")
                 .containsExactlyInAnyOrder(
                         Assertions.tuple(savedUser, "질문1", CounselType.FAMILY, null),
-                        Assertions.tuple(savedUser, "질문2", CounselType.JOB, savedAnalysis),
+                        Assertions.tuple(savedUser, "질문2", CounselType.JOB, savedAnalysisEntity),
                         Assertions.tuple(savedUser, "질문3", CounselType.LOVE, null)
                 );
 

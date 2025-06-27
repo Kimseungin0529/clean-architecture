@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.answer.service;
 
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
-import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
@@ -44,8 +44,8 @@ public class AnswerServiceImp implements AnswerService {
         }
         Voice voice = saveVoiceFrom(file);
         Answer answer = linkAndSaveToAnswer(voice, matchedQuestion);
-        Analysis findAnalysis = analysisJpaRepository.findById(analysisId).orElseThrow(AnalysisNotFoundException::new);
-        answer.connectAnalysis(findAnalysis);
+        AnalysisEntity findAnalysisEntity = analysisJpaRepository.findById(analysisId).orElseThrow(AnalysisNotFoundException::new);
+        answer.connectAnalysis(findAnalysisEntity);
 
         return AnswerCreateResponseDto.builder()
                 .answerId(answer.getId())
@@ -69,10 +69,10 @@ public class AnswerServiceImp implements AnswerService {
     }
 
     private Question findQuestionFromAnalysis(Long analysisId, Long questionId) {
-        Analysis findAnalysis = analysisJpaRepository.findAnalysisWithQuestion(analysisId)
+        AnalysisEntity findAnalysisEntity = analysisJpaRepository.findAnalysisWithQuestion(analysisId)
                 .orElseThrow(AnalysisNotFoundException::new);
 
-        return findAnalysis.getQuestions().stream()
+        return findAnalysisEntity.getQuestions().stream()
                 .filter(question -> question.getId() == (long) questionId)
                 .findFirst().orElseThrow(NoMatchingQuestionException::new);
     }

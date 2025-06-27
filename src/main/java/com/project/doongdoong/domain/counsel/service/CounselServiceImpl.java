@@ -2,7 +2,7 @@ package com.project.doongdoong.domain.counsel.service;
 
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
@@ -65,9 +65,9 @@ public class CounselServiceImpl implements CounselService {
                 .build();
 
         if (request.getAnalysisId() != null) { // 기존 분석 결과 반영하기
-            Analysis findAnalysis = analysisJpaRepository.findByUserAndId(user, request.getAnalysisId()).orElseThrow(() -> new AnalysisAccessDeny());
-            checkCounselAlreadyProcessed(findAnalysis); // 해당 분석의 정보로 상담한 경우 예외
-            counsel.addAnalysis(findAnalysis); // 연관관계 매핑
+            AnalysisEntity findAnalysisEntity = analysisJpaRepository.findByUserAndId(user, request.getAnalysisId()).orElseThrow(() -> new AnalysisAccessDeny());
+            checkCounselAlreadyProcessed(findAnalysisEntity); // 해당 분석의 정보로 상담한 경우 예외
+            counsel.addAnalysis(findAnalysisEntity); // 연관관계 매핑
         }
 
         HashMap<String, Object> parameters = setupParameters(counsel);
@@ -164,8 +164,8 @@ public class CounselServiceImpl implements CounselService {
                 .build();
     }
 
-    private void checkCounselAlreadyProcessed(Analysis findAnalysis) {
-        if (findAnalysis.getCounsel() != null) {
+    private void checkCounselAlreadyProcessed(AnalysisEntity findAnalysisEntity) {
+        if (findAnalysisEntity.getCounsel() != null) {
             throw new CounselAlreadyProcessedException();
         }
     }
@@ -175,9 +175,9 @@ public class CounselServiceImpl implements CounselService {
     }
 
 
-    private String getConcatenatedAnswerText(Analysis analysis) {
+    private String getConcatenatedAnswerText(AnalysisEntity analysisEntity) {
         StringBuilder content = new StringBuilder();
-        for (Answer answer : analysis.getAnswers()) {
+        for (Answer answer : analysisEntity.getAnswers()) {
             content.append(answer.getContent()).append("\n");
         }
         return content.toString();

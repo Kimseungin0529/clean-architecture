@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.counsel.repository.querydsl;
 
 
+import com.project.doongdoong.domain.analysis.domain.QAnalysisEntity;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.user.model.User;
 import com.querydsl.core.types.dsl.BooleanExpression;
@@ -13,7 +14,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 
 import java.util.List;
 
-import static com.project.doongdoong.domain.analysis.domain.QAnalysis.analysis;
+import static com.project.doongdoong.domain.analysis.domain.QAnalysisEntity.analysisEntity;
 import static com.project.doongdoong.domain.counsel.model.QCounsel.counsel;
 
 public class CounselCustomRepositoryImpl implements CounselCustomRepository {
@@ -28,7 +29,7 @@ public class CounselCustomRepositoryImpl implements CounselCustomRepository {
     public Page<Counsel> searchPageCounselList(User user, Pageable pageable) {
         List<Counsel> content = queryFactory
                 .selectFrom(counsel)
-                .leftJoin(counsel.analysis, analysis).fetchJoin()
+                .leftJoin(counsel.analysis, analysisEntity).fetchJoin()
                 //.where(userEq(user))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())

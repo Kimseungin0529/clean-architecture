@@ -20,7 +20,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-public class AnalysisControllerTest extends ControllerTestSupport {
+public class AnalysisEntityControllerTest extends ControllerTestSupport {
 
     @Test
     @DisplayName("분석을 위한 감정 분석 설문지를 생성한다.")

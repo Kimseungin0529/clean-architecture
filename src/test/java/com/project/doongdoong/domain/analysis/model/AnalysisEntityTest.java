@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.analysis.model;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.answer.model.Answer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AnalysisTest {
+class AnalysisEntityTest {
 
 
     @DisplayName("감정 분석 날짜과 비교 날짜가 일치합니다.")
@@ -18,9 +18,9 @@ class AnalysisTest {
         // given
         LocalDate time = LocalDate.of(2024, 5, 10);
         LocalDate analyzeTime = LocalDate.of(2024, 5, 10);
-        Analysis analysis = createAnalysis(analyzeTime);
+        AnalysisEntity analysisEntity = createAnalysis(analyzeTime);
         // when
-        boolean result = analysis.equalsAnalyzeTimeTo(time);
+        boolean result = analysisEntity.equalsAnalyzeTimeTo(time);
         // then
         assertThat(result).isTrue();
     }
@@ -31,9 +31,9 @@ class AnalysisTest {
         // given
         LocalDate time = LocalDate.of(2024, 3, 24);
         LocalDate analyzeTime = LocalDate.of(2024, 5, 10);
-        Analysis analysis = createAnalysis(analyzeTime);
+        AnalysisEntity analysisEntity = createAnalysis(analyzeTime);
         // when
-        boolean result = analysis.equalsAnalyzeTimeTo(time);
+        boolean result = analysisEntity.equalsAnalyzeTimeTo(time);
         // then
         assertThat(result).isFalse();
     }
@@ -42,19 +42,19 @@ class AnalysisTest {
     @Test
     void hasAllAnswer() {
         // given
-        Analysis analysis = createAnalysis();
+        AnalysisEntity analysisEntity = createAnalysis();
         Answer answer1 = createAnswer("답변 내용1");
         Answer answer2 = createAnswer("답변 내용2");
         Answer answer3 = createAnswer("답변 내용3");
         Answer answer4 = createAnswer("답변 내용4");
 
-        answer1.connectAnalysis(analysis);
-        answer2.connectAnalysis(analysis);
-        answer3.connectAnalysis(analysis);
-        answer4.connectAnalysis(analysis);
+        answer1.connectAnalysis(analysisEntity);
+        answer2.connectAnalysis(analysisEntity);
+        answer3.connectAnalysis(analysisEntity);
+        answer4.connectAnalysis(analysisEntity);
 
         // when
-        boolean result = analysis.hasAllAnswer();
+        boolean result = analysisEntity.hasAllAnswer();
         // then
         assertThat(result).isTrue();
     }
@@ -64,26 +64,26 @@ class AnalysisTest {
     void isAlreadyAnalyzed() {
         // given
         LocalDate analyzeTime = LocalDate.of(2024, 5, 10);
-        Analysis analysis = createAnalysis(analyzeTime);
+        AnalysisEntity analysisEntity = createAnalysis(analyzeTime);
 
         // when
-        boolean result = analysis.isAlreadyAnalyzed();
+        boolean result = analysisEntity.isAlreadyAnalyzed();
 
         // then
         assertThat(result).isTrue();
     }
 
-    private Analysis createAnalysis(LocalDate analyzeDate) {
-        Analysis analysis = Analysis.builder()
+    private AnalysisEntity createAnalysis(LocalDate analyzeDate) {
+        AnalysisEntity analysisEntity = AnalysisEntity.builder()
                 .build();
-        analysis.changeFeelingStateAndAnalyzeTime(0, analyzeDate);
+        analysisEntity.changeFeelingStateAndAnalyzeTime(0, analyzeDate);
 
-        return analysis;
+        return analysisEntity;
     }
 
-    private Analysis createAnalysis() {
+    private AnalysisEntity createAnalysis() {
 
-        return Analysis.builder()
+        return AnalysisEntity.builder()
                 .build();
     }
 

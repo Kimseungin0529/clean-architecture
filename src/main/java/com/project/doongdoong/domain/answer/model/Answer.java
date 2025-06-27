@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.answer.model;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -27,7 +27,7 @@ public class Answer extends BaseEntity {
 
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "analysis_id")
-    private Analysis analysis;
+    private AnalysisEntity analysis;
 
     @OneToOne(fetch = LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "voice_id", unique = true)
@@ -39,12 +39,12 @@ public class Answer extends BaseEntity {
         this.voice = voice;
     }
 
-    public void connectAnalysis(Analysis analysis) {
+    public void connectAnalysis(AnalysisEntity analysisEntity) {
         if (this.analysis != null) {
             return;
         }
-        this.analysis = analysis;
-        analysis.getAnswers().add(this);
+        this.analysis = analysisEntity;
+        analysisEntity.getAnswers().add(this);
     }
 
     public void disconnectWithVoice() {

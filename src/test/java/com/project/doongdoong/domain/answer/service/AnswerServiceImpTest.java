@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.answer.service;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.dto.AnswerCreateResponseDto;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
@@ -70,16 +70,16 @@ class AnswerServiceImpTest extends IntegrationSupportTest {
         Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
         List<Question> questions = List.of(question1, question2, question3, question4);
 
-        Analysis analysis = createAnalysis(user, questions);
-        question1.connectAnalysis(analysis);
-        question2.connectAnalysis(analysis);
-        question3.connectAnalysis(analysis);
-        question4.connectAnalysis(analysis);
+        AnalysisEntity analysisEntity = createAnalysis(user, questions);
+        question1.connectAnalysis(analysisEntity);
+        question2.connectAnalysis(analysisEntity);
+        question3.connectAnalysis(analysisEntity);
+        question4.connectAnalysis(analysisEntity);
         Answer answer = Answer.builder()
                 .build();
 
-        answer.connectAnalysis(analysis);
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
+        answer.connectAnalysis(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
         Long questionId = question2.getId();
 
         MultipartFile multipartFile = new MockMultipartFile("file",
@@ -89,7 +89,7 @@ class AnswerServiceImpTest extends IntegrationSupportTest {
         );
 
         // when
-        AnswerCreateResponseDto result = answerService.createAnswer(savedAnalysis.getId(), multipartFile, questionId);
+        AnswerCreateResponseDto result = answerService.createAnswer(savedAnalysisEntity.getId(), multipartFile, questionId);
 
         // then
         assertThat(result).isNotNull();
@@ -109,18 +109,18 @@ class AnswerServiceImpTest extends IntegrationSupportTest {
         Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
         List<Question> questions = List.of(question1, question2, question3, question4);
 
-        Analysis analysis = createAnalysis(user, questions);
-        question1.connectAnalysis(analysis);
-        question2.connectAnalysis(analysis);
-        question3.connectAnalysis(analysis);
-        question4.connectAnalysis(analysis);
+        AnalysisEntity analysisEntity = createAnalysis(user, questions);
+        question1.connectAnalysis(analysisEntity);
+        question2.connectAnalysis(analysisEntity);
+        question3.connectAnalysis(analysisEntity);
+        question4.connectAnalysis(analysisEntity);
         Answer answer = Answer.builder()
                 .build();
 
-        answer.connectAnalysis(analysis);
+        answer.connectAnalysis(analysisEntity);
         question2.connectAnswer(answer);
 
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
         Long questionId = question2.getId();
 
         MultipartFile multipartFile = new MockMultipartFile("file",
@@ -130,14 +130,14 @@ class AnswerServiceImpTest extends IntegrationSupportTest {
         );
 
         // when && then
-        assertThatThrownBy(() -> answerService.createAnswer(savedAnalysis.getId(), multipartFile, questionId))
+        assertThatThrownBy(() -> answerService.createAnswer(savedAnalysisEntity.getId(), multipartFile, questionId))
                 .isInstanceOf(AnswerConflictException.class)
                 .hasMessage("이미 질문에 대한 답변이 존재합니다.");
     }
 
 
-    private static Analysis createAnalysis(User user, List<Question> questions) {
-        return Analysis.builder()
+    private static AnalysisEntity createAnalysis(User user, List<Question> questions) {
+        return AnalysisEntity.builder()
                 .user(user)
                 .questions(questions)
                 .build();

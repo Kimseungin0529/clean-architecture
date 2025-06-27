@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.user.repository.spring;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
@@ -40,17 +40,17 @@ class UserRepositoryTest extends IntegrationSupportTest {
         List<Question> questionList3 = List.of(Question.of(UNFIXED_QUESTION1), Question.of(UNFIXED_QUESTION2),
                 Question.of(FIXED_QUESTION3), Question.of(FIXED_QUESTION4));
 
-        Analysis analysis1 = Analysis.of(user, questionList1);
-        Analysis analysis2 = Analysis.of(user, questionList2);
-        Analysis analysis3 = Analysis.of(user, questionList3);
-        analysis1.addUser(user);
-        analysis2.addUser(user);
-        analysis3.addUser(user);
+        AnalysisEntity analysisEntity1 = AnalysisEntity.of(user, questionList1);
+        AnalysisEntity analysisEntity2 = AnalysisEntity.of(user, questionList2);
+        AnalysisEntity analysisEntity3 = AnalysisEntity.of(user, questionList3);
+        analysisEntity1.addUser(user);
+        analysisEntity2.addUser(user);
+        analysisEntity3.addUser(user);
 
         LocalDateTime now = LocalDateTime.now();
         LocalDate pastDay = now.minusDays(1L).toLocalDate();
-        analysis1.changeFeelingStateAndAnalyzeTime(15, pastDay);
-        analysis2.changeFeelingStateAndAnalyzeTime(20, now.toLocalDate());
+        analysisEntity1.changeFeelingStateAndAnalyzeTime(15, pastDay);
+        analysisEntity2.changeFeelingStateAndAnalyzeTime(20, now.toLocalDate());
 
         userRepository.save(user);
 
@@ -68,11 +68,11 @@ class UserRepositoryTest extends IntegrationSupportTest {
 
         assertThat(result.getAnalysisList())
                 .hasSize(3)
-                .extracting(Analysis::getAnalyzeTime, Analysis::getFeelingState)
+                .extracting(AnalysisEntity::getAnalyzeTime, AnalysisEntity::getFeelingState)
                 .containsExactlyInAnyOrder(
-                        tuple(analysis1.getAnalyzeTime(), analysis1.getFeelingState()),
-                        tuple(analysis2.getAnalyzeTime(), analysis2.getFeelingState()),
-                        tuple(analysis3.getAnalyzeTime(), analysis3.getFeelingState())
+                        tuple(analysisEntity1.getAnalyzeTime(), analysisEntity1.getFeelingState()),
+                        tuple(analysisEntity2.getAnalyzeTime(), analysisEntity2.getFeelingState()),
+                        tuple(analysisEntity3.getAnalyzeTime(), analysisEntity3.getFeelingState())
                 );
     }
 

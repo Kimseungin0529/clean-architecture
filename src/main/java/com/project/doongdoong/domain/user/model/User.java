@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.user.model;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -37,7 +37,7 @@ public class User extends BaseEntity {
     private List<String> roles = new ArrayList<>();
 
     @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Analysis> analysisList = new ArrayList<>();
+    private List<AnalysisEntity> analysisList = new ArrayList<>();
 
     // 권한 추가
 

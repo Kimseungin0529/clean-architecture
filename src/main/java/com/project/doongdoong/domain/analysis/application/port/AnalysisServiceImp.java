@@ -3,11 +3,10 @@ package com.project.doongdoong.domain.analysis.application.port;
 import com.project.doongdoong.domain.analysis.adapter.in.dto.*;
 import com.project.doongdoong.domain.analysis.application.port.in.AnalysisService;
 import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
-import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.answer.repository.AnswerRepository;
 import com.project.doongdoong.domain.question.model.Question;
@@ -68,25 +67,25 @@ public class AnalysisServiceImp implements AnalysisService {
         User user = findUserBy(uniqueValue);
         List<Question> questions = questionProvider.createRandomQuestions();
 
-        Analysis analysis = Analysis.of(user, questions);
+        AnalysisEntity analysisEntity = AnalysisEntity.of(user, questions);
 
         Map<QuestionContent, Voice> voicesMap = generateVoicesMapFor(questions);
 
-        analysisRepository.save(analysis);
+        analysisRepository.save(analysisEntity);
 
         List<String> accessUrls = new ArrayList<>();
         List<String> questionTexts = new ArrayList<>();
         List<Long> questionIds = new ArrayList<>();
-        linkAnalysisWith(analysis, questions, voicesMap, questionTexts, accessUrls, questionIds);
+        linkAnalysisWith(analysisEntity, questions, voicesMap, questionTexts, accessUrls, questionIds);
 
-        return AnalysisCreateResponseDto.of(analysis.getId(), questionIds, questionTexts, accessUrls);
+        return AnalysisCreateResponseDto.of(analysisEntity.getId(), questionIds, questionTexts, accessUrls);
     }
 
     @Override
     public AnalysisDetailResponse getAnalysis(Long analysisId) {
-        Analysis findAnalysis = analysisRepository.searchAnalysisWithVoiceOfAnswer(analysisId).orElseThrow(AnalysisNotFoundException::new);
+        AnalysisEntity findAnalysisEntity = analysisRepository.searchAnalysisWithVoiceOfAnswer(analysisId).orElseThrow(AnalysisNotFoundException::new);
 
-        List<Question> questions = findAnalysis.getQuestions();
+        List<Question> questions = findAnalysisEntity.getQuestions();
         List<QuestionContent> questionContents = extractQuestionContentsBy(questions);
 
         List<String> questionTexts = extractQuestionTextBy(questionContents);
@@ -98,7 +97,7 @@ public class AnalysisServiceImp implements AnalysisService {
 
         List<String> answerContents = findAnswerContentsByMatchingQuestionWithAnswer(questions);
 
-        return AnalysisDetailResponse.of(analysisId, findAnalysis.getFeelingState(), findAnalysis.getCreatedTime().format(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)),
+        return AnalysisDetailResponse.of(analysisId, findAnalysisEntity.getFeelingState(), findAnalysisEntity.getCreatedTime().format(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)),
                 questionTexts, questionIds, questionVoiceAccessUrls, answerContents);
     }
 
@@ -107,7 +106,7 @@ public class AnalysisServiceImp implements AnalysisService {
         User user = findUserBy(uniqueValue);
 
         PageRequest pageable = PageRequest.of(pageNumber, ANALYSIS_PAGE_SIZE);
-        Page<Analysis> analysisPages = analysisRepository.findAllByUserOrderByCreatedTime(user, pageable);
+        Page<AnalysisEntity> analysisPages = analysisRepository.findAllByUserOrderByCreatedTime(user, pageable);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT);
 
@@ -122,11 +121,11 @@ public class AnalysisServiceImp implements AnalysisService {
                 .orElseThrow(UserNotFoundException::new);
 
 
-        Optional<Analysis> analysis = analysisRepository.findFirstByUserOrderByAnalyzeTimeDesc(user);
+        Optional<AnalysisEntity> analysis = analysisRepository.findFirstByUserOrderByAnalyzeTimeDesc(user);
         List<FeelingStateResponseDto> result = null;
         if (analysis.isPresent()) {
-            Analysis findAnalysis = analysis.get();
-            LocalDateTime endTime = findAnalysis.getCreatedTime().plusDays(1).truncatedTo(ChronoUnit.DAYS);
+            AnalysisEntity findAnalysisEntity = analysis.get();
+            LocalDateTime endTime = findAnalysisEntity.getCreatedTime().plusDays(1).truncatedTo(ChronoUnit.DAYS);
             LocalDateTime startTime = endTime.minusDays(6).truncatedTo(ChronoUnit.DAYS);
             result = analysisRepository.findAllByDateBetween(user, startTime.toLocalDate(), endTime.toLocalDate());
         }
@@ -147,27 +146,27 @@ public class AnalysisServiceImp implements AnalysisService {
             user.growUp();
         }
 
-        Analysis findAnalysis = analysisRepository.searchFullAnalysisBy(analysisId).orElseThrow(AnalysisNotFoundException::new);
-        if (findAnalysis.isMissingAnswers()) { //만약 모든 질문에 대한 답변이 없는 경우, 답변이 부족하다는 예외 발생
+        AnalysisEntity findAnalysisEntity = analysisRepository.searchFullAnalysisBy(analysisId).orElseThrow(AnalysisNotFoundException::new);
+        if (findAnalysisEntity.isMissingAnswers()) { //만약 모든 질문에 대한 답변이 없는 경우, 답변이 부족하다는 예외 발생
             throw new AllAnswersNotFoundException();
         }
 
-        if (findAnalysis.isAlreadyAnalyzed()) { // 분석은 1번만 가능
+        if (findAnalysisEntity.isAlreadyAnalyzed()) { // 분석은 1번만 가능
             throw new AlreadyAnalyzedException();
         }
 
-        List<Voice> voices = getVoiceListFrom(findAnalysis);
+        List<Voice> voices = getVoiceListFrom(findAnalysisEntity);
         List<FellingStateCreateResponse> responseByText = webClientUtil.callAnalyzeEmotion(voices); // 2. 파일을 request 값으로 외부 lambda API 비동기 처리(동일한 외부 API 4번 호출)
         List<FellingStateCreateResponse> responseByVoice = webClientUtil.callAnalyzeEmotionVoice(voices);
 
-        List<Answer> answers = getAnswersFrom(findAnalysis);
+        List<Answer> answers = getAnswersFrom(findAnalysisEntity);
         updateContentWithTranscribedTextBy(answers, responseByText);
 
         double resultByText = calculateFellingStatusAverage(responseByText);
         double resultByVoice = calculateFellingStatusAverage(responseByVoice);
         double result = calculateTotalEmotionScoreFrom(resultByText, resultByVoice);
 
-        findAnalysis.changeFeelingStateAndAnalyzeTime(result, LocalDate.now());
+        findAnalysisEntity.changeFeelingStateAndAnalyzeTime(result, LocalDate.now());
 
         return FellingStateCreateResponse.builder()
                 .feelingState(result)
@@ -177,20 +176,20 @@ public class AnalysisServiceImp implements AnalysisService {
     @Transactional
     @Override
     public void removeAnalysis(Long analysisId) {
-        Analysis findAnalysis = analysisRepository.searchFullAnalysisBy(analysisId)
+        AnalysisEntity findAnalysisEntity = analysisRepository.searchFullAnalysisBy(analysisId)
                 .orElseThrow(AnalysisNotFoundException::new);
 
         answerRepository.detachVoiceFromAnswersBy(analysisId);
 
-        voiceService.deleteVoices(getVoiceListFrom(findAnalysis));
+        voiceService.deleteVoices(getVoiceListFrom(findAnalysisEntity));
         questionRepository.deleteQuestionsById(analysisId);
         answerRepository.deleteAnswersById(analysisId);
         analysisRepository.deleteAnalysis(analysisId);
     }
 
-    private void linkAnalysisWith(Analysis analysis, List<Question> questions, Map<QuestionContent, Voice> voicesMap, List<String> questionTexts, List<String> accessUrls, List<Long> questionIds) {
+    private void linkAnalysisWith(AnalysisEntity analysisEntity, List<Question> questions, Map<QuestionContent, Voice> voicesMap, List<String> questionTexts, List<String> accessUrls, List<Long> questionIds) {
         questions.forEach(question -> {
-            question.connectAnalysis(analysis);
+            question.connectAnalysis(analysisEntity);
             Voice voice = Optional.ofNullable(voicesMap.get(question.getQuestionContent()))
                     .orElseThrow(VoiceNotFoundException::new);
 
@@ -264,8 +263,8 @@ public class AnalysisServiceImp implements AnalysisService {
     }
 
 
-    private List<Answer> getAnswersFrom(Analysis findAnalysis) {
-        return findAnalysis.getAnswers();
+    private List<Answer> getAnswersFrom(AnalysisEntity findAnalysisEntity) {
+        return findAnalysisEntity.getAnswers();
     }
 
     private void updateContentWithTranscribedTextBy(List<Answer> answers, List<FellingStateCreateResponse> responseByText) {
@@ -296,15 +295,15 @@ public class AnalysisServiceImp implements AnalysisService {
     }
 
     private boolean checkToAnalyzeTodayFirstBy(User user) {
-        List<Analysis> list = user.getAnalysisList().stream()
+        List<AnalysisEntity> list = user.getAnalysisList().stream()
                 .filter(analysis -> analysis.equalsAnalyzeTimeTo(LocalDate.now()))
                 .toList();
         return list.isEmpty();
     }
 
 
-    private List<Voice> getVoiceListFrom(Analysis findAnalysis) {
-        return findAnalysis.getAnswers().stream()
+    private List<Voice> getVoiceListFrom(AnalysisEntity findAnalysisEntity) {
+        return findAnalysisEntity.getAnswers().stream()
                 .map(Answer::getVoice).toList();
     }
 

@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.analysis.adapter.in.dto;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -24,7 +24,7 @@ public class AnalysisListResponseDto {
         this.analysisResponseDtoList = analysisResponseDtoList;
     }
 
-    public static AnalysisListResponseDto of(Page<Analysis> analysisPages, DateTimeFormatter formatter) {
+    public static AnalysisListResponseDto of(Page<AnalysisEntity> analysisPages, DateTimeFormatter formatter) {
         return AnalysisListResponseDto.builder()
                 .pageNumber(analysisPages.getNumber() + 1)
                 .totalPage(analysisPages.getTotalPages())

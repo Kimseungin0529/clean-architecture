@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.question.repository;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.question.model.Question;
 import com.project.doongdoong.domain.question.model.QuestionContent;
@@ -25,7 +25,7 @@ class QuestionRepositoryTest extends IntegrationSupportTest {
     @Test
     void deleteQuestionsById() {
         // given
-        Analysis analysis = Analysis.builder()
+        AnalysisEntity analysisEntity = AnalysisEntity.builder()
                 .build();
 
         Question question1 = createQuestion(UNFIXED_QUESTION1);
@@ -33,19 +33,19 @@ class QuestionRepositoryTest extends IntegrationSupportTest {
         Question question3 = createQuestion(FIXED_QUESTION1);
         Question question4 = createQuestion(UNFIXED_QUESTION4);
 
-        question1.connectAnalysis(analysis);
-        question2.connectAnalysis(analysis);
-        question3.connectAnalysis(analysis);
-        question4.connectAnalysis(analysis);
+        question1.connectAnalysis(analysisEntity);
+        question2.connectAnalysis(analysisEntity);
+        question3.connectAnalysis(analysisEntity);
+        question4.connectAnalysis(analysisEntity);
 
-        analysisJpaRepository.save(analysis);
+        analysisJpaRepository.save(analysisEntity);
         questionRepository.saveAll(List.of(question1, question2, question3, question4));
 
         Question question5 = createQuestion(FIXED_QUESTION4);
         questionRepository.save(question5);
 
         // when
-        questionRepository.deleteQuestionsById(analysis.getId());
+        questionRepository.deleteQuestionsById(analysisEntity.getId());
 
         // then
         List<Question> result = questionRepository.findAll();

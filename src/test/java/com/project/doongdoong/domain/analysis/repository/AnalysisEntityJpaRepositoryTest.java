@@ -1,10 +1,10 @@
 package com.project.doongdoong.domain.analysis.repository;
 
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
-import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.answer.repository.AnswerRepository;
 import com.project.doongdoong.domain.question.model.Question;
@@ -31,7 +31,7 @@ import static com.project.doongdoong.domain.question.model.QuestionContent.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
+class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
 
     @Autowired
     AnalysisJpaRepository analysisJpaRepository;
@@ -47,18 +47,18 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
         User user = createUser("socialId1", SocialType.APPLE);
         User savedUser = userRepository.save(user);
 
-        Analysis analysis = createAnalysis(user);
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
+        AnalysisEntity analysisEntity = createAnalysis(user);
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
-        Long requestId = savedAnalysis.getId();
+        Long requestId = savedAnalysisEntity.getId();
 
         //when
-        Optional<Analysis> findAnalysis = analysisJpaRepository.findByUserAndId(savedUser, requestId);
+        Optional<AnalysisEntity> findAnalysis = analysisJpaRepository.findByUserAndId(savedUser, requestId);
 
         //then
         assertThat(findAnalysis.get())
                 .isNotNull()
-                .isEqualTo(savedAnalysis);
+                .isEqualTo(savedAnalysisEntity);
         assertThat(findAnalysis.get().getUser())
                 .isNotNull()
                 .isEqualTo(savedUser);
@@ -75,25 +75,25 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
         int pageSize = 5;
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
 
-        Analysis analysis1 = createAnalysis(user);
-        Analysis analysis2 = createAnalysis(user);
-        Analysis analysis3 = createAnalysis(user);
-        Analysis analysis4 = createAnalysis(user);
-        Analysis analysis5 = createAnalysis(user);
-        Analysis analysis6 = createAnalysis(user);
-        Analysis analysis7 = createAnalysis(user);
-        analysis1.changeFeelingStateAndAnalyzeTime(10, null);
-        analysis2.changeFeelingStateAndAnalyzeTime(20, null);
-        analysis3.changeFeelingStateAndAnalyzeTime(30, null);
-        analysis4.changeFeelingStateAndAnalyzeTime(40, null);
-        analysis5.changeFeelingStateAndAnalyzeTime(50, null);
-        analysis6.changeFeelingStateAndAnalyzeTime(60, null);
-        analysis7.changeFeelingStateAndAnalyzeTime(70, null);
+        AnalysisEntity analysisEntity1 = createAnalysis(user);
+        AnalysisEntity analysisEntity2 = createAnalysis(user);
+        AnalysisEntity analysisEntity3 = createAnalysis(user);
+        AnalysisEntity analysisEntity4 = createAnalysis(user);
+        AnalysisEntity analysisEntity5 = createAnalysis(user);
+        AnalysisEntity analysisEntity6 = createAnalysis(user);
+        AnalysisEntity analysisEntity7 = createAnalysis(user);
+        analysisEntity1.changeFeelingStateAndAnalyzeTime(10, null);
+        analysisEntity2.changeFeelingStateAndAnalyzeTime(20, null);
+        analysisEntity3.changeFeelingStateAndAnalyzeTime(30, null);
+        analysisEntity4.changeFeelingStateAndAnalyzeTime(40, null);
+        analysisEntity5.changeFeelingStateAndAnalyzeTime(50, null);
+        analysisEntity6.changeFeelingStateAndAnalyzeTime(60, null);
+        analysisEntity7.changeFeelingStateAndAnalyzeTime(70, null);
 
-        analysisJpaRepository.saveAll(List.of(analysis1, analysis2, analysis3, analysis4, analysis5, analysis6, analysis7));
+        analysisJpaRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4, analysisEntity5, analysisEntity6, analysisEntity7));
 
         //when
-        Page<Analysis> result = analysisJpaRepository.findAllByUserOrderByCreatedTime(savedUser, pageRequest);
+        Page<AnalysisEntity> result = analysisJpaRepository.findAllByUserOrderByCreatedTime(savedUser, pageRequest);
 
         //then
         assertThat(result.hasNext()).isFalse();
@@ -119,19 +119,19 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
 
         User savedUser = userRepository.save(user);
 
-        Analysis analysis1 = createAnalysis(savedUser);
-        Analysis analysis2 = createAnalysis(savedUser);
-        Analysis analysis3 = createAnalysis(savedUser);
-        Analysis analysis4 = createAnalysis(savedUser);
-        Analysis analysis5 = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity1 = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity2 = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity3 = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity4 = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity5 = createAnalysis(savedUser);
 
-        analysis1.changeFeelingStateAndAnalyzeTime(72.5, LocalDate.of(2024,3,1));
-        analysis2.changeFeelingStateAndAnalyzeTime(75, LocalDate.of(2024,3,5));
-        analysis3.changeFeelingStateAndAnalyzeTime(77.5, LocalDate.of(2024,3, 15));
-        analysis4.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 3, 15));
-        analysis5.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 3, 31));
+        analysisEntity1.changeFeelingStateAndAnalyzeTime(72.5, LocalDate.of(2024,3,1));
+        analysisEntity2.changeFeelingStateAndAnalyzeTime(75, LocalDate.of(2024,3,5));
+        analysisEntity3.changeFeelingStateAndAnalyzeTime(77.5, LocalDate.of(2024,3, 15));
+        analysisEntity4.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 3, 15));
+        analysisEntity5.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 3, 31));
 
-        analysisJpaRepository.saveAll(List.of(analysis1, analysis2, analysis3, analysis4, analysis5));
+        analysisJpaRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4, analysisEntity5));
 
         //when
         List<FeelingStateResponseDto> result = analysisJpaRepository.findAllByDateBetween(savedUser, startTime, endTime);
@@ -152,26 +152,26 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
         User user = createUser("socialId", SocialType.APPLE);
         User savedUser = userRepository.save(user);
 
-        Analysis analysis1 = createAnalysis(savedUser);
-        Analysis analysis2 = createAnalysis(savedUser);
-        Analysis analysis3 = createAnalysis(savedUser);
-        Analysis analysis4 = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity1 = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity2 = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity3 = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity4 = createAnalysis(savedUser);
 
-        analysis1.changeFeelingStateAndAnalyzeTime(70, LocalDate.of(2023, 12, 5));
-        analysis2.changeFeelingStateAndAnalyzeTime(75, LocalDate.of(2024, 3, 5));
-        analysis3.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 6, 27));
-        analysis4.changeFeelingStateAndAnalyzeTime(90, LocalDate.of(2024, 11, 19));
+        analysisEntity1.changeFeelingStateAndAnalyzeTime(70, LocalDate.of(2023, 12, 5));
+        analysisEntity2.changeFeelingStateAndAnalyzeTime(75, LocalDate.of(2024, 3, 5));
+        analysisEntity3.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 6, 27));
+        analysisEntity4.changeFeelingStateAndAnalyzeTime(90, LocalDate.of(2024, 11, 19));
 
-        analysisJpaRepository.saveAll(List.of(analysis1, analysis2, analysis3, analysis4));
+        analysisJpaRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4));
 
         //when
-        Optional<Analysis> result = analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(savedUser);
+        Optional<AnalysisEntity> result = analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(savedUser);
 
         //then
         assertThat(result.get()).isNotNull()
-                .isEqualTo(analysis4)
+                .isEqualTo(analysisEntity4)
                 .extracting("user", "feelingState", "analyzeTime")
-                .contains(savedUser, analysis4.getFeelingState(), analysis4.getAnalyzeTime());
+                .contains(savedUser, analysisEntity4.getFeelingState(), analysisEntity4.getAnalyzeTime());
     }
 
     @Test
@@ -188,21 +188,21 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
 
         List<Question> questions = List.of(question1, question2, question3, question4);
 
-        Analysis analysis = createAnalysis(savedUser,questions);
-        question1.connectAnalysis(analysis);
-        question2.connectAnalysis(analysis);
-        question3.connectAnalysis(analysis);
-        question4.connectAnalysis(analysis);
+        AnalysisEntity analysisEntity = createAnalysis(savedUser,questions);
+        question1.connectAnalysis(analysisEntity);
+        question2.connectAnalysis(analysisEntity);
+        question3.connectAnalysis(analysisEntity);
+        question4.connectAnalysis(analysisEntity);
 
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
         //when
-        Optional<Analysis> result = analysisJpaRepository.findAnalysisWithQuestion(savedAnalysis.getId());
+        Optional<AnalysisEntity> result = analysisJpaRepository.findAnalysisWithQuestion(savedAnalysisEntity.getId());
         //then
         assertThat(result.get()).isNotNull()
-                .isEqualTo(savedAnalysis)
+                .isEqualTo(savedAnalysisEntity)
                 .extracting("id", "user")
-                .contains(savedAnalysis.getId(), savedUser);
+                .contains(savedAnalysisEntity.getId(), savedUser);
 
         assertThat(result.get().getQuestions())
                 .hasSize(questions.size())
@@ -223,7 +223,7 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
         SocialType socialType = SocialType.APPLE;
         User user = createUser(socialId, socialType);
 
-        Analysis analysis = createAnalysis(user);
+        AnalysisEntity analysisEntity = createAnalysis(user);
         userRepository.save(user);
 
         Voice voice1 = createVoice("파일이름1", FIXED_QUESTION1);
@@ -232,21 +232,21 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
         Answer answer1 = createAnswer(voice1, "질문에 대한 답변 텍스트1");
         Answer answer2 = createAnswer(voice2, "질문에 대한 답변 텍스트2");
         Answer answer3 = createAnswer(voice3, "질문에 대한 답변 텍스트3");
-        answer1.connectAnalysis(analysis);
-        answer2.connectAnalysis(analysis);
-        answer3.connectAnalysis(analysis);
+        answer1.connectAnalysis(analysisEntity);
+        answer2.connectAnalysis(analysisEntity);
+        answer3.connectAnalysis(analysisEntity);
 
         voiceRepository.saveAll(List.of(voice1,voice2,voice3));
         answerRepository.saveAll(List.of(answer1,answer2,answer3));
-        analysisJpaRepository.save(analysis);
+        analysisJpaRepository.save(analysisEntity);
 
         //when
-        Optional<Analysis> result = analysisJpaRepository.searchFullAnalysisBy(analysis.getId());
+        Optional<AnalysisEntity> result = analysisJpaRepository.searchFullAnalysisBy(analysisEntity.getId());
 
         //then
-        Analysis findAnalysis = result.get();
-        assertThat(findAnalysis).isNotNull();
-        List<Answer> answers = findAnalysis.getAnswers();
+        AnalysisEntity findAnalysisEntity = result.get();
+        assertThat(findAnalysisEntity).isNotNull();
+        List<Answer> answers = findAnalysisEntity.getAnswers();
         assertThat(answers).hasSize(3);
         assertThat(answers)
                 .extracting("content")
@@ -276,12 +276,12 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
         Question question3 = createQuestion(UNFIXED_QUESTION1);
         Question question4 = createQuestion(UNFIXED_QUESTION3);
 
-        Analysis analysis = createAnalysis(user, List.of(question1, question2, question3, question4));
-        question1.connectAnalysis(analysis);
-        question2.connectAnalysis(analysis);
-        question3.connectAnalysis(analysis);
-        question4.connectAnalysis(analysis);
-        assertThat(analysis.getQuestions()).hasSize(4);
+        AnalysisEntity analysisEntity = createAnalysis(user, List.of(question1, question2, question3, question4));
+        question1.connectAnalysis(analysisEntity);
+        question2.connectAnalysis(analysisEntity);
+        question3.connectAnalysis(analysisEntity);
+        question4.connectAnalysis(analysisEntity);
+        assertThat(analysisEntity.getQuestions()).hasSize(4);
 
         userRepository.save(user);
 
@@ -295,10 +295,10 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
         Answer answer2 = createAnswer(voice2, "질문에 대한 답변 텍스트2");
         Answer answer3 = createAnswer(voice3, "질문에 대한 답변 텍스트3");
         Answer answer4 = createAnswer(voice4, "질문에 대한 답변 텍스트4");
-        answer1.connectAnalysis(analysis);
-        answer2.connectAnalysis(analysis);
-        answer3.connectAnalysis(analysis);
-        answer4.connectAnalysis(analysis);
+        answer1.connectAnalysis(analysisEntity);
+        answer2.connectAnalysis(analysisEntity);
+        answer3.connectAnalysis(analysisEntity);
+        answer4.connectAnalysis(analysisEntity);
 
         question1.connectAnswer(answer1);
         question2.connectAnswer(answer2);
@@ -306,16 +306,16 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
         question4.connectAnswer(answer4);
 
         answerRepository.saveAll(List.of(answer1,answer2, answer3, answer4));
-        analysisJpaRepository.save(analysis);
+        analysisJpaRepository.save(analysisEntity);
 
         // when
-        Optional<Analysis> result = analysisJpaRepository.searchAnalysisWithVoiceOfAnswer(analysis.getId());
+        Optional<AnalysisEntity> result = analysisJpaRepository.searchAnalysisWithVoiceOfAnswer(analysisEntity.getId());
 
         // then
         assertThat(result).isPresent();
-        Analysis findAnalysis = result.get();
+        AnalysisEntity findAnalysisEntity = result.get();
 
-        List<Answer> answers = findAnalysis.getAnswers();
+        List<Answer> answers = findAnalysisEntity.getAnswers();
         assertThat(answers).hasSize(4);
         assertThat(answers)
                 .extracting("content", "voice.originName")
@@ -326,14 +326,14 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
                         tuple("질문에 대한 답변 텍스트4", "파일이름4")
                 );
 
-        List<Question> questions = findAnalysis.getQuestions();
+        List<Question> questions = findAnalysisEntity.getQuestions();
         assertThat(questions).hasSize(4);
 
         assertThat(questions)
                 .extracting("questionContent")
                 .containsExactlyInAnyOrder(FIXED_QUESTION1, FIXED_QUESTION2, UNFIXED_QUESTION1, UNFIXED_QUESTION3);
 
-        Counsel counsel = findAnalysis.getCounsel();
+        Counsel counsel = findAnalysisEntity.getCounsel();
         assertThat(counsel).isNull();
 
     }
@@ -359,13 +359,13 @@ class AnalysisJpaRepositoryTest extends IntegrationSupportTest {
         return Question.of(questionContent);
     }
 
-    private static Analysis createAnalysis(User user) {
-        return Analysis.builder()
+    private static AnalysisEntity createAnalysis(User user) {
+        return AnalysisEntity.builder()
                 .user(user)
                 .build();
     }
-    private static Analysis createAnalysis(User user, List<Question> questions) {
-        return Analysis.builder()
+    private static AnalysisEntity createAnalysis(User user, List<Question> questions) {
+        return AnalysisEntity.builder()
                 .user(user)
                 .questions(questions)
                 .build();

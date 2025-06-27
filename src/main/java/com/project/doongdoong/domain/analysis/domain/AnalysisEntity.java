@@ -21,8 +21,9 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
+@Table(name = "analysis")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Analysis extends BaseEntity {
+public class AnalysisEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -48,15 +49,15 @@ public class Analysis extends BaseEntity {
 
     private static final int MAX_ANSWER_COUNT = 4;
 
-    public static Analysis of(User user, List<Question> questions) {
-        return Analysis.builder()
+    public static AnalysisEntity of(User user, List<Question> questions) {
+        return AnalysisEntity.builder()
                 .user(user)
                 .questions(questions)
                 .build();
     }
 
     @Builder
-    public Analysis(User user, List<Question> questions) {
+    public AnalysisEntity(User user, List<Question> questions) {
         this.feelingState = 0;
         this.questions = questions;
         this.user = user;

@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.answer.repository;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.module.IntegrationSupportTest;
@@ -22,7 +22,7 @@ class AnswerRepositoryTest extends IntegrationSupportTest {
     @Test
     void deleteAnswersById() {
         // given
-        Analysis analysis = Analysis.builder()
+        AnalysisEntity analysisEntity = AnalysisEntity.builder()
                 .build();
 
         Answer answer1 = createAnswer("답변 1입니다.");
@@ -30,18 +30,18 @@ class AnswerRepositoryTest extends IntegrationSupportTest {
         Answer answer3 = createAnswer("답변 3입니다.");
         Answer answer4 = createAnswer("답변 4입니다.");
 
-        answer1.connectAnalysis(analysis);
-        answer2.connectAnalysis(analysis);
-        answer3.connectAnalysis(analysis);
-        answer4.connectAnalysis(analysis);
+        answer1.connectAnalysis(analysisEntity);
+        answer2.connectAnalysis(analysisEntity);
+        answer3.connectAnalysis(analysisEntity);
+        answer4.connectAnalysis(analysisEntity);
 
-        analysisJpaRepository.save(analysis);
+        analysisJpaRepository.save(analysisEntity);
 
         Answer answer5 = createAnswer("답변 5입니다.");
         answerRepository.save(answer5);
 
         // when
-        answerRepository.deleteAnswersById(analysis.getId());
+        answerRepository.deleteAnswersById(analysisEntity.getId());
 
         // then
         List<Answer> result = answerRepository.findAll();

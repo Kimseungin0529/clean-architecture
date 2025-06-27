@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.counsel.service;
 
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
-import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
@@ -85,20 +85,20 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                 .build();
         User savedUser = userRepository.save(user);
 
-        Analysis analysis = createAnalysis(savedUser);
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
+        AnalysisEntity analysisEntity = createAnalysis(savedUser);
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
         Answer answer1 = createAnswer();
         Answer answer2 = createAnswer();
         Answer answer3 = createAnswer();
         Answer answer4 = createAnswer();
-        answer1.connectAnalysis(savedAnalysis);
-        answer2.connectAnalysis(savedAnalysis);
-        answer3.connectAnalysis(savedAnalysis);
-        answer4.connectAnalysis(savedAnalysis);
+        answer1.connectAnalysis(savedAnalysisEntity);
+        answer2.connectAnalysis(savedAnalysisEntity);
+        answer3.connectAnalysis(savedAnalysisEntity);
+        answer4.connectAnalysis(savedAnalysisEntity);
 
         CounselCreateRequest request = new CounselCreateRequest(
-                savedAnalysis.getId(),
+                savedAnalysisEntity.getId(),
                 "취업진로",
                 "나는 취업에 대한 고민이 있어. 내가 개발자가 될 수 있을까? 어떤 노력이 필요해?"
         );
@@ -136,21 +136,21 @@ class CounselServiceImplTest extends IntegrationSupportTest {
         User savedUser = userRepository.save(user);
         User savedOtherUser = userRepository.save(otherUser);
 
-        Analysis analysis = Analysis.builder()
+        AnalysisEntity analysisEntity = AnalysisEntity.builder()
                 .user(savedUser)
                 .build();
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
         Answer answer1 = createAnswer();
         Answer answer2 = createAnswer();
         Answer answer3 = createAnswer();
         Answer answer4 = createAnswer();
-        answer1.connectAnalysis(savedAnalysis);
-        answer2.connectAnalysis(savedAnalysis);
-        answer3.connectAnalysis(savedAnalysis);
-        answer4.connectAnalysis(savedAnalysis);
+        answer1.connectAnalysis(savedAnalysisEntity);
+        answer2.connectAnalysis(savedAnalysisEntity);
+        answer3.connectAnalysis(savedAnalysisEntity);
+        answer4.connectAnalysis(savedAnalysisEntity);
 
         CounselCreateRequest request = new CounselCreateRequest(
-                savedAnalysis.getId(),
+                savedAnalysisEntity.getId(),
                 "취업진로",
                 "나는 취업에 대한 고민이 있어. 내가 개발자가 될 수 있을까? 어떤 노력이 필요해?"
         );
@@ -289,8 +289,8 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                 .build();
     }
 
-    private Analysis createAnalysis(User savedUser) {
-        return Analysis.builder()
+    private AnalysisEntity createAnalysis(User savedUser) {
+        return AnalysisEntity.builder()
                 .user(savedUser)
                 .build();
     }

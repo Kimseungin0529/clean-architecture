@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.counsel.model;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -34,7 +34,7 @@ public class Counsel extends BaseEntity {
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "analysis_id", unique = true, updatable = false)
-    private Analysis analysis;
+    private AnalysisEntity analysis;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", updatable = false)
@@ -48,8 +48,8 @@ public class Counsel extends BaseEntity {
 
     }
 
-    public void addAnalysis(Analysis analysis) {
-        this.analysis = analysis;
+    public void addAnalysis(AnalysisEntity analysisEntity) {
+        this.analysis = analysisEntity;
     }
 
     public void saveAnswer(String answer) {

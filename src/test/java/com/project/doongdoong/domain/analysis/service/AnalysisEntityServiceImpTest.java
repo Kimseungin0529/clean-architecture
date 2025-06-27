@@ -2,11 +2,11 @@ package com.project.doongdoong.domain.analysis.service;
 
 import com.project.doongdoong.domain.analysis.adapter.in.dto.*;
 import com.project.doongdoong.domain.analysis.application.port.in.AnalysisService;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
-import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.model.Answer;
 import com.project.doongdoong.domain.answer.repository.AnswerRepository;
@@ -32,7 +32,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class AnalysisServiceImpTest extends IntegrationSupportTest {
+class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
 
     // TODO: 2024-08-01 : 남은 메서드 :
 
@@ -125,7 +125,7 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         Question question3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
         Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
         List<Question> questions = List.of(question1, question2, question3, question4);
-        Analysis analysis = createAnalysis(user, questions);
+        AnalysisEntity analysisEntity = createAnalysis(user, questions);
 
         question1.connectAnswer(answer1);
         question2.connectAnswer(answer2);
@@ -133,16 +133,16 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         question4.connectAnswer(answer4);
 
         userRepository.save(user);
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
         LocalDate analyzeTime = now();
         double feelingState = 72.1;
-        analysis.changeFeelingStateAndAnalyzeTime(feelingState, analyzeTime);
+        analysisEntity.changeFeelingStateAndAnalyzeTime(feelingState, analyzeTime);
 
         int questionSize = 4;
         int answerSize = 4;
         //when
-        AnalysisDetailResponse response = analysisService.getAnalysis(savedAnalysis.getId());
+        AnalysisDetailResponse response = analysisService.getAnalysis(savedAnalysisEntity.getId());
         //then
         assertThat(response.getQuestionContentVoiceUrls()).hasSize(questionSize);
         assertThat(response.getQuestionIds()).hasSize(answerSize);
@@ -154,7 +154,7 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
                         "answerContent"
                 )
                 .containsExactly(
-                        analysis.getId(),
+                        analysisEntity.getId(),
                         feelingState,
                         questions.stream()
                                 .map(question -> question.getQuestionContent().getText())
@@ -196,10 +196,10 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         User savedUser = userRepository.save(user);
 
 
-        Analysis analysis = createAnalysis(savedUser, questions);
+        AnalysisEntity analysisEntity = createAnalysis(savedUser, questions);
 
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
-        Long analysisId = savedAnalysis.getId();
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        Long analysisId = savedAnalysisEntity.getId();
         Long anyLongValue = 10L;
         Long notFoundAnalysisId = analysisId + anyLongValue;
 
@@ -227,14 +227,14 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         List<Question> questions1 = List.of(question1, question2, question4, question5);
         List<Question> questions2 = List.of(question2, question3, question5, question6);
 
-        Analysis analysis1 = createAnalysis(savedUser, questions1);
-        Analysis analysis2 = createAnalysis(savedUser, questions1);
-        Analysis analysis3 = createAnalysis(savedUser, questions1);
-        Analysis analysis4 = createAnalysis(savedUser, questions2);
-        Analysis analysis5 = createAnalysis(savedUser, questions2);
-        Analysis analysis6 = createAnalysis(savedUser, questions2);
-        Analysis analysis7 = createAnalysis(savedUser, questions2);
-        List<Analysis> analysies = List.of(analysis1, analysis2, analysis3, analysis4, analysis5, analysis6, analysis7);
+        AnalysisEntity analysisEntity1 = createAnalysis(savedUser, questions1);
+        AnalysisEntity analysisEntity2 = createAnalysis(savedUser, questions1);
+        AnalysisEntity analysisEntity3 = createAnalysis(savedUser, questions1);
+        AnalysisEntity analysisEntity4 = createAnalysis(savedUser, questions2);
+        AnalysisEntity analysisEntity5 = createAnalysis(savedUser, questions2);
+        AnalysisEntity analysisEntity6 = createAnalysis(savedUser, questions2);
+        AnalysisEntity analysisEntity7 = createAnalysis(savedUser, questions2);
+        List<AnalysisEntity> analysies = List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4, analysisEntity5, analysisEntity6, analysisEntity7);
         analysisJpaRepository.saveAll(analysies);
 
         String uniqueValue = socialId + "_" + socialType.getDescription();
@@ -252,25 +252,25 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
                 .hasSize(analysies.size())
                 .extracting("analysisId", "questionContent")
                 .containsExactlyInAnyOrder(
-                        tuple(analysis1.getId(), questions1.stream()
+                        tuple(analysisEntity1.getId(), questions1.stream()
                                 .map(question -> question.getQuestionContent().getText())
                                 .collect(Collectors.toList())),
-                        tuple(analysis2.getId(), questions1.stream()
+                        tuple(analysisEntity2.getId(), questions1.stream()
                                 .map(question -> question.getQuestionContent().getText())
                                 .collect(Collectors.toList())),
-                        tuple(analysis3.getId(), questions1.stream()
+                        tuple(analysisEntity3.getId(), questions1.stream()
                                 .map(question -> question.getQuestionContent().getText())
                                 .collect(Collectors.toList())),
-                        tuple(analysis4.getId(), questions2.stream()
+                        tuple(analysisEntity4.getId(), questions2.stream()
                                 .map(question -> question.getQuestionContent().getText())
                                 .collect(Collectors.toList())),
-                        tuple(analysis5.getId(), questions2.stream()
+                        tuple(analysisEntity5.getId(), questions2.stream()
                                 .map(question -> question.getQuestionContent().getText())
                                 .collect(Collectors.toList())),
-                        tuple(analysis6.getId(), questions2.stream()
+                        tuple(analysisEntity6.getId(), questions2.stream()
                                 .map(question -> question.getQuestionContent().getText())
                                 .collect(Collectors.toList())),
-                        tuple(analysis7.getId(), questions2.stream()
+                        tuple(analysisEntity7.getId(), questions2.stream()
                                 .map(question -> question.getQuestionContent().getText())
                                 .collect(Collectors.toList()))
                 );
@@ -287,41 +287,41 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         String uniqueValue = savedUser.getSocialId() + "_" + savedUser.getSocialType().getDescription();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
 
-        List<Analysis> arrayList = new ArrayList<>();
+        List<AnalysisEntity> arrayList = new ArrayList<>();
         LocalDate nowDate = now();
         double score1 = 10.0;
         for (int i = 0; i < 3; i++) { // 오늘 데이터 3개 추가
-            Analysis analysis = createAnalysis(user);
-            arrayList.add(analysis);
-            analysis.changeFeelingStateAndAnalyzeTime(score1, nowDate);
+            AnalysisEntity analysisEntity = createAnalysis(user);
+            arrayList.add(analysisEntity);
+            analysisEntity.changeFeelingStateAndAnalyzeTime(score1, nowDate);
         }
         LocalDate dateTwoDaysAgo = now().minusDays(2);
         double score2 = 30.0;
         for (int i = 0; i < 3; i++) { // 2일 전 데이터 4개 추가
-            Analysis analysis = createAnalysis(user);
-            arrayList.add(analysis);
-            analysis.changeFeelingStateAndAnalyzeTime(score2, dateTwoDaysAgo);
+            AnalysisEntity analysisEntity = createAnalysis(user);
+            arrayList.add(analysisEntity);
+            analysisEntity.changeFeelingStateAndAnalyzeTime(score2, dateTwoDaysAgo);
         }
         LocalDate dateFourDaysAgo = now().minusDays(4);
         double score3 = 40.0;
         for (int i = 0; i < 4; i++) {        // 4일 전 데이터 4개 추가
-            Analysis analysis = createAnalysis(user);
-            arrayList.add(analysis);
-            analysis.changeFeelingStateAndAnalyzeTime(score3, dateFourDaysAgo);
+            AnalysisEntity analysisEntity = createAnalysis(user);
+            arrayList.add(analysisEntity);
+            analysisEntity.changeFeelingStateAndAnalyzeTime(score3, dateFourDaysAgo);
         }
         LocalDate dateFiveDaysAgo = now().minusDays(5);
         double score4 = 50.0;
         for (int i = 0; i < 3; i++) { // 5일 전 데이터 2개 추가
-            Analysis analysis = createAnalysis(user);
-            arrayList.add(analysis);
-            analysis.changeFeelingStateAndAnalyzeTime(score4, dateFiveDaysAgo);
+            AnalysisEntity analysisEntity = createAnalysis(user);
+            arrayList.add(analysisEntity);
+            analysisEntity.changeFeelingStateAndAnalyzeTime(score4, dateFiveDaysAgo);
         }
         LocalDate dateSevenDaysAgo = now().minusDays(7);
         double score5 = 60.0;
         for (int i = 0; i < 2; i++) { // 7일 전 데이터 2개 추가
-            Analysis analysis = createAnalysis(user);
-            arrayList.add(analysis);
-            analysis.changeFeelingStateAndAnalyzeTime(score5, dateSevenDaysAgo);
+            AnalysisEntity analysisEntity = createAnalysis(user);
+            arrayList.add(analysisEntity);
+            analysisEntity.changeFeelingStateAndAnalyzeTime(score5, dateSevenDaysAgo);
         }
         analysisJpaRepository.saveAll(arrayList);
 
@@ -354,14 +354,14 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         Question question2 = createQuestion(QuestionContent.FIXED_QUESTION2);
         Question question3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
         Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION2);
-        Analysis analysis = createAnalysis(savedUser, List.of(question1, question2, question3, question4));
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
+        AnalysisEntity analysisEntity = createAnalysis(savedUser, List.of(question1, question2, question3, question4));
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
         //when & then
         return List.of(
                 DynamicTest.dynamicTest("모든 질문에 대한 답변이 없는 분석 정보를 감정 분석할 수 없습니다.", () -> {
                     //when & then
-                    assertThatThrownBy(() -> analysisService.analyzeEmotion(savedAnalysis.getId(), uniqueValue))
+                    assertThatThrownBy(() -> analysisService.analyzeEmotion(savedAnalysisEntity.getId(), uniqueValue))
                             .isInstanceOf(AllAnswersNotFoundException.class)
                             .hasMessage("질문에 해당하는 모든 답변이 존재하지 않습니다.");
 
@@ -372,10 +372,10 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
                     Answer answer2 = createAnswer("질문2에 대한 분석 완료");
                     Answer answer3 = createAnswer("질문3에 대한 분석 완료");
                     Answer answer4 = createAnswer("질문4에 대한 분석 완료");
-                    answer1.connectAnalysis(analysis);
-                    answer2.connectAnalysis(analysis);
-                    answer3.connectAnalysis(analysis);
-                    answer4.connectAnalysis(analysis);
+                    answer1.connectAnalysis(analysisEntity);
+                    answer2.connectAnalysis(analysisEntity);
+                    answer3.connectAnalysis(analysisEntity);
+                    answer4.connectAnalysis(analysisEntity);
 
                     List<FellingStateCreateResponse> responseListByText = new ArrayList<>();
                     List<FellingStateCreateResponse> responseListByVoice = new ArrayList<>();
@@ -394,20 +394,20 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
                     double resultStatus = analysisTextRate * averageFellingStatusBy(responseListByText)
                             + analysisVoiceRate * averageFellingStatusBy(responseListByVoice);
                     //when
-                    FellingStateCreateResponse result = analysisService.analyzeEmotion(savedAnalysis.getId(), uniqueValue);
+                    FellingStateCreateResponse result = analysisService.analyzeEmotion(savedAnalysisEntity.getId(), uniqueValue);
                     //then
                     assertThat(result)
                             .extracting("transcribedText", "feelingState")
                             .containsExactly(null, resultStatus);
 
-                    assertThat(savedAnalysis)
+                    assertThat(savedAnalysisEntity)
                             .extracting("feelingState")
                             .isEqualTo(resultStatus);
 
                 }),
                 DynamicTest.dynamicTest("이미 감정 분석된 분석 정보는 더 이상 감정 분석할 수 없습니다." ,() -> {
                     // when & then
-                    assertThatThrownBy(() -> analysisService.analyzeEmotion(savedAnalysis.getId(), uniqueValue))
+                    assertThatThrownBy(() -> analysisService.analyzeEmotion(savedAnalysisEntity.getId(), uniqueValue))
                             .isInstanceOf(AlreadyAnalyzedException.class)
                             .hasMessage("이미 분석했습니다.");
                 })
@@ -442,7 +442,7 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         Question question3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
         Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
         List<Question> questions = List.of(question1, question2, question3, question4);
-        Analysis analysis = createAnalysis(user, questions);
+        AnalysisEntity analysisEntity = createAnalysis(user, questions);
 
         question1.connectAnswer(answer1);
         question2.connectAnswer(answer2);
@@ -450,11 +450,11 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         question4.connectAnswer(answer4);
 
         userRepository.save(user);
-        Analysis savedAnalysis = analysisJpaRepository.save(analysis);
+        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
         //when
-        analysisService.removeAnalysis(savedAnalysis.getId());
+        analysisService.removeAnalysis(savedAnalysisEntity.getId());
         //then
-        boolean exists = analysisJpaRepository.existsById(savedAnalysis.getId());
+        boolean exists = analysisJpaRepository.existsById(savedAnalysisEntity.getId());
         assertThat(exists).isFalse(); // 삭제되었음을 검증
     }
 
@@ -488,15 +488,15 @@ class AnalysisServiceImpTest extends IntegrationSupportTest {
         return Question.of(questionContent);
     }
 
-    private static Analysis createAnalysis(User user, List<Question> questions) {
-        return Analysis.builder()
+    private static AnalysisEntity createAnalysis(User user, List<Question> questions) {
+        return AnalysisEntity.builder()
                 .user(user)
                 .questions(questions)
                 .build();
     }
 
-    private static Analysis createAnalysis(User user) {
-        return Analysis.builder()
+    private static AnalysisEntity createAnalysis(User user) {
+        return AnalysisEntity.builder()
                 .user(user)
                 .build();
     }
