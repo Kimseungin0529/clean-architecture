@@ -1,7 +1,6 @@
 package com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.querydls;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.answer.domain.QAnswerEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import jakarta.persistence.EntityManager;
 
@@ -9,7 +8,7 @@ import java.util.Optional;
 import static com.project.doongdoong.domain.analysis.domain.QAnalysisEntity.analysisEntity;
 import static com.project.doongdoong.domain.answer.domain.QAnswerEntity.*;
 import static com.project.doongdoong.domain.counsel.model.QCounsel.counsel;
-import static com.project.doongdoong.domain.voice.model.QVoice.voice;
+import static com.project.doongdoong.domain.voice.domain.QVoice.voice;
 
 public class AnalysisJpaRepositoryImpl implements AnalysisJpaRepositoryCustom {
     private final JPAQueryFactory queryFactory;

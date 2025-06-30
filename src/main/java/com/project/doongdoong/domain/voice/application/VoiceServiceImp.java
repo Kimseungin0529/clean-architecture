@@ -1,15 +1,16 @@
-package com.project.doongdoong.domain.voice.service;
+package com.project.doongdoong.domain.voice.application;
 
 import com.amazonaws.SdkClientException;
 import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
-import com.project.doongdoong.domain.voice.dto.response.VoiceDetailResponseDto;
+import com.project.doongdoong.domain.voice.adapter.in.dto.VoiceDetailResponseDto;
 import com.project.doongdoong.domain.voice.exception.FileUploadException;
-import com.project.doongdoong.domain.voice.model.FileExtension;
-import com.project.doongdoong.domain.voice.model.Voice;
-import com.project.doongdoong.domain.voice.repository.VoiceRepository;
+import com.project.doongdoong.domain.voice.domain.FileExtension;
+import com.project.doongdoong.domain.voice.domain.Voice;
+import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
+import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
 import com.project.doongdoong.global.exception.ErrorType;
 import com.project.doongdoong.global.exception.servererror.ExternalApiCallException;
 import lombok.RequiredArgsConstructor;
@@ -23,7 +24,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.util.List;
 
-import static com.project.doongdoong.domain.voice.model.FileExtension.MP3;
+import static com.project.doongdoong.domain.voice.domain.FileExtension.MP3;
 
 @Service
 @Slf4j

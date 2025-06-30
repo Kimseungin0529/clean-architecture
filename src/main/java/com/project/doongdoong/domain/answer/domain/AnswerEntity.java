@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.answer.domain;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.voice.model.Voice;
+import com.project.doongdoong.domain.voice.domain.Voice;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;

@@ -10,11 +10,11 @@ import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaReposi
 import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
 import com.project.doongdoong.domain.question.exception.NoMatchingQuestionException;
 import com.project.doongdoong.domain.question.domain.Question;
-import com.project.doongdoong.domain.voice.dto.response.VoiceDetailResponseDto;
+import com.project.doongdoong.domain.voice.adapter.in.dto.VoiceDetailResponseDto;
 import com.project.doongdoong.domain.voice.exception.VoiceNotFoundException;
-import com.project.doongdoong.domain.voice.model.Voice;
-import com.project.doongdoong.domain.voice.repository.VoiceRepository;
-import com.project.doongdoong.domain.voice.service.VoiceService;
+import com.project.doongdoong.domain.voice.domain.Voice;
+import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
+import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;

@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.voice.model;
+package com.project.doongdoong.domain.voice.domain;
 
 import com.project.doongdoong.domain.voice.exception.NotFoundFileExtension;
 import org.junit.jupiter.api.DisplayName;

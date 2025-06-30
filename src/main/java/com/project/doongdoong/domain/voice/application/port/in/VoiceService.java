@@ -1,8 +1,8 @@
-package com.project.doongdoong.domain.voice.service;
+package com.project.doongdoong.domain.voice.application.port.in;
 
 import com.project.doongdoong.domain.question.domain.QuestionContent;
-import com.project.doongdoong.domain.voice.dto.response.VoiceDetailResponseDto;
-import com.project.doongdoong.domain.voice.model.Voice;
+import com.project.doongdoong.domain.voice.adapter.in.dto.VoiceDetailResponseDto;
+import com.project.doongdoong.domain.voice.domain.Voice;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.List;

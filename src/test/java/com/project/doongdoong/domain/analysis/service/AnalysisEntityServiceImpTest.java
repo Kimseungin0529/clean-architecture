@@ -16,8 +16,8 @@ import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
-import com.project.doongdoong.domain.voice.model.Voice;
-import com.project.doongdoong.domain.voice.repository.VoiceRepository;
+import com.project.doongdoong.domain.voice.domain.Voice;
+import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 

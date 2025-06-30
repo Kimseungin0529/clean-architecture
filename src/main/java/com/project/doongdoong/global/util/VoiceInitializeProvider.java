@@ -1,9 +1,9 @@
 package com.project.doongdoong.global.util;
 
 import com.project.doongdoong.domain.question.domain.QuestionContent;
-import com.project.doongdoong.domain.voice.model.Voice;
-import com.project.doongdoong.domain.voice.repository.VoiceRepository;
-import com.project.doongdoong.domain.voice.service.VoiceService;
+import com.project.doongdoong.domain.voice.domain.Voice;
+import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
+import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

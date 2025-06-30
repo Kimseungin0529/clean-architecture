@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.voice.dto.response;
+package com.project.doongdoong.domain.voice.adapter.in.dto;
 
 import lombok.AccessLevel;
 import lombok.Builder;

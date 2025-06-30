@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.voice.model;
+package com.project.doongdoong.domain.voice.domain;
 
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.global.common.BaseEntity;
