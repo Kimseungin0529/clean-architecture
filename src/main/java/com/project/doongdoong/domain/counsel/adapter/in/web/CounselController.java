@@ -1,12 +1,12 @@
-package com.project.doongdoong.domain.counsel.controller;
+package com.project.doongdoong.domain.counsel.adapter.in.web;
 
 import com.project.doongdoong.domain.counsel.dto.CounselRankList;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
-import com.project.doongdoong.domain.counsel.service.CounselService;
-import com.project.doongdoong.domain.counsel.service.CounselStatisticsService;
+import com.project.doongdoong.domain.counsel.application.port.in.CounselService;
+import com.project.doongdoong.domain.counsel.application.port.in.CounselStatisticsService;
 import com.project.doongdoong.global.annotation.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
 import jakarta.servlet.http.HttpServletResponse;

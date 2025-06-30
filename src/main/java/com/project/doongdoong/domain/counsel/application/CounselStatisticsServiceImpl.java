@@ -1,5 +1,6 @@
-package com.project.doongdoong.domain.counsel.service;
+package com.project.doongdoong.domain.counsel.application;
 
+import com.project.doongdoong.domain.counsel.application.port.in.CounselStatisticsService;
 import com.project.doongdoong.domain.counsel.dto.CounselRankList;
 import com.project.doongdoong.domain.counsel.model.CounselRank;
 import com.project.doongdoong.domain.counsel.model.CounselType;

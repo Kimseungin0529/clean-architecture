@@ -1,8 +1,7 @@
-package com.project.doongdoong.domain.counsel.repository;
+package com.project.doongdoong.domain.counsel.adapter.out;
 
 
 import com.project.doongdoong.domain.counsel.model.Counsel;
-import com.project.doongdoong.domain.counsel.repository.querydsl.CounselCustomRepository;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

@@ -1,10 +1,11 @@
-package com.project.doongdoong.domain.counsel.service;
+package com.project.doongdoong.domain.counsel.application;
 
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
+import com.project.doongdoong.domain.counsel.application.port.in.CounselService;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
 import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
@@ -16,7 +17,7 @@ import com.project.doongdoong.domain.counsel.exception.CounselNotFoundException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
-import com.project.doongdoong.domain.counsel.repository.CounselRepository;
+import com.project.doongdoong.domain.counsel.adapter.out.CounselRepository;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialIdentifier;
 import com.project.doongdoong.domain.user.model.User;

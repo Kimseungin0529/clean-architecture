@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.counsel.service;
+package com.project.doongdoong.domain.counsel.application.port.in;
 
 
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;

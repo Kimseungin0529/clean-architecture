@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.counsel.repository;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.counsel.adapter.out.CounselRepository;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.counsel.model.Counsel;

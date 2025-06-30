@@ -1,7 +1,6 @@
-package com.project.doongdoong.domain.counsel.repository.querydsl;
+package com.project.doongdoong.domain.counsel.adapter.out;
 
 
-import com.project.doongdoong.domain.analysis.domain.QAnalysisEntity;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.user.model.User;
 import com.querydsl.core.types.dsl.BooleanExpression;

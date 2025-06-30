@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.counsel;
 
 import com.project.doongdoong.domain.counsel.model.CounselCacheKey;
-import com.project.doongdoong.domain.counsel.repository.CounselRepository;
+import com.project.doongdoong.domain.counsel.adapter.out.CounselRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
