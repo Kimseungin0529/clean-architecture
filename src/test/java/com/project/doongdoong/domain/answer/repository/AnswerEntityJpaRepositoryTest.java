@@ -1,8 +1,8 @@
 package com.project.doongdoong.domain.answer.repository;
 
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
-import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.answer.adapter.out.persistence.repository.AnswerJpaRepository;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.assertj.core.api.Assertions;

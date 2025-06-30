@@ -7,20 +7,20 @@ import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
+import com.project.doongdoong.domain.answer.application.port.out.AnswerRepository;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
-import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
-import com.project.doongdoong.domain.question.domain.QuestionEntity;
-import com.project.doongdoong.domain.question.domain.QuestionContent;
-import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
 import com.project.doongdoong.domain.question.application.port.in.QuestionProvidable;
+import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
+import com.project.doongdoong.domain.question.domain.QuestionEntity;
+import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.user.domain.SocialIdentifier;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
-import com.project.doongdoong.domain.user.domain.SocialIdentifier;
-import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
+import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.domain.voice.exception.VoiceNotFoundException;
-import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
-import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
 import com.project.doongdoong.global.exception.servererror.ExternalApiCallException;
 import com.project.doongdoong.global.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -51,6 +51,7 @@ public class AnalysisServiceImp implements AnalysisService {
     private final AnalysisRepository analysisRepository;
     private final QuestionProvidable questionProvider;
     private final QuestionRepository questionRepository;
+    private final AnswerRepository answerRepository;
     private final VoiceService voiceService;
     private final WebClientUtil webClientUtil;
 
@@ -59,7 +60,7 @@ public class AnalysisServiceImp implements AnalysisService {
     private final static double ANALYSIS_TEXT_RATE = 0.35;
     private final static String DEFAULT_NO_ANSWER_MESSAGE = "질문에 대한 답변이 없습니다.";
     private final static String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
-    private final AnswerJpaRepository answerJpaRepository;
+
 
     @Transactional
     @Override
@@ -179,11 +180,11 @@ public class AnalysisServiceImp implements AnalysisService {
         AnalysisEntity findAnalysisEntity = analysisRepository.searchFullAnalysisBy(analysisId)
                 .orElseThrow(AnalysisNotFoundException::new);
 
-        answerJpaRepository.detachVoiceFromAnswersBy(analysisId);
+        answerRepository.detachVoiceFromAnswersBy(analysisId);
 
         voiceService.deleteVoices(getVoiceListFrom(findAnalysisEntity));
         questionRepository.deleteQuestionsById(analysisId);
-        answerJpaRepository.deleteAnswersById(analysisId);
+        answerRepository.deleteAnswersById(analysisId);
         analysisRepository.deleteAnalysis(analysisId);
     }
 

@@ -8,7 +8,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AnswerRepository extends JpaRepository<AnswerEntity, Long> {
+public interface AnswerJpaRepository extends JpaRepository<AnswerEntity, Long> {
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from AnswerEntity answer where answer.analysis.id = :analysisId")

@@ -4,9 +4,9 @@ import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.adapter.in.dto.AnswerCreateResponseDto;
+import com.project.doongdoong.domain.answer.application.port.out.AnswerRepository;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
-import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
 import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.question.exception.NoMatchingQuestionException;
@@ -29,7 +29,7 @@ public class AnswerServiceImp implements AnswerService {
 
     private final VoiceRepository voiceRepository;
     private final VoiceService voiceService;
-    private final AnswerJpaRepository answerJpaRepository;
+    private final AnswerRepository answerRepository;
     private final AnalysisJpaRepository analysisJpaRepository;
 
     public final static int MAX_ANSWER_COUNT = 4;
@@ -60,7 +60,7 @@ public class AnswerServiceImp implements AnswerService {
                 .build();
 
         matchedQuestionEntity.connectAnswer(answerEntity);
-        answerJpaRepository.save(answerEntity);
+        answerRepository.save(answerEntity);
         return answerEntity;
     }
 

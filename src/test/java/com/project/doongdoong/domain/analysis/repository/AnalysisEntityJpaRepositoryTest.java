@@ -1,20 +1,21 @@
 package com.project.doongdoong.domain.analysis.repository;
 
+import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.answer.adapter.out.persistence.repository.AnswerJpaRepository;
+import com.project.doongdoong.domain.answer.application.port.out.AnswerRepository;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
-import com.project.doongdoong.domain.question.domain.QuestionEntity;
-import com.project.doongdoong.domain.user.domain.UserEntity;
-import com.project.doongdoong.module.IntegrationSupportTest;
-import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
-import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
-import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
-import com.project.doongdoong.domain.user.domain.SocialType;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
+import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
-import com.project.doongdoong.domain.voice.domain.VoiceEntity;
+import com.project.doongdoong.domain.user.domain.SocialType;
+import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
+import com.project.doongdoong.domain.voice.domain.VoiceEntity;
+import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -35,15 +36,20 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
 
     @Autowired
     AnalysisJpaRepository analysisJpaRepository;
-    @Autowired QuestionRepository questionRepository;
-    @Autowired UserRepository userRepository;
+    @Autowired
+    QuestionRepository questionRepository;
+    @Autowired
+    UserRepository userRepository;
     @Autowired
     AnswerJpaRepository answerJpaRepository;
-    @Autowired VoiceRepository voiceRepository;
+    @Autowired
+    AnswerRepository answerRepository;
+    @Autowired
+    VoiceRepository voiceRepository;
 
     @Test
     @DisplayName("접근 회원과 고유 분석 번호를 통해 일치하는 분석 정보를 조회합니다.")
-    void findByUserAndId(){
+    void findByUserAndId() {
         //given
         UserEntity userEntity = createUser("socialId1", SocialType.APPLE);
         UserEntity savedUserEntity = userRepository.save(userEntity);
@@ -68,7 +74,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
 
     @Test
     @DisplayName("사용자의 분석 결과를 최신순으로 페이징 조회합니다.")
-    void findAllByUserOrderByCreatedTime(){
+    void findAllByUserOrderByCreatedTime() {
         //given
         UserEntity userEntity = createUser("socialId", SocialType.APPLE);
         UserEntity savedUserEntity = userRepository.save(userEntity);
@@ -108,13 +114,12 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
                 );
 
 
-
     }
 
     @DisplayName("특정 시간 내에 있는 사용자의 감정 분석 시간과 감정 수치를 조회합니다.")
     @ParameterizedTest
-    @CsvSource({"2024-03-05, 2024-03-15", "2024-03-02, 2024-03-30","2024-03-03, 2024-03-27" })
-    void findAllByDateBetween(LocalDate startTime, LocalDate endTime){
+    @CsvSource({"2024-03-05, 2024-03-15", "2024-03-02, 2024-03-30", "2024-03-03, 2024-03-27"})
+    void findAllByDateBetween(LocalDate startTime, LocalDate endTime) {
         //given
         UserEntity userEntity = createUser("socialId", SocialType.APPLE);
 
@@ -126,9 +131,9 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         AnalysisEntity analysisEntity4 = createAnalysis(savedUserEntity);
         AnalysisEntity analysisEntity5 = createAnalysis(savedUserEntity);
 
-        analysisEntity1.changeFeelingStateAndAnalyzeTime(72.5, LocalDate.of(2024,3,1));
-        analysisEntity2.changeFeelingStateAndAnalyzeTime(75, LocalDate.of(2024,3,5));
-        analysisEntity3.changeFeelingStateAndAnalyzeTime(77.5, LocalDate.of(2024,3, 15));
+        analysisEntity1.changeFeelingStateAndAnalyzeTime(72.5, LocalDate.of(2024, 3, 1));
+        analysisEntity2.changeFeelingStateAndAnalyzeTime(75, LocalDate.of(2024, 3, 5));
+        analysisEntity3.changeFeelingStateAndAnalyzeTime(77.5, LocalDate.of(2024, 3, 15));
         analysisEntity4.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 3, 15));
         analysisEntity5.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 3, 31));
 
@@ -148,7 +153,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
 
     @Test
     @DisplayName("사용자의 가장 최근 분석 조회하기")
-    void findFirstByUserOrderByAnalyzeTimeDesc(){
+    void findFirstByUserOrderByAnalyzeTimeDesc() {
         //given
         UserEntity userEntity = createUser("socialId", SocialType.APPLE);
         UserEntity savedUserEntity = userRepository.save(userEntity);
@@ -177,7 +182,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
 
     @Test
     @DisplayName("분석 정보와 분석에 사용된 질문들을 조회합니다.")
-    void findAnalysisWithCounselByWithQuestion(){
+    void findAnalysisWithCounselByWithQuestion() {
         //given
         UserEntity userEntity = createUser("socialId", SocialType.APPLE);
         UserEntity savedUserEntity = userRepository.save(userEntity);
@@ -218,7 +223,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
 
     @Test
     @DisplayName("음성 답변과 답변 정보가 담긴 분석 정보를 조회한다.")
-    void searchAnalysisWithVoiceOfAnswer(){
+    void searchAnalysisWithVoiceOfAnswer() {
         //given
         String socialId = "socialId";
         SocialType socialType = SocialType.APPLE;
@@ -340,7 +345,6 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
     }
 
 
-
     private static VoiceEntity createVoice(String fileName, QuestionContent questionContent) {
         return VoiceEntity.initVoiceContentBuilder()
                 .originName(fileName)
@@ -365,6 +369,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
                 .userEntity(userEntity)
                 .build();
     }
+
     private static AnalysisEntity createAnalysis(UserEntity userEntity, List<QuestionEntity> questionEntities) {
         return AnalysisEntity.builder()
                 .userEntity(userEntity)

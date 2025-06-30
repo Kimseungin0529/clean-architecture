@@ -5,13 +5,14 @@ import com.project.doongdoong.domain.analysis.application.port.in.AnalysisServic
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException;
+import com.project.doongdoong.domain.answer.adapter.out.persistence.repository.AnswerJpaRepository;
+import com.project.doongdoong.domain.answer.application.port.out.AnswerRepository;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
-import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.domain.SocialType;
@@ -48,6 +49,8 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
     @Autowired VoiceRepository voiceRepository;
     @Autowired
     AnswerJpaRepository answerJpaRepository;
+    @Autowired
+    AnswerRepository answerRepository;
     @Autowired
     AnalysisJpaRepository analysisJpaRepository;
 
