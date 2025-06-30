@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.counsel.adapter.out;
 
 import com.project.doongdoong.domain.counsel.model.Counsel;
-import com.project.doongdoong.domain.user.model.User;
+import com.project.doongdoong.domain.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

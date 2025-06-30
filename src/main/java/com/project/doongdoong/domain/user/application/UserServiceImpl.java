@@ -1,13 +1,14 @@
-package com.project.doongdoong.domain.user.service;
+package com.project.doongdoong.domain.user.application;
 
-import com.project.doongdoong.domain.user.dto.UserInformationResponseDto;
+import com.project.doongdoong.domain.user.adapter.in.dto.UserInformationResponseDto;
 import com.project.doongdoong.domain.user.exeception.RefreshTokenNotFoundException;
 import com.project.doongdoong.domain.user.exeception.TokenInfoFobiddenException;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
-import com.project.doongdoong.domain.user.model.SocialIdentifier;
-import com.project.doongdoong.domain.user.model.SocialType;
-import com.project.doongdoong.domain.user.model.User;
-import com.project.doongdoong.domain.user.repository.UserRepository;
+import com.project.doongdoong.domain.user.domain.SocialIdentifier;
+import com.project.doongdoong.domain.user.domain.SocialType;
+import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.user.application.port.in.UserService;
 import com.project.doongdoong.global.common.BlackAccessToken;
 import com.project.doongdoong.global.common.RefreshToken;
 import com.project.doongdoong.global.dto.request.LogoutDto;

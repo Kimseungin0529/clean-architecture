@@ -1,10 +1,10 @@
 package com.project.doongdoong.domain.user.service.spring;
 
-import com.project.doongdoong.domain.user.dto.UserInformationResponseDto;
+import com.project.doongdoong.domain.user.adapter.in.dto.UserInformationResponseDto;
 import com.project.doongdoong.domain.user.exeception.RefreshTokenNotFoundException;
-import com.project.doongdoong.domain.user.model.User;
-import com.project.doongdoong.domain.user.repository.UserRepository;
-import com.project.doongdoong.domain.user.service.UserService;
+import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.user.application.port.in.UserService;
 import com.project.doongdoong.global.common.BlackAccessToken;
 import com.project.doongdoong.global.dto.request.LogoutDto;
 import com.project.doongdoong.global.dto.request.OAuthTokenDto;
@@ -22,7 +22,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.util.Collection;
 import java.util.List;
 
-import static com.project.doongdoong.domain.user.model.SocialType.APPLE;
+import static com.project.doongdoong.domain.user.domain.SocialType.APPLE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

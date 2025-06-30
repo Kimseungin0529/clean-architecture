@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.user.model;
+package com.project.doongdoong.domain.user.domain;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.global.common.BaseEntity;

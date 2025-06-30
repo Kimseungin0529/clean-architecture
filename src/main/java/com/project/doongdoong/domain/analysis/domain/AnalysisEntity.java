@@ -3,7 +3,7 @@ package com.project.doongdoong.domain.analysis.domain;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.question.domain.Question;
-import com.project.doongdoong.domain.user.model.User;
+import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;

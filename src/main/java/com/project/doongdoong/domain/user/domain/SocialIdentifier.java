@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.user.model;
+package com.project.doongdoong.domain.user.domain;
 
 import lombok.Getter;
 

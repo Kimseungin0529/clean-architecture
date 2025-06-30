@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.user.service;
 
-import com.project.doongdoong.domain.user.model.User;
+import com.project.doongdoong.domain.user.domain.User;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

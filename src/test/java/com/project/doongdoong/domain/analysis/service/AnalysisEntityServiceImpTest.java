@@ -13,9 +13,9 @@ import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaReposi
 import com.project.doongdoong.domain.question.domain.Question;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
-import com.project.doongdoong.domain.user.model.SocialType;
-import com.project.doongdoong.domain.user.model.User;
-import com.project.doongdoong.domain.user.repository.UserRepository;
+import com.project.doongdoong.domain.user.domain.SocialType;
+import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.domain.voice.repository.VoiceRepository;
 import org.junit.jupiter.api.*;

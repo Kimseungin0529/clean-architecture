@@ -1,7 +1,7 @@
-package com.project.doongdoong.domain.user.repository;
+package com.project.doongdoong.domain.user.application.port.out;
 
-import com.project.doongdoong.domain.user.model.SocialType;
-import com.project.doongdoong.domain.user.model.User;
+import com.project.doongdoong.domain.user.domain.SocialType;
+import com.project.doongdoong.domain.user.domain.User;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

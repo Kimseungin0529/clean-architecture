@@ -1,7 +1,7 @@
-package com.project.doongdoong.domain.user.controller;
+package com.project.doongdoong.domain.user.adapter.in.web;
 
-import com.project.doongdoong.domain.user.dto.UserInformationResponseDto;
-import com.project.doongdoong.domain.user.service.UserService;
+import com.project.doongdoong.domain.user.adapter.in.dto.UserInformationResponseDto;
+import com.project.doongdoong.domain.user.application.port.in.UserService;
 import com.project.doongdoong.global.annotation.CurrentUser;
 import com.project.doongdoong.global.common.ApiResponse;
 import com.project.doongdoong.global.dto.request.LogoutDto;

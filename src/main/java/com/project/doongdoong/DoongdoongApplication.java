@@ -1,6 +1,5 @@
 package com.project.doongdoong;
 
-import com.project.doongdoong.domain.user.model.SocialType;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 

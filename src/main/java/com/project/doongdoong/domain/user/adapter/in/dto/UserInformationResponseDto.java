@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.user.dto;
+package com.project.doongdoong.domain.user.adapter.in.dto;
 
 import lombok.Builder;
 import lombok.Getter;

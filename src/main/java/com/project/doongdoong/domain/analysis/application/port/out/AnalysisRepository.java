@@ -2,7 +2,7 @@ package com.project.doongdoong.domain.analysis.application.port.out;
 
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.user.model.User;
+import com.project.doongdoong.domain.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 

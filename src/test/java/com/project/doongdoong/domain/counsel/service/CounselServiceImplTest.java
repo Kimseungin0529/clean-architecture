@@ -14,9 +14,9 @@ import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselExc
 import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.domain.counsel.model.CounselType;
 import com.project.doongdoong.domain.counsel.adapter.out.CounselRepository;
-import com.project.doongdoong.domain.user.model.SocialType;
-import com.project.doongdoong.domain.user.model.User;
-import com.project.doongdoong.domain.user.repository.UserRepository;
+import com.project.doongdoong.domain.user.domain.SocialType;
+import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.global.dto.response.CounselAiResponse;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;

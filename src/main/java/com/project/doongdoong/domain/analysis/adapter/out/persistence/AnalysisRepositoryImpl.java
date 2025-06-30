@@ -4,7 +4,7 @@ import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateRespons
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.user.model.User;
+import com.project.doongdoong.domain.user.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

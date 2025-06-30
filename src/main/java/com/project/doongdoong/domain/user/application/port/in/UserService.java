@@ -1,6 +1,6 @@
-package com.project.doongdoong.domain.user.service;
+package com.project.doongdoong.domain.user.application.port.in;
 
-import com.project.doongdoong.domain.user.dto.UserInformationResponseDto;
+import com.project.doongdoong.domain.user.adapter.in.dto.UserInformationResponseDto;
 import com.project.doongdoong.global.dto.request.LogoutDto;
 import com.project.doongdoong.global.dto.request.OAuthTokenDto;
 import com.project.doongdoong.global.dto.request.ReissueDto;

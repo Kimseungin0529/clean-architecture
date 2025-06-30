@@ -2,9 +2,9 @@ package com.project.doongdoong.domain.user.repository.spring;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.question.domain.Question;
-import com.project.doongdoong.domain.user.model.SocialType;
-import com.project.doongdoong.domain.user.model.User;
-import com.project.doongdoong.domain.user.repository.UserRepository;
+import com.project.doongdoong.domain.user.domain.SocialType;
+import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
