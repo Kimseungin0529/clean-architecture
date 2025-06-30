@@ -6,8 +6,8 @@ import com.project.doongdoong.domain.answer.adapter.in.dto.AnswerCreateResponseD
 import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
-import com.project.doongdoong.domain.question.model.Question;
-import com.project.doongdoong.domain.question.model.QuestionContent;
+import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;

@@ -4,7 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.amazonaws.services.s3.model.PutObjectResult;
-import com.project.doongdoong.domain.question.model.QuestionContent;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.voice.dto.response.VoiceDetailResponseDto;
 import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.domain.voice.repository.VoiceRepository;

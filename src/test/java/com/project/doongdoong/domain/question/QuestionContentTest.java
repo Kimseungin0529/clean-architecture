@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.question;
 
-import com.project.doongdoong.domain.question.model.QuestionContent;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

@@ -1,8 +1,9 @@
-package com.project.doongdoong.domain.question.service;
+package com.project.doongdoong.domain.question.application;
 
-import com.project.doongdoong.domain.question.model.Question;
-import com.project.doongdoong.domain.question.model.QuestionContent;
-import com.project.doongdoong.domain.question.model.Questions;
+import com.project.doongdoong.domain.question.application.port.in.QuestionProvidable;
+import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
+import com.project.doongdoong.domain.question.domain.Questions;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 

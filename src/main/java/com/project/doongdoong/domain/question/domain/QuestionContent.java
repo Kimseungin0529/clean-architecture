@@ -1,5 +1,5 @@
 
-package com.project.doongdoong.domain.question.model;
+package com.project.doongdoong.domain.question.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

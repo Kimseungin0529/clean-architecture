@@ -1,12 +1,14 @@
 package com.project.doongdoong.domain.question.model;
 
+import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.Questions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
-import static com.project.doongdoong.domain.question.model.QuestionContent.*;
+import static com.project.doongdoong.domain.question.domain.QuestionContent.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 

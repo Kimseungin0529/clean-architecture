@@ -7,9 +7,9 @@ import com.project.doongdoong.domain.counsel.model.Counsel;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
 import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
-import com.project.doongdoong.domain.question.model.Question;
-import com.project.doongdoong.domain.question.model.QuestionContent;
-import com.project.doongdoong.domain.question.repository.QuestionRepository;
+import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
+import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
 import com.project.doongdoong.domain.user.model.SocialType;
 import com.project.doongdoong.domain.user.model.User;
 import com.project.doongdoong.domain.user.repository.UserRepository;
@@ -27,7 +27,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
-import static com.project.doongdoong.domain.question.model.QuestionContent.*;
+import static com.project.doongdoong.domain.question.domain.QuestionContent.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 

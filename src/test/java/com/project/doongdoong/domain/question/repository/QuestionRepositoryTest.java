@@ -2,8 +2,9 @@ package com.project.doongdoong.domain.question.repository;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
-import com.project.doongdoong.domain.question.model.Question;
-import com.project.doongdoong.domain.question.model.QuestionContent;
+import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
+import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -12,7 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
 
-import static com.project.doongdoong.domain.question.model.QuestionContent.*;
+import static com.project.doongdoong.domain.question.domain.QuestionContent.*;
 
 class QuestionRepositoryTest extends IntegrationSupportTest {
 

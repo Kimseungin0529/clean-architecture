@@ -1,6 +1,6 @@
 package com.project.doongdoong.global.util;
 
-import com.project.doongdoong.domain.question.model.QuestionContent;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.voice.model.Voice;
 import com.project.doongdoong.domain.voice.repository.VoiceRepository;
 import com.project.doongdoong.domain.voice.service.VoiceService;

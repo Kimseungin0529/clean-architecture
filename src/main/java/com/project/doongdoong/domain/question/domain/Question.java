@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.question.model;
+package com.project.doongdoong.domain.question.domain;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;

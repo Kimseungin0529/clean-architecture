@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.voice.model;
 
-import com.project.doongdoong.domain.question.model.QuestionContent;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

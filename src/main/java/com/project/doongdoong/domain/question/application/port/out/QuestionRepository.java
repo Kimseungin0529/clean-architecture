@@ -1,6 +1,6 @@
-package com.project.doongdoong.domain.question.repository;
+package com.project.doongdoong.domain.question.application.port.out;
 
-import com.project.doongdoong.domain.question.model.Question;
+import com.project.doongdoong.domain.question.domain.Question;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

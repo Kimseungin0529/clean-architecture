@@ -9,10 +9,10 @@ import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
-import com.project.doongdoong.domain.question.model.Question;
-import com.project.doongdoong.domain.question.model.QuestionContent;
-import com.project.doongdoong.domain.question.repository.QuestionRepository;
-import com.project.doongdoong.domain.question.service.QuestionProvidable;
+import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
+import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
+import com.project.doongdoong.domain.question.application.port.in.QuestionProvidable;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.model.SocialIdentifier;
 import com.project.doongdoong.domain.user.model.User;

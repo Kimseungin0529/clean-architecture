@@ -9,7 +9,7 @@ import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
 import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
 import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
 import com.project.doongdoong.domain.question.exception.NoMatchingQuestionException;
-import com.project.doongdoong.domain.question.model.Question;
+import com.project.doongdoong.domain.question.domain.Question;
 import com.project.doongdoong.domain.voice.dto.response.VoiceDetailResponseDto;
 import com.project.doongdoong.domain.voice.exception.VoiceNotFoundException;
 import com.project.doongdoong.domain.voice.model.Voice;

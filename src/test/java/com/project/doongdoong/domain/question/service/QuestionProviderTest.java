@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.question.service;
 
-import com.project.doongdoong.domain.question.model.Question;
+import com.project.doongdoong.domain.question.application.port.in.QuestionProvidable;
+import com.project.doongdoong.domain.question.domain.Question;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

@@ -1,6 +1,8 @@
 package com.project.doongdoong.domain.question.model;
 
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
+import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
