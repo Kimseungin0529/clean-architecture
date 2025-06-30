@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.answer.application.port.out;
 
+import com.project.doongdoong.domain.answer.adapter.out.persistence.repository.AnswerRepository;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -8,7 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 @Repository
-public interface AnswerJpaRepository extends JpaRepository<AnswerEntity, Long> {
+public interface AnswerJpaRepository extends JpaRepository<AnswerEntity, Long>, AnswerRepository {
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from AnswerEntity answer where answer.analysis.id = :analysisId")

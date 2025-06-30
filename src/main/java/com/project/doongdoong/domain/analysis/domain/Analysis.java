@@ -1,8 +1,8 @@
 package com.project.doongdoong.domain.analysis.domain;
 
 import com.project.doongdoong.domain.answer.domain.Answer;
-import com.project.doongdoong.domain.question.domain.QuestionEntity;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -18,26 +18,26 @@ public class Analysis {
 
     private LocalDate analyzeTime;
 
-    private UserEntity user;
+    private User user;
 
-    private List<QuestionEntity> questions = new ArrayList<>();
+    private List<Question> questions = new ArrayList<>();
 
     private List<Answer> answers = new ArrayList<>();
 
     private static final int MAX_ANSWER_COUNT = 4;
 
-    public static AnalysisEntity of(UserEntity userEntity, List<QuestionEntity> questionEntities) {
-        return AnalysisEntity.builder()
-                .userEntity(userEntity)
-                .questionEntities(questionEntities)
+    public static Analysis of(User user, List<Question> questions) {
+        return Analysis.builder()
+                .user(user)
+                .questions(questions)
                 .build();
     }
 
     @Builder
-    public Analysis(UserEntity userEntity, List<QuestionEntity> questionEntities) {
+    public Analysis(User user, List<Question> questions) {
         this.feelingState = 0;
-        this.questions = questionEntities;
-        this.user = userEntity;
+        this.questions = questions;
+        this.user = user;
     }
 
     public boolean hasAllAnswer() {
@@ -61,9 +61,9 @@ public class Analysis {
         return this.analyzeTime != null;
     }
 
-  /*  public void addUser(User user) {
+    public void addUser(User user) {
         this.user = user;
         user.getAnalysisList().add(this);
-    }*/
+    }
 
 }

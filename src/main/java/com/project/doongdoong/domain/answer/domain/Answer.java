@@ -1,10 +1,11 @@
 package com.project.doongdoong.domain.answer.domain;
 
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.voice.domain.VoiceEntity;
+import com.project.doongdoong.domain.voice.domain.Voice;
 import lombok.Builder;
+import lombok.Getter;
 
-
+@Getter
 public class Answer {
 
     private Long id;
@@ -13,12 +14,12 @@ public class Answer {
 
     private Analysis analysis;
 
-    private VoiceEntity voiceEntity;
+    private Voice voice;
 
     @Builder
-    public Answer(String content, VoiceEntity voiceEntity) {
+    public Answer(String content, Voice voice) {
         this.content = content;
-        this.voiceEntity = voiceEntity;
+        this.voice = voice;
     }
 
     public void connectAnalysis(Analysis analysis) {
@@ -30,7 +31,7 @@ public class Answer {
     }
 
     public void disconnectWithVoice() {
-        this.voiceEntity = null;
+        this.voice = null;
     }
 
     public void changeContent(String content) {

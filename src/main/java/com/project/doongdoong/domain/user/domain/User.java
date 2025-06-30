@@ -1,25 +1,16 @@
 package com.project.doongdoong.domain.user.domain;
 
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.global.common.BaseEntity;
-import jakarta.persistence.*;
-import lombok.AccessLevel;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-@Entity
 @Getter
-@Table(name = "users")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class UserEntity extends BaseEntity {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "user_id")
+public class User {
+
     private Long id;
 
     private String socialId;
@@ -28,21 +19,16 @@ public class UserEntity extends BaseEntity {
 
     private String email;
 
-    @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
     private long emotionGrowth = 0L;
 
-    @ElementCollection(fetch = FetchType.EAGER) // security와 같이 사용할 권한 역할
     private List<String> roles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AnalysisEntity> analysisList = new ArrayList<>();
-
-    // 권한 추가
+    private List<Analysis> analysisList = new ArrayList<>();
 
     @Builder
-    public UserEntity(String socialId, String nickname, String email, SocialType socialType) {
+    public User(String socialId, String nickname, String email, SocialType socialType) {
         this.socialId = socialId;
         this.nickname = nickname;
         this.email = email;
@@ -77,9 +63,7 @@ public class UserEntity extends BaseEntity {
     }
 
     private void checkGrowth() {
-        if (this.emotionGrowth == 101L)
+        if (getEmotionGrowth() == 101L)
             this.emotionGrowth %= 101;
     }
-
-
 }
