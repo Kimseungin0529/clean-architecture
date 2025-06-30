@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.answer.domain;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.voice.domain.Voice;
+import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.Builder;
@@ -14,6 +14,7 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Entity
 @Getter
+@Table(name = "answer")
 @NoArgsConstructor(access = PROTECTED)
 public class AnswerEntity extends BaseEntity {
 
@@ -31,10 +32,10 @@ public class AnswerEntity extends BaseEntity {
 
     @OneToOne(fetch = LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "voice_id", unique = true)
-    private Voice voice;
+    private VoiceEntity voice;
 
     @Builder
-    public AnswerEntity(String content, Voice voice) {
+    public AnswerEntity(String content, VoiceEntity voice) {
         this.content = content;
         this.voice = voice;
     }
@@ -44,7 +45,7 @@ public class AnswerEntity extends BaseEntity {
             return;
         }
         this.analysis = analysisEntity;
-        analysisEntity.getAnswerEntities().add(this);
+        analysisEntity.getAnswers().add(this);
     }
 
     public void disconnectWithVoice() {

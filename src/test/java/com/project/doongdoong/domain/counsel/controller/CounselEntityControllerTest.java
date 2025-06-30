@@ -20,7 +20,7 @@ import static org.springframework.security.test.web.servlet.request.SecurityMock
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-class CounselControllerTest extends ControllerTestSupport {
+class CounselEntityControllerTest extends ControllerTestSupport {
 
     @Test
     @DisplayName("상담에 대한 결과가 나온다.")

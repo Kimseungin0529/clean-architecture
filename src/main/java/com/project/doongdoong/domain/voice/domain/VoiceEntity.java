@@ -8,8 +8,9 @@ import lombok.*;
 import java.util.UUID;
 
 @Entity @Getter
+@Table(name = "voice")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Voice extends BaseEntity {
+public class VoiceEntity extends BaseEntity {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long voiceId;
@@ -25,13 +26,13 @@ public class Voice extends BaseEntity {
 
 
     @Builder(builderClassName = "CommonBuilder", builderMethodName = "commonBuilder")
-    public Voice(String originName) {
+    public VoiceEntity(String originName) {
         this.originName = originName;
         this.storedName = gainRandomFileName(originName);
         this.accessUrl = "";
     }
     @Builder(builderClassName = "InitVoiceContentBuilder", builderMethodName = "initVoiceContentBuilder")
-    public Voice(String originName, QuestionContent questionContent) {
+    public VoiceEntity(String originName, QuestionContent questionContent) {
         this.originName = originName;
         this.storedName = gainRandomFileName() + originName;
         this.accessUrl = "";

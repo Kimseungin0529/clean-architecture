@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.counsel.model;
+package com.project.doongdoong.domain.counsel.domain;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;

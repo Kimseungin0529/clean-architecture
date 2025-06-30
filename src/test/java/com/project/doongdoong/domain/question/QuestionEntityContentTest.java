@@ -10,7 +10,7 @@ import java.util.Random;
 import static org.assertj.core.api.Assertions.assertThat;
 
 
-class QuestionContentTest {
+class QuestionEntityContentTest {
     @Test
     @DisplayName("고정 질문 항목 중 임의로 하나 반환한다.")
     void provideFixedQuestionContent(){

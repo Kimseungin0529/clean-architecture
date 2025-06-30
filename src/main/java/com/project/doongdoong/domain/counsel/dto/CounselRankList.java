@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.counsel.dto;
 
-import com.project.doongdoong.domain.counsel.model.CounselRank;
+import com.project.doongdoong.domain.counsel.domain.CounselRank;
 
 import java.util.List;
 

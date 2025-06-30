@@ -1,8 +1,8 @@
 package com.project.doongdoong.domain.user.service.spring;
 
 import com.project.doongdoong.domain.user.adapter.in.dto.UserInformationResponseDto;
+import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.exeception.RefreshTokenNotFoundException;
-import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.domain.user.application.port.in.UserService;
 import com.project.doongdoong.global.common.BlackAccessToken;
@@ -26,7 +26,7 @@ import static com.project.doongdoong.domain.user.domain.SocialType.APPLE;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
-class UserServiceImplSpringTest extends IntegrationSupportTest {
+class UserEntityServiceImplSpringTest extends IntegrationSupportTest {
 
     @Autowired
     UserService userService;
@@ -119,15 +119,15 @@ class UserServiceImplSpringTest extends IntegrationSupportTest {
     @Test
     void getMyPage() {
         // given
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .socialId("123456789")
                 .socialType(APPLE)
                 .email("exam@test.com")
                 .nickname("testName")
                 .build();
 
-        User savedUser = userRepository.save(user);
-        String uniqueValue = savedUser.getSocialId() + "_" + savedUser.getSocialType().getDescription();
+        UserEntity savedUserEntity = userRepository.save(userEntity);
+        String uniqueValue = savedUserEntity.getSocialId() + "_" + savedUserEntity.getSocialType().getDescription();
 
         // when
         UserInformationResponseDto result = userService.getMyPage(uniqueValue);

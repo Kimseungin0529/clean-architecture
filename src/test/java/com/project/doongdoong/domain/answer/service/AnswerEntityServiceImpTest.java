@@ -6,10 +6,10 @@ import com.project.doongdoong.domain.answer.adapter.in.dto.AnswerCreateResponseD
 import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
-import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.user.domain.SocialType;
-import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.AfterEach;
@@ -62,26 +62,26 @@ class AnswerEntityServiceImpTest extends IntegrationSupportTest {
     @Test
     void createAnswer() throws IOException {
         // given
-        User user = createUser();
-        userRepository.save(user);
+        UserEntity userEntity = createUser();
+        userRepository.save(userEntity);
 
-        Question question1 = createQuestion(QuestionContent.FIXED_QUESTION1);
-        Question question2 = createQuestion(QuestionContent.FIXED_QUESTION2);
-        Question question3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
-        Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
-        List<Question> questions = List.of(question1, question2, question3, question4);
+        QuestionEntity questionEntity1 = createQuestion(QuestionContent.FIXED_QUESTION1);
+        QuestionEntity questionEntity2 = createQuestion(QuestionContent.FIXED_QUESTION2);
+        QuestionEntity questionEntity3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
+        QuestionEntity questionEntity4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
+        List<QuestionEntity> questionEntities = List.of(questionEntity1, questionEntity2, questionEntity3, questionEntity4);
 
-        AnalysisEntity analysisEntity = createAnalysis(user, questions);
-        question1.connectAnalysis(analysisEntity);
-        question2.connectAnalysis(analysisEntity);
-        question3.connectAnalysis(analysisEntity);
-        question4.connectAnalysis(analysisEntity);
+        AnalysisEntity analysisEntity = createAnalysis(userEntity, questionEntities);
+        questionEntity1.connectAnalysis(analysisEntity);
+        questionEntity2.connectAnalysis(analysisEntity);
+        questionEntity3.connectAnalysis(analysisEntity);
+        questionEntity4.connectAnalysis(analysisEntity);
         AnswerEntity answerEntity = AnswerEntity.builder()
                 .build();
 
         answerEntity.connectAnalysis(analysisEntity);
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
-        Long questionId = question2.getId();
+        Long questionId = questionEntity2.getId();
 
         MultipartFile multipartFile = new MockMultipartFile("file",
                 tempFile.getName(),
@@ -101,28 +101,28 @@ class AnswerEntityServiceImpTest extends IntegrationSupportTest {
     @Test
     void createAnswerException() throws IOException {
         // given
-        User user = createUser();
-        userRepository.save(user);
+        UserEntity userEntity = createUser();
+        userRepository.save(userEntity);
 
-        Question question1 = createQuestion(QuestionContent.FIXED_QUESTION1);
-        Question question2 = createQuestion(QuestionContent.FIXED_QUESTION2);
-        Question question3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
-        Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
-        List<Question> questions = List.of(question1, question2, question3, question4);
+        QuestionEntity questionEntity1 = createQuestion(QuestionContent.FIXED_QUESTION1);
+        QuestionEntity questionEntity2 = createQuestion(QuestionContent.FIXED_QUESTION2);
+        QuestionEntity questionEntity3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
+        QuestionEntity questionEntity4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
+        List<QuestionEntity> questionEntities = List.of(questionEntity1, questionEntity2, questionEntity3, questionEntity4);
 
-        AnalysisEntity analysisEntity = createAnalysis(user, questions);
-        question1.connectAnalysis(analysisEntity);
-        question2.connectAnalysis(analysisEntity);
-        question3.connectAnalysis(analysisEntity);
-        question4.connectAnalysis(analysisEntity);
+        AnalysisEntity analysisEntity = createAnalysis(userEntity, questionEntities);
+        questionEntity1.connectAnalysis(analysisEntity);
+        questionEntity2.connectAnalysis(analysisEntity);
+        questionEntity3.connectAnalysis(analysisEntity);
+        questionEntity4.connectAnalysis(analysisEntity);
         AnswerEntity answerEntity = AnswerEntity.builder()
                 .build();
 
         answerEntity.connectAnalysis(analysisEntity);
-        question2.connectAnswer(answerEntity);
+        questionEntity2.connectAnswer(answerEntity);
 
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
-        Long questionId = question2.getId();
+        Long questionId = questionEntity2.getId();
 
         MultipartFile multipartFile = new MockMultipartFile("file",
                 tempFile.getName(),
@@ -137,19 +137,19 @@ class AnswerEntityServiceImpTest extends IntegrationSupportTest {
     }
 
 
-    private static AnalysisEntity createAnalysis(User user, List<Question> questions) {
+    private static AnalysisEntity createAnalysis(UserEntity userEntity, List<QuestionEntity> questionEntities) {
         return AnalysisEntity.builder()
-                .user(user)
-                .questions(questions)
+                .userEntity(userEntity)
+                .questionEntities(questionEntities)
                 .build();
     }
 
-    private static Question createQuestion(QuestionContent questionContent) {
-        return Question.of(questionContent);
+    private static QuestionEntity createQuestion(QuestionContent questionContent) {
+        return QuestionEntity.of(questionContent);
     }
 
-    private static User createUser() {
-        return User.builder()
+    private static UserEntity createUser() {
+        return UserEntity.builder()
                 .socialId("socialId")
                 .socialType(SocialType.APPLE)
                 .build();

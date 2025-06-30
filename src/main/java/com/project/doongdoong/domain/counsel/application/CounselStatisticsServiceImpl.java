@@ -2,8 +2,8 @@ package com.project.doongdoong.domain.counsel.application;
 
 import com.project.doongdoong.domain.counsel.application.port.in.CounselStatisticsService;
 import com.project.doongdoong.domain.counsel.dto.CounselRankList;
-import com.project.doongdoong.domain.counsel.model.CounselRank;
-import com.project.doongdoong.domain.counsel.model.CounselType;
+import com.project.doongdoong.domain.counsel.domain.CounselRank;
+import com.project.doongdoong.domain.counsel.domain.CounselType;
 import com.project.doongdoong.global.util.CounselRankingCache;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

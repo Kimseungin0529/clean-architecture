@@ -4,7 +4,7 @@ import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateRespons
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -29,23 +29,23 @@ public class AnalysisRepositoryImpl implements AnalysisRepository {
     }
 
     @Override
-    public Optional<AnalysisEntity> findByUserAndId(User user, Long analysisId) {
-        return analysisJpaRepository.findByUserAndId(user, analysisId);
+    public Optional<AnalysisEntity> findByUserAndId(UserEntity userEntity, Long analysisId) {
+        return analysisJpaRepository.findByUserAndId(userEntity, analysisId);
     }
 
     @Override
-    public Page<AnalysisEntity> findAllByUserOrderByCreatedTime(User user, Pageable pageable) {
-        return analysisJpaRepository.findAllByUserOrderByCreatedTime(user, pageable);
+    public Page<AnalysisEntity> findAllByUserOrderByCreatedTime(UserEntity userEntity, Pageable pageable) {
+        return analysisJpaRepository.findAllByUserOrderByCreatedTime(userEntity, pageable);
     }
 
     @Override
-    public List<FeelingStateResponseDto> findAllByDateBetween(User user, LocalDate startTime, LocalDate endTime) {
-        return analysisJpaRepository.findAllByDateBetween(user, startTime, endTime);
+    public List<FeelingStateResponseDto> findAllByDateBetween(UserEntity userEntity, LocalDate startTime, LocalDate endTime) {
+        return analysisJpaRepository.findAllByDateBetween(userEntity, startTime, endTime);
     }
 
     @Override
-    public Optional<AnalysisEntity> findFirstByUserOrderByAnalyzeTimeDesc(User user) {
-        return analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(user);
+    public Optional<AnalysisEntity> findFirstByUserOrderByAnalyzeTimeDesc(UserEntity userEntity) {
+        return analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(userEntity);
     }
 
     @Override

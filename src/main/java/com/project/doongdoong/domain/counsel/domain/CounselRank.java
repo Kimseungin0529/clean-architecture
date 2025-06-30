@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.counsel.model;
+package com.project.doongdoong.domain.counsel.domain;
 
 public record CounselRank(
         String counselType,

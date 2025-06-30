@@ -2,9 +2,9 @@ package com.project.doongdoong.domain.counsel.service;
 
 import com.project.doongdoong.domain.counsel.application.port.in.CounselStatisticsService;
 import com.project.doongdoong.domain.counsel.dto.CounselRankList;
-import com.project.doongdoong.domain.counsel.model.CounselCacheKey;
-import com.project.doongdoong.domain.counsel.model.CounselRank;
-import com.project.doongdoong.domain.counsel.model.CounselType;
+import com.project.doongdoong.domain.counsel.domain.CounselCacheKey;
+import com.project.doongdoong.domain.counsel.domain.CounselRank;
+import com.project.doongdoong.domain.counsel.domain.CounselType;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.List;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.tuple;
 
-class CounselStatisticsServiceImplTest extends IntegrationSupportTest {
+class CounselEntityStatisticsServiceImplTest extends IntegrationSupportTest {
 
     @Autowired
     CounselStatisticsService counselStatisticsService;

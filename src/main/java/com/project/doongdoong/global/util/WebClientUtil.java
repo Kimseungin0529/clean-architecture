@@ -2,7 +2,7 @@ package com.project.doongdoong.global.util;
 
 
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FellingStateCreateResponse;
-import com.project.doongdoong.domain.voice.domain.Voice;
+import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.global.dto.request.ConsultRequest;
 import com.project.doongdoong.global.dto.request.VoiceToS3Request;
 import com.project.doongdoong.global.dto.response.CounselAiResponse;
@@ -76,10 +76,10 @@ public class WebClientUtil {
     }
 
 
-    public List<FellingStateCreateResponse> callAnalyzeEmotion(List<Voice> voices) {
+    public List<FellingStateCreateResponse> callAnalyzeEmotion(List<VoiceEntity> voiceEntities) {
 
         Flux<FellingStateCreateResponse> responseFlux = Flux
-                .fromIterable(voices)
+                .fromIterable(voiceEntities)
                 .parallel()
                 .runOn(Schedulers.parallel())
                 .flatMap(this::callLambdaApi)
@@ -88,10 +88,10 @@ public class WebClientUtil {
         return responseFlux.collectList().block();
     }
 
-    private Mono<FellingStateCreateResponse> callLambdaApi(Voice voice) {
+    private Mono<FellingStateCreateResponse> callLambdaApi(VoiceEntity voiceEntity) {
 
         VoiceToS3Request body = VoiceToS3Request.builder()
-                .fileKey(VOICE_KEY + voice.getStoredName())
+                .fileKey(VOICE_KEY + voiceEntity.getStoredName())
                 .build();
 
         return defaultWebClient
@@ -109,10 +109,10 @@ public class WebClientUtil {
 
     }
 
-    public List<FellingStateCreateResponse> callAnalyzeEmotionVoice(List<Voice> voices) {
+    public List<FellingStateCreateResponse> callAnalyzeEmotionVoice(List<VoiceEntity> voiceEntities) {
 
         Flux<FellingStateCreateResponse> responseFlux = Flux
-                .fromIterable(voices)
+                .fromIterable(voiceEntities)
                 .parallel()
                 .runOn(Schedulers.parallel())
                 .flatMap(this::callLambdaApiVoice)
@@ -122,10 +122,10 @@ public class WebClientUtil {
         return responseFlux.collectList().block();
     }
 
-    private Mono<FellingStateCreateResponse> callLambdaApiVoice(Voice voice) {
+    private Mono<FellingStateCreateResponse> callLambdaApiVoice(VoiceEntity voiceEntity) {
 
         VoiceToS3Request body = VoiceToS3Request.builder()
-                .fileKey(VOICE_KEY + voice.getStoredName())
+                .fileKey(VOICE_KEY + voiceEntity.getStoredName())
                 .build();
 
         return defaultWebClient

@@ -1,12 +1,12 @@
 package com.project.doongdoong.domain.user.application;
 
 import com.project.doongdoong.domain.user.adapter.in.dto.UserInformationResponseDto;
+import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.exeception.RefreshTokenNotFoundException;
 import com.project.doongdoong.domain.user.exeception.TokenInfoFobiddenException;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.domain.SocialIdentifier;
 import com.project.doongdoong.domain.user.domain.SocialType;
-import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.domain.user.application.port.in.UserService;
 import com.project.doongdoong.global.common.BlackAccessToken;
@@ -44,14 +44,14 @@ public class UserServiceImpl implements UserService {
         String nickname = oAuthTokenInfo.getNickname();
         SocialType socialType = SocialType.findSocialTypeBy(oAuthTokenInfo.getSocialType());
 
-        User user = findOrRegisterUserBy(socialType, socialId, email, nickname);
+        UserEntity userEntity = findOrRegisterUserBy(socialType, socialId, email, nickname);
 
         blackAccessTokenRepository.findById(BlackAccessToken.generateUniqueKeyWith(socialId, socialType.getDescription()))
                 .ifPresent(blackAccessTokenRepository::delete);
 
-        TokenDto tokenInfoResponse = jwtProvider.generateToken(socialId, socialType.getDescription(), user.getRoles());
+        TokenDto tokenInfoResponse = jwtProvider.generateToken(socialId, socialType.getDescription(), userEntity.getRoles());
 
-        RefreshToken refresh = RefreshToken.of(user.getSocialId(), user.getSocialType().getDescription(), tokenInfoResponse.getRefreshToken());
+        RefreshToken refresh = RefreshToken.of(userEntity.getSocialId(), userEntity.getSocialType().getDescription(), tokenInfoResponse.getRefreshToken());
         refreshTokenRepository.findByUniqueId(refresh.getUniqueId())
                 .ifPresent(refreshTokenRepository::delete);
         refreshTokenRepository.save(refresh);
@@ -59,28 +59,28 @@ public class UserServiceImpl implements UserService {
         return tokenInfoResponse;
     }
 
-    private User findOrRegisterUserBy(SocialType socialType, String socialId, String email, String nickname) {
-        User user = userRepository.findBySocialTypeAndSocialId(socialType, socialId)
+    private UserEntity findOrRegisterUserBy(SocialType socialType, String socialId, String email, String nickname) {
+        UserEntity userEntity = userRepository.findBySocialTypeAndSocialId(socialType, socialId)
                 .orElse(createUser(socialId, email, nickname, socialType));
-        checkChange(email, nickname, user);
-        user.checkRoles();
+        checkChange(email, nickname, userEntity);
+        userEntity.checkRoles();
 
-        return userRepository.save(user);
+        return userRepository.save(userEntity);
     }
 
-    private void checkChange(String email, String nickname, User user) {
+    private void checkChange(String email, String nickname, UserEntity userEntity) {
 
-        if (!user.isSameEmail(email)) {
-            user.changeEmail(email);
+        if (!userEntity.isSameEmail(email)) {
+            userEntity.changeEmail(email);
         }
 
-        if (!user.isSameNickname(nickname)) {
-            user.changeNickname(nickname);
+        if (!userEntity.isSameNickname(nickname)) {
+            userEntity.changeNickname(nickname);
         }
     }
 
-    private User createUser(String socialId, String email, String nickname, SocialType socialType) {
-        return User
+    private UserEntity createUser(String socialId, String email, String nickname, SocialType socialType) {
+        return UserEntity
                 .builder()
                 .socialId(socialId)
                 .email(email)
@@ -127,10 +127,10 @@ public class UserServiceImpl implements UserService {
 
     public UserInformationResponseDto getMyPage(String uniqueValue) {
         SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
-        User findUser = userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
+        UserEntity findUserEntity = userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
                 .orElseThrow(UserNotFoundException::new);
 
-        return UserInformationResponseDto.of(findUser.getNickname(), findUser.getEmail(), findUser.getSocialType().getDescription(), findUser.getEmotionGrowth());
+        return UserInformationResponseDto.of(findUserEntity.getNickname(), findUserEntity.getEmail(), findUserEntity.getSocialType().getDescription(), findUserEntity.getEmotionGrowth());
     }
 
 

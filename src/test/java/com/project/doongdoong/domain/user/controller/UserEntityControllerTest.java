@@ -23,7 +23,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-class UserControllerTest extends ControllerTestSupport {
+class UserEntityControllerTest extends ControllerTestSupport {
 
     @Test
     @DisplayName("사용자 로그인을 진행합니다. 회원 정보가 없다면 회원 정보 저장 후, 로그인 진행합니다.")

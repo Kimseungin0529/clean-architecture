@@ -3,17 +3,17 @@ package com.project.doongdoong.domain.analysis.repository;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
-import com.project.doongdoong.domain.counsel.model.Counsel;
+import com.project.doongdoong.domain.counsel.domain.CounselEntity;
+import com.project.doongdoong.domain.question.domain.QuestionEntity;
+import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
 import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
-import com.project.doongdoong.domain.question.domain.Question;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
-import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
-import com.project.doongdoong.domain.voice.domain.Voice;
+import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -45,16 +45,16 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
     @DisplayName("접근 회원과 고유 분석 번호를 통해 일치하는 분석 정보를 조회합니다.")
     void findByUserAndId(){
         //given
-        User user = createUser("socialId1", SocialType.APPLE);
-        User savedUser = userRepository.save(user);
+        UserEntity userEntity = createUser("socialId1", SocialType.APPLE);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
-        AnalysisEntity analysisEntity = createAnalysis(user);
+        AnalysisEntity analysisEntity = createAnalysis(userEntity);
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
         Long requestId = savedAnalysisEntity.getId();
 
         //when
-        Optional<AnalysisEntity> findAnalysis = analysisJpaRepository.findByUserAndId(savedUser, requestId);
+        Optional<AnalysisEntity> findAnalysis = analysisJpaRepository.findByUserAndId(savedUserEntity, requestId);
 
         //then
         assertThat(findAnalysis.get())
@@ -62,7 +62,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
                 .isEqualTo(savedAnalysisEntity);
         assertThat(findAnalysis.get().getUser())
                 .isNotNull()
-                .isEqualTo(savedUser);
+                .isEqualTo(savedUserEntity);
 
     }
 
@@ -70,19 +70,19 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
     @DisplayName("사용자의 분석 결과를 최신순으로 페이징 조회합니다.")
     void findAllByUserOrderByCreatedTime(){
         //given
-        User user = createUser("socialId", SocialType.APPLE);
-        User savedUser = userRepository.save(user);
+        UserEntity userEntity = createUser("socialId", SocialType.APPLE);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
         int pageNumber = 1;
         int pageSize = 5;
         PageRequest pageRequest = PageRequest.of(pageNumber, pageSize);
 
-        AnalysisEntity analysisEntity1 = createAnalysis(user);
-        AnalysisEntity analysisEntity2 = createAnalysis(user);
-        AnalysisEntity analysisEntity3 = createAnalysis(user);
-        AnalysisEntity analysisEntity4 = createAnalysis(user);
-        AnalysisEntity analysisEntity5 = createAnalysis(user);
-        AnalysisEntity analysisEntity6 = createAnalysis(user);
-        AnalysisEntity analysisEntity7 = createAnalysis(user);
+        AnalysisEntity analysisEntity1 = createAnalysis(userEntity);
+        AnalysisEntity analysisEntity2 = createAnalysis(userEntity);
+        AnalysisEntity analysisEntity3 = createAnalysis(userEntity);
+        AnalysisEntity analysisEntity4 = createAnalysis(userEntity);
+        AnalysisEntity analysisEntity5 = createAnalysis(userEntity);
+        AnalysisEntity analysisEntity6 = createAnalysis(userEntity);
+        AnalysisEntity analysisEntity7 = createAnalysis(userEntity);
         analysisEntity1.changeFeelingStateAndAnalyzeTime(10, null);
         analysisEntity2.changeFeelingStateAndAnalyzeTime(20, null);
         analysisEntity3.changeFeelingStateAndAnalyzeTime(30, null);
@@ -94,7 +94,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         analysisJpaRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4, analysisEntity5, analysisEntity6, analysisEntity7));
 
         //when
-        Page<AnalysisEntity> result = analysisJpaRepository.findAllByUserOrderByCreatedTime(savedUser, pageRequest);
+        Page<AnalysisEntity> result = analysisJpaRepository.findAllByUserOrderByCreatedTime(savedUserEntity, pageRequest);
 
         //then
         assertThat(result.hasNext()).isFalse();
@@ -116,15 +116,15 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
     @CsvSource({"2024-03-05, 2024-03-15", "2024-03-02, 2024-03-30","2024-03-03, 2024-03-27" })
     void findAllByDateBetween(LocalDate startTime, LocalDate endTime){
         //given
-        User user = createUser("socialId", SocialType.APPLE);
+        UserEntity userEntity = createUser("socialId", SocialType.APPLE);
 
-        User savedUser = userRepository.save(user);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
-        AnalysisEntity analysisEntity1 = createAnalysis(savedUser);
-        AnalysisEntity analysisEntity2 = createAnalysis(savedUser);
-        AnalysisEntity analysisEntity3 = createAnalysis(savedUser);
-        AnalysisEntity analysisEntity4 = createAnalysis(savedUser);
-        AnalysisEntity analysisEntity5 = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity1 = createAnalysis(savedUserEntity);
+        AnalysisEntity analysisEntity2 = createAnalysis(savedUserEntity);
+        AnalysisEntity analysisEntity3 = createAnalysis(savedUserEntity);
+        AnalysisEntity analysisEntity4 = createAnalysis(savedUserEntity);
+        AnalysisEntity analysisEntity5 = createAnalysis(savedUserEntity);
 
         analysisEntity1.changeFeelingStateAndAnalyzeTime(72.5, LocalDate.of(2024,3,1));
         analysisEntity2.changeFeelingStateAndAnalyzeTime(75, LocalDate.of(2024,3,5));
@@ -135,7 +135,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         analysisJpaRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4, analysisEntity5));
 
         //when
-        List<FeelingStateResponseDto> result = analysisJpaRepository.findAllByDateBetween(savedUser, startTime, endTime);
+        List<FeelingStateResponseDto> result = analysisJpaRepository.findAllByDateBetween(savedUserEntity, startTime, endTime);
         //then
         assertThat(result).hasSize(2)
                 .extracting("date", "avgFeelingState")
@@ -150,13 +150,13 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
     @DisplayName("사용자의 가장 최근 분석 조회하기")
     void findFirstByUserOrderByAnalyzeTimeDesc(){
         //given
-        User user = createUser("socialId", SocialType.APPLE);
-        User savedUser = userRepository.save(user);
+        UserEntity userEntity = createUser("socialId", SocialType.APPLE);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
-        AnalysisEntity analysisEntity1 = createAnalysis(savedUser);
-        AnalysisEntity analysisEntity2 = createAnalysis(savedUser);
-        AnalysisEntity analysisEntity3 = createAnalysis(savedUser);
-        AnalysisEntity analysisEntity4 = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity1 = createAnalysis(savedUserEntity);
+        AnalysisEntity analysisEntity2 = createAnalysis(savedUserEntity);
+        AnalysisEntity analysisEntity3 = createAnalysis(savedUserEntity);
+        AnalysisEntity analysisEntity4 = createAnalysis(savedUserEntity);
 
         analysisEntity1.changeFeelingStateAndAnalyzeTime(70, LocalDate.of(2023, 12, 5));
         analysisEntity2.changeFeelingStateAndAnalyzeTime(75, LocalDate.of(2024, 3, 5));
@@ -166,34 +166,34 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         analysisJpaRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4));
 
         //when
-        Optional<AnalysisEntity> result = analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(savedUser);
+        Optional<AnalysisEntity> result = analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(savedUserEntity);
 
         //then
         assertThat(result.get()).isNotNull()
                 .isEqualTo(analysisEntity4)
                 .extracting("user", "feelingState", "analyzeTime")
-                .contains(savedUser, analysisEntity4.getFeelingState(), analysisEntity4.getAnalyzeTime());
+                .contains(savedUserEntity, analysisEntity4.getFeelingState(), analysisEntity4.getAnalyzeTime());
     }
 
     @Test
     @DisplayName("분석 정보와 분석에 사용된 질문들을 조회합니다.")
     void findAnalysisWithCounselByWithQuestion(){
         //given
-        User user = createUser("socialId", SocialType.APPLE);
-        User savedUser = userRepository.save(user);
+        UserEntity userEntity = createUser("socialId", SocialType.APPLE);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
-        Question question1 = createQuestion(FIXED_QUESTION1);
-        Question question2 = createQuestion(FIXED_QUESTION2);
-        Question question3 = createQuestion(UNFIXED_QUESTION1);
-        Question question4 = createQuestion(UNFIXED_QUESTION1);
+        QuestionEntity questionEntity1 = createQuestion(FIXED_QUESTION1);
+        QuestionEntity questionEntity2 = createQuestion(FIXED_QUESTION2);
+        QuestionEntity questionEntity3 = createQuestion(UNFIXED_QUESTION1);
+        QuestionEntity questionEntity4 = createQuestion(UNFIXED_QUESTION1);
 
-        List<Question> questions = List.of(question1, question2, question3, question4);
+        List<QuestionEntity> questionEntities = List.of(questionEntity1, questionEntity2, questionEntity3, questionEntity4);
 
-        AnalysisEntity analysisEntity = createAnalysis(savedUser,questions);
-        question1.connectAnalysis(analysisEntity);
-        question2.connectAnalysis(analysisEntity);
-        question3.connectAnalysis(analysisEntity);
-        question4.connectAnalysis(analysisEntity);
+        AnalysisEntity analysisEntity = createAnalysis(savedUserEntity, questionEntities);
+        questionEntity1.connectAnalysis(analysisEntity);
+        questionEntity2.connectAnalysis(analysisEntity);
+        questionEntity3.connectAnalysis(analysisEntity);
+        questionEntity4.connectAnalysis(analysisEntity);
 
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
@@ -203,11 +203,11 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         assertThat(result.get()).isNotNull()
                 .isEqualTo(savedAnalysisEntity)
                 .extracting("id", "user")
-                .contains(savedAnalysisEntity.getId(), savedUser);
+                .contains(savedAnalysisEntity.getId(), savedUserEntity);
 
         assertThat(result.get().getQuestions())
-                .hasSize(questions.size())
-                .containsExactlyInAnyOrder(question1, question2, question3, question4);
+                .hasSize(questionEntities.size())
+                .containsExactlyInAnyOrder(questionEntity1, questionEntity2, questionEntity3, questionEntity4);
         ;
     }
 
@@ -222,22 +222,22 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         //given
         String socialId = "socialId";
         SocialType socialType = SocialType.APPLE;
-        User user = createUser(socialId, socialType);
+        UserEntity userEntity = createUser(socialId, socialType);
 
-        AnalysisEntity analysisEntity = createAnalysis(user);
-        userRepository.save(user);
+        AnalysisEntity analysisEntity = createAnalysis(userEntity);
+        userRepository.save(userEntity);
 
-        Voice voice1 = createVoice("파일이름1", FIXED_QUESTION1);
-        Voice voice2 = createVoice("파일이름2", FIXED_QUESTION2);
-        Voice voice3 = createVoice("파일이름3", UNFIXED_QUESTION1);
-        AnswerEntity answerEntity1 = createAnswer(voice1, "질문에 대한 답변 텍스트1");
-        AnswerEntity answerEntity2 = createAnswer(voice2, "질문에 대한 답변 텍스트2");
-        AnswerEntity answerEntity3 = createAnswer(voice3, "질문에 대한 답변 텍스트3");
+        VoiceEntity voiceEntity1 = createVoice("파일이름1", FIXED_QUESTION1);
+        VoiceEntity voiceEntity2 = createVoice("파일이름2", FIXED_QUESTION2);
+        VoiceEntity voiceEntity3 = createVoice("파일이름3", UNFIXED_QUESTION1);
+        AnswerEntity answerEntity1 = createAnswer(voiceEntity1, "질문에 대한 답변 텍스트1");
+        AnswerEntity answerEntity2 = createAnswer(voiceEntity2, "질문에 대한 답변 텍스트2");
+        AnswerEntity answerEntity3 = createAnswer(voiceEntity3, "질문에 대한 답변 텍스트3");
         answerEntity1.connectAnalysis(analysisEntity);
         answerEntity2.connectAnalysis(analysisEntity);
         answerEntity3.connectAnalysis(analysisEntity);
 
-        voiceRepository.saveAll(List.of(voice1,voice2,voice3));
+        voiceRepository.saveAll(List.of(voiceEntity1, voiceEntity2, voiceEntity3));
         answerJpaRepository.saveAll(List.of(answerEntity1, answerEntity2, answerEntity3));
         analysisJpaRepository.save(analysisEntity);
 
@@ -247,7 +247,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         //then
         AnalysisEntity findAnalysisEntity = result.get();
         assertThat(findAnalysisEntity).isNotNull();
-        List<AnswerEntity> answerEntities = findAnalysisEntity.getAnswerEntities();
+        List<AnswerEntity> answerEntities = findAnalysisEntity.getAnswers();
         assertThat(answerEntities).hasSize(3);
         assertThat(answerEntities)
                 .extracting("content")
@@ -271,40 +271,40 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         //given
         String socialId = "socialId";
         SocialType socialType = SocialType.APPLE;
-        User user = createUser(socialId, socialType);
-        Question question1 = createQuestion(FIXED_QUESTION1);
-        Question question2 = createQuestion(FIXED_QUESTION2);
-        Question question3 = createQuestion(UNFIXED_QUESTION1);
-        Question question4 = createQuestion(UNFIXED_QUESTION3);
+        UserEntity userEntity = createUser(socialId, socialType);
+        QuestionEntity questionEntity1 = createQuestion(FIXED_QUESTION1);
+        QuestionEntity questionEntity2 = createQuestion(FIXED_QUESTION2);
+        QuestionEntity questionEntity3 = createQuestion(UNFIXED_QUESTION1);
+        QuestionEntity questionEntity4 = createQuestion(UNFIXED_QUESTION3);
 
-        AnalysisEntity analysisEntity = createAnalysis(user, List.of(question1, question2, question3, question4));
-        question1.connectAnalysis(analysisEntity);
-        question2.connectAnalysis(analysisEntity);
-        question3.connectAnalysis(analysisEntity);
-        question4.connectAnalysis(analysisEntity);
+        AnalysisEntity analysisEntity = createAnalysis(userEntity, List.of(questionEntity1, questionEntity2, questionEntity3, questionEntity4));
+        questionEntity1.connectAnalysis(analysisEntity);
+        questionEntity2.connectAnalysis(analysisEntity);
+        questionEntity3.connectAnalysis(analysisEntity);
+        questionEntity4.connectAnalysis(analysisEntity);
         assertThat(analysisEntity.getQuestions()).hasSize(4);
 
-        userRepository.save(user);
+        userRepository.save(userEntity);
 
-        Voice voice1 = createVoice("파일이름1", FIXED_QUESTION1);
-        Voice voice2 = createVoice("파일이름2", FIXED_QUESTION2);
-        Voice voice3 = createVoice("파일이름3", UNFIXED_QUESTION1);
-        Voice voice4 = createVoice("파일이름4", UNFIXED_QUESTION3);
-        voiceRepository.saveAll(List.of(voice1, voice2, voice3, voice4));
+        VoiceEntity voiceEntity1 = createVoice("파일이름1", FIXED_QUESTION1);
+        VoiceEntity voiceEntity2 = createVoice("파일이름2", FIXED_QUESTION2);
+        VoiceEntity voiceEntity3 = createVoice("파일이름3", UNFIXED_QUESTION1);
+        VoiceEntity voiceEntity4 = createVoice("파일이름4", UNFIXED_QUESTION3);
+        voiceRepository.saveAll(List.of(voiceEntity1, voiceEntity2, voiceEntity3, voiceEntity4));
 
-        AnswerEntity answerEntity1 = createAnswer(voice1, "질문에 대한 답변 텍스트1");
-        AnswerEntity answerEntity2 = createAnswer(voice2, "질문에 대한 답변 텍스트2");
-        AnswerEntity answerEntity3 = createAnswer(voice3, "질문에 대한 답변 텍스트3");
-        AnswerEntity answerEntity4 = createAnswer(voice4, "질문에 대한 답변 텍스트4");
+        AnswerEntity answerEntity1 = createAnswer(voiceEntity1, "질문에 대한 답변 텍스트1");
+        AnswerEntity answerEntity2 = createAnswer(voiceEntity2, "질문에 대한 답변 텍스트2");
+        AnswerEntity answerEntity3 = createAnswer(voiceEntity3, "질문에 대한 답변 텍스트3");
+        AnswerEntity answerEntity4 = createAnswer(voiceEntity4, "질문에 대한 답변 텍스트4");
         answerEntity1.connectAnalysis(analysisEntity);
         answerEntity2.connectAnalysis(analysisEntity);
         answerEntity3.connectAnalysis(analysisEntity);
         answerEntity4.connectAnalysis(analysisEntity);
 
-        question1.connectAnswer(answerEntity1);
-        question2.connectAnswer(answerEntity2);
-        question3.connectAnswer(answerEntity3);
-        question4.connectAnswer(answerEntity4);
+        questionEntity1.connectAnswer(answerEntity1);
+        questionEntity2.connectAnswer(answerEntity2);
+        questionEntity3.connectAnswer(answerEntity3);
+        questionEntity4.connectAnswer(answerEntity4);
 
         answerJpaRepository.saveAll(List.of(answerEntity1, answerEntity2, answerEntity3, answerEntity4));
         analysisJpaRepository.save(analysisEntity);
@@ -316,7 +316,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         assertThat(result).isPresent();
         AnalysisEntity findAnalysisEntity = result.get();
 
-        List<AnswerEntity> answerEntities = findAnalysisEntity.getAnswerEntities();
+        List<AnswerEntity> answerEntities = findAnalysisEntity.getAnswers();
         assertThat(answerEntities).hasSize(4);
         assertThat(answerEntities)
                 .extracting("content", "voice.originName")
@@ -327,53 +327,53 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
                         tuple("질문에 대한 답변 텍스트4", "파일이름4")
                 );
 
-        List<Question> questions = findAnalysisEntity.getQuestions();
-        assertThat(questions).hasSize(4);
+        List<QuestionEntity> questionEntities = findAnalysisEntity.getQuestions();
+        assertThat(questionEntities).hasSize(4);
 
-        assertThat(questions)
+        assertThat(questionEntities)
                 .extracting("questionContent")
                 .containsExactlyInAnyOrder(FIXED_QUESTION1, FIXED_QUESTION2, UNFIXED_QUESTION1, UNFIXED_QUESTION3);
 
-        Counsel counsel = findAnalysisEntity.getCounsel();
-        assertThat(counsel).isNull();
+        CounselEntity counselEntity = findAnalysisEntity.getCounsel();
+        assertThat(counselEntity).isNull();
 
     }
 
 
 
-    private static Voice createVoice(String fileName, QuestionContent questionContent) {
-        return Voice.initVoiceContentBuilder()
+    private static VoiceEntity createVoice(String fileName, QuestionContent questionContent) {
+        return VoiceEntity.initVoiceContentBuilder()
                 .originName(fileName)
                 .questionContent(questionContent)
                 .build();
     }
 
-    private static AnswerEntity createAnswer(Voice voice, String content) {
+    private static AnswerEntity createAnswer(VoiceEntity voiceEntity, String content) {
         return AnswerEntity.builder()
-                .voice(voice)
+                .voice(voiceEntity)
                 .content(content)
                 .build();
     }
 
-    private static Question createQuestion(QuestionContent questionContent) {
+    private static QuestionEntity createQuestion(QuestionContent questionContent) {
 
-        return Question.of(questionContent);
+        return QuestionEntity.of(questionContent);
     }
 
-    private static AnalysisEntity createAnalysis(User user) {
+    private static AnalysisEntity createAnalysis(UserEntity userEntity) {
         return AnalysisEntity.builder()
-                .user(user)
+                .userEntity(userEntity)
                 .build();
     }
-    private static AnalysisEntity createAnalysis(User user, List<Question> questions) {
+    private static AnalysisEntity createAnalysis(UserEntity userEntity, List<QuestionEntity> questionEntities) {
         return AnalysisEntity.builder()
-                .user(user)
-                .questions(questions)
+                .userEntity(userEntity)
+                .questionEntities(questionEntities)
                 .build();
     }
 
-    private static User createUser(String socialId, SocialType socialType) {
-        return User.builder()
+    private static UserEntity createUser(String socialId, SocialType socialType) {
+        return UserEntity.builder()
                 .socialId(socialId)
                 .socialType(socialType)
                 .build();

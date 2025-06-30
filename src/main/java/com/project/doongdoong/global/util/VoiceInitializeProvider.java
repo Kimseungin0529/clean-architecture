@@ -1,7 +1,7 @@
 package com.project.doongdoong.global.util;
 
 import com.project.doongdoong.domain.question.domain.QuestionContent;
-import com.project.doongdoong.domain.voice.domain.Voice;
+import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
 import jakarta.annotation.PostConstruct;
@@ -28,7 +28,7 @@ public class VoiceInitializeProvider {
     public void initQuestionVoiceFiles(){
 
         for (QuestionContent questionContent : QuestionContent.values()) {
-            Optional<Voice> existingVoice = voiceRepository.findVoiceByQuestionContent(questionContent);
+            Optional<VoiceEntity> existingVoice = voiceRepository.findVoiceByQuestionContent(questionContent);
 
             if (existingVoice.isEmpty()) {
                 byte[] audioContent = ttsConverter.convertTextToSpeech(questionContent.getText());

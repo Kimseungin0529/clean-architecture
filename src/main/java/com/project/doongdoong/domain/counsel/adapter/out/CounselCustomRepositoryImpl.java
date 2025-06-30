@@ -1,8 +1,9 @@
 package com.project.doongdoong.domain.counsel.adapter.out;
 
 
-import com.project.doongdoong.domain.counsel.model.Counsel;
-import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.counsel.domain.CounselEntity;
+import com.project.doongdoong.domain.counsel.domain.QCounselEntity;
+import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
@@ -14,7 +15,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.util.List;
 
 import static com.project.doongdoong.domain.analysis.domain.QAnalysisEntity.analysisEntity;
-import static com.project.doongdoong.domain.counsel.model.QCounsel.counsel;
+import static com.project.doongdoong.domain.counsel.domain.QCounselEntity.counselEntity;
 
 public class CounselCustomRepositoryImpl implements CounselCustomRepository {
 
@@ -25,24 +26,24 @@ public class CounselCustomRepositoryImpl implements CounselCustomRepository {
     }
 
     @Override
-    public Page<Counsel> searchPageCounselList(User user, Pageable pageable) {
-        List<Counsel> content = queryFactory
-                .selectFrom(counsel)
-                .leftJoin(counsel.analysis, analysisEntity).fetchJoin()
+    public Page<CounselEntity> searchPageCounselList(UserEntity userEntity, Pageable pageable) {
+        List<CounselEntity> content = queryFactory
+                .selectFrom(counselEntity)
+                .leftJoin(counselEntity.analysis, analysisEntity).fetchJoin()
                 //.where(userEq(user))
                 .offset(pageable.getOffset())
                 .limit(pageable.getPageSize())
                 .fetch();
 
         JPAQuery<Long> countQuery = queryFactory
-                .select(counsel.count())
-                .from(counsel);
+                .select(counselEntity.count())
+                .from(counselEntity);
         //.where(userEq(user));
 
         return PageableExecutionUtils.getPage(content, pageable, countQuery::fetchOne);
     }
 
-    private BooleanExpression userEq(User user) {
-        return counsel.user.id.eq(user.getId());
+    private BooleanExpression userEq(UserEntity userEntity) {
+        return counselEntity.user.id.eq(userEntity.getId());
     }
 }

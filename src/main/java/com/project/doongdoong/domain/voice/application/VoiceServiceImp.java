@@ -6,9 +6,9 @@ import com.amazonaws.services.s3.model.DeleteObjectsRequest;
 import com.amazonaws.services.s3.model.ObjectMetadata;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.voice.adapter.in.dto.VoiceDetailResponseDto;
+import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.domain.voice.exception.FileUploadException;
 import com.project.doongdoong.domain.voice.domain.FileExtension;
-import com.project.doongdoong.domain.voice.domain.Voice;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
 import com.project.doongdoong.global.exception.ErrorType;
@@ -44,39 +44,39 @@ public class VoiceServiceImp implements VoiceService {
     @Transactional
     public VoiceDetailResponseDto saveVoice(MultipartFile multipartFile) {
         String originalName = multipartFile.getOriginalFilename();
-        Voice voice = Voice.commonBuilder()
+        VoiceEntity voiceEntity = VoiceEntity.commonBuilder()
                 .originName(originalName)
                 .build();
 
-        String filename = getObjectKeyFrom(voice);
+        String filename = getObjectKeyFrom(voiceEntity);
         try {
             ObjectMetadata objectMetadata = initObjectMetadata(originalName, multipartFile);
             amazonS3Client.putObject(bucketName, filename, multipartFile.getInputStream(), objectMetadata);
-            voice.changeAccessUrl(amazonS3Client.getUrl(bucketName, filename).toString());
+            voiceEntity.changeAccessUrl(amazonS3Client.getUrl(bucketName, filename).toString());
 
         } catch (SdkClientException | IOException e) {
             throw new FileUploadException(ErrorType.ServerError.FILE_UPLOAD_FAIL, e.getMessage());
         }
-        voiceRepository.save(voice);
+        voiceRepository.save(voiceEntity);
 
-        return VoiceDetailResponseDto.of(voice.getAccessUrl());
+        return VoiceDetailResponseDto.of(voiceEntity.getAccessUrl());
     }
 
     @Override
     @Transactional
     public void saveVoice(byte[] audioContent, String originName, QuestionContent questionContent) {
-        Voice voice = Voice.initVoiceContentBuilder()
+        VoiceEntity voiceEntity = VoiceEntity.initVoiceContentBuilder()
                 .originName(originName)
                 .questionContent(questionContent)
                 .build();
-        String filename = getObjectKeyFrom(voice);
+        String filename = getObjectKeyFrom(voiceEntity);
 
         try {
             ObjectMetadata objectMetadata = initObjectMetadata(audioContent);
             amazonS3Client.putObject(bucketName, filename, new ByteArrayInputStream(audioContent), objectMetadata);
 
-            voice.changeAccessUrl(amazonS3Client.getUrl(bucketName, filename).toString());
-            voiceRepository.save(voice);
+            voiceEntity.changeAccessUrl(amazonS3Client.getUrl(bucketName, filename).toString());
+            voiceRepository.save(voiceEntity);
 
         } catch (SdkClientException e) {
             throw new FileUploadException(ErrorType.ServerError.FILE_UPLOAD_FAIL, e.getMessage());
@@ -85,13 +85,13 @@ public class VoiceServiceImp implements VoiceService {
 
     @Override
     @Transactional
-    public void deleteVoices(List<Voice> voices) {
-        List<Long> voiceIds = getIdsFrom(voices);
+    public void deleteVoices(List<VoiceEntity> voiceEntities) {
+        List<Long> voiceIds = getIdsFrom(voiceEntities);
         if (voiceIds.isEmpty()) {
             return;
         }
 
-        List<DeleteObjectsRequest.KeyVersion> keys = getRequestKeysFrom(voices);
+        List<DeleteObjectsRequest.KeyVersion> keys = getRequestKeysFrom(voiceEntities);
         try {
             DeleteObjectsRequest deleteRequest = new DeleteObjectsRequest(bucketName)
                     .withKeys(keys);
@@ -118,18 +118,18 @@ public class VoiceServiceImp implements VoiceService {
     }
 
 
-    private List<Long> getIdsFrom(List<Voice> voices) {
-        return voices.stream().map(Voice::getVoiceId).toList();
+    private List<Long> getIdsFrom(List<VoiceEntity> voiceEntities) {
+        return voiceEntities.stream().map(VoiceEntity::getVoiceId).toList();
     }
 
-    private List<DeleteObjectsRequest.KeyVersion> getRequestKeysFrom(List<Voice> voices) {
-        return voices.stream()
+    private List<DeleteObjectsRequest.KeyVersion> getRequestKeysFrom(List<VoiceEntity> voiceEntities) {
+        return voiceEntities.stream()
                 .map(voice -> new DeleteObjectsRequest.KeyVersion(getObjectKeyFrom(voice)))
                 .toList();
     }
 
-    private String getObjectKeyFrom(Voice voice) {
-        return VOICE_KEY + voice.getStoredName();
+    private String getObjectKeyFrom(VoiceEntity voiceEntity) {
+        return VOICE_KEY + voiceEntity.getStoredName();
     }
 
 

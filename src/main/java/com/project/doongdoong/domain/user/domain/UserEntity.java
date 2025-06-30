@@ -16,7 +16,7 @@ import java.util.List;
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class User extends BaseEntity {
+public class UserEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id")
@@ -42,7 +42,7 @@ public class User extends BaseEntity {
     // 권한 추가
 
     @Builder
-    public User(String socialId, String nickname, String email, SocialType socialType) {
+    public UserEntity(String socialId, String nickname, String email, SocialType socialType) {
         this.socialId = socialId;
         this.nickname = nickname;
         this.email = email;

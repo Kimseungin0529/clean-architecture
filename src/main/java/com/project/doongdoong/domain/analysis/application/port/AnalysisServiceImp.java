@@ -9,16 +9,16 @@ import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
-import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
 import com.project.doongdoong.domain.question.application.port.in.QuestionProvidable;
+import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.domain.SocialIdentifier;
-import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.domain.voice.exception.VoiceNotFoundException;
-import com.project.doongdoong.domain.voice.domain.Voice;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
 import com.project.doongdoong.global.exception.servererror.ExternalApiCallException;
@@ -64,19 +64,19 @@ public class AnalysisServiceImp implements AnalysisService {
     @Transactional
     @Override
     public AnalysisCreateResponseDto createAnalysis(String uniqueValue) {
-        User user = findUserBy(uniqueValue);
-        List<Question> questions = questionProvider.createRandomQuestions();
+        UserEntity userEntity = findUserBy(uniqueValue);
+        List<QuestionEntity> questionEntities = questionProvider.createRandomQuestions();
 
-        AnalysisEntity analysisEntity = AnalysisEntity.of(user, questions);
+        AnalysisEntity analysisEntity = AnalysisEntity.of(userEntity, questionEntities);
 
-        Map<QuestionContent, Voice> voicesMap = generateVoicesMapFor(questions);
+        Map<QuestionContent, VoiceEntity> voicesMap = generateVoicesMapFor(questionEntities);
 
         analysisRepository.save(analysisEntity);
 
         List<String> accessUrls = new ArrayList<>();
         List<String> questionTexts = new ArrayList<>();
         List<Long> questionIds = new ArrayList<>();
-        linkAnalysisWith(analysisEntity, questions, voicesMap, questionTexts, accessUrls, questionIds);
+        linkAnalysisWith(analysisEntity, questionEntities, voicesMap, questionTexts, accessUrls, questionIds);
 
         return AnalysisCreateResponseDto.of(analysisEntity.getId(), questionIds, questionTexts, accessUrls);
     }
@@ -85,17 +85,17 @@ public class AnalysisServiceImp implements AnalysisService {
     public AnalysisDetailResponse getAnalysis(Long analysisId) {
         AnalysisEntity findAnalysisEntity = analysisRepository.searchAnalysisWithVoiceOfAnswer(analysisId).orElseThrow(AnalysisNotFoundException::new);
 
-        List<Question> questions = findAnalysisEntity.getQuestions();
-        List<QuestionContent> questionContents = extractQuestionContentsBy(questions);
+        List<QuestionEntity> questionEntities = findAnalysisEntity.getQuestions();
+        List<QuestionContent> questionContents = extractQuestionContentsBy(questionEntities);
 
         List<String> questionTexts = extractQuestionTextBy(questionContents);
-        List<Long> questionIds = extractQuestionIdBy(questions);
+        List<Long> questionIds = extractQuestionIdBy(questionEntities);
 
-        List<Voice> findVoices = voiceRepository.findVoiceAllByQuestionContentIn(questionContents);
-        Map<QuestionContent, String> voiceMap = mapVoiceToQuestionInformation(findVoices);
+        List<VoiceEntity> findVoiceEntities = voiceRepository.findVoiceAllByQuestionContentIn(questionContents);
+        Map<QuestionContent, String> voiceMap = mapVoiceToQuestionInformation(findVoiceEntities);
         List<String> questionVoiceAccessUrls = findUrlsByMatchingQuestionContentsWithVoice(questionContents, voiceMap);
 
-        List<String> answerContents = findAnswerContentsByMatchingQuestionWithAnswer(questions);
+        List<String> answerContents = findAnswerContentsByMatchingQuestionWithAnswer(questionEntities);
 
         return AnalysisDetailResponse.of(analysisId, findAnalysisEntity.getFeelingState(), findAnalysisEntity.getCreatedTime().format(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)),
                 questionTexts, questionIds, questionVoiceAccessUrls, answerContents);
@@ -103,10 +103,10 @@ public class AnalysisServiceImp implements AnalysisService {
 
     @Override
     public AnalysisListResponseDto getAnalysisList(String uniqueValue, int pageNumber) {
-        User user = findUserBy(uniqueValue);
+        UserEntity userEntity = findUserBy(uniqueValue);
 
         PageRequest pageable = PageRequest.of(pageNumber, ANALYSIS_PAGE_SIZE);
-        Page<AnalysisEntity> analysisPages = analysisRepository.findAllByUserOrderByCreatedTime(user, pageable);
+        Page<AnalysisEntity> analysisPages = analysisRepository.findAllByUserOrderByCreatedTime(userEntity, pageable);
 
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT);
 
@@ -117,17 +117,17 @@ public class AnalysisServiceImp implements AnalysisService {
     @Override
     public FeelingStateResponseListDto getAnalysisListGroupByDay(String uniqueValue) {
         SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
-        User user = userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
+        UserEntity userEntity = userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
                 .orElseThrow(UserNotFoundException::new);
 
 
-        Optional<AnalysisEntity> analysis = analysisRepository.findFirstByUserOrderByAnalyzeTimeDesc(user);
+        Optional<AnalysisEntity> analysis = analysisRepository.findFirstByUserOrderByAnalyzeTimeDesc(userEntity);
         List<FeelingStateResponseDto> result = null;
         if (analysis.isPresent()) {
             AnalysisEntity findAnalysisEntity = analysis.get();
             LocalDateTime endTime = findAnalysisEntity.getCreatedTime().plusDays(1).truncatedTo(ChronoUnit.DAYS);
             LocalDateTime startTime = endTime.minusDays(6).truncatedTo(ChronoUnit.DAYS);
-            result = analysisRepository.findAllByDateBetween(user, startTime.toLocalDate(), endTime.toLocalDate());
+            result = analysisRepository.findAllByDateBetween(userEntity, startTime.toLocalDate(), endTime.toLocalDate());
         }
 
         return FeelingStateResponseListDto.builder()
@@ -140,10 +140,10 @@ public class AnalysisServiceImp implements AnalysisService {
     @Override
     public FellingStateCreateResponse analyzeEmotion(Long analysisId, String uniqueValue) {
         // 사용자 찾기
-        User user = findUserWithAnalysisBy(uniqueValue);
+        UserEntity userEntity = findUserWithAnalysisBy(uniqueValue);
         // 오늘
-        if (checkToAnalyzeTodayFirstBy(user)) {
-            user.growUp();
+        if (checkToAnalyzeTodayFirstBy(userEntity)) {
+            userEntity.growUp();
         }
 
         AnalysisEntity findAnalysisEntity = analysisRepository.searchFullAnalysisBy(analysisId).orElseThrow(AnalysisNotFoundException::new);
@@ -155,9 +155,9 @@ public class AnalysisServiceImp implements AnalysisService {
             throw new AlreadyAnalyzedException();
         }
 
-        List<Voice> voices = getVoiceListFrom(findAnalysisEntity);
-        List<FellingStateCreateResponse> responseByText = webClientUtil.callAnalyzeEmotion(voices); // 2. 파일을 request 값으로 외부 lambda API 비동기 처리(동일한 외부 API 4번 호출)
-        List<FellingStateCreateResponse> responseByVoice = webClientUtil.callAnalyzeEmotionVoice(voices);
+        List<VoiceEntity> voiceEntities = getVoiceListFrom(findAnalysisEntity);
+        List<FellingStateCreateResponse> responseByText = webClientUtil.callAnalyzeEmotion(voiceEntities); // 2. 파일을 request 값으로 외부 lambda API 비동기 처리(동일한 외부 API 4번 호출)
+        List<FellingStateCreateResponse> responseByVoice = webClientUtil.callAnalyzeEmotionVoice(voiceEntities);
 
         List<AnswerEntity> answerEntities = getAnswersFrom(findAnalysisEntity);
         updateContentWithTranscribedTextBy(answerEntities, responseByText);
@@ -187,30 +187,30 @@ public class AnalysisServiceImp implements AnalysisService {
         analysisRepository.deleteAnalysis(analysisId);
     }
 
-    private void linkAnalysisWith(AnalysisEntity analysisEntity, List<Question> questions, Map<QuestionContent, Voice> voicesMap, List<String> questionTexts, List<String> accessUrls, List<Long> questionIds) {
-        questions.forEach(question -> {
+    private void linkAnalysisWith(AnalysisEntity analysisEntity, List<QuestionEntity> questionEntities, Map<QuestionContent, VoiceEntity> voicesMap, List<String> questionTexts, List<String> accessUrls, List<Long> questionIds) {
+        questionEntities.forEach(question -> {
             question.connectAnalysis(analysisEntity);
-            Voice voice = Optional.ofNullable(voicesMap.get(question.getQuestionContent()))
+            VoiceEntity voiceEntity = Optional.ofNullable(voicesMap.get(question.getQuestionContent()))
                     .orElseThrow(VoiceNotFoundException::new);
 
             questionTexts.add(question.getQuestionContent().getText());
             questionIds.add(question.getId());
-            accessUrls.add(voice.getAccessUrl());
+            accessUrls.add(voiceEntity.getAccessUrl());
 
         });
     }
 
-    private Map<QuestionContent, Voice> generateVoicesMapFor(List<Question> questions) {
-        List<QuestionContent> questionContents = questions.stream()
-                .map(Question::getQuestionContent)
+    private Map<QuestionContent, VoiceEntity> generateVoicesMapFor(List<QuestionEntity> questionEntities) {
+        List<QuestionContent> questionContents = questionEntities.stream()
+                .map(QuestionEntity::getQuestionContent)
                 .collect(Collectors.toList());
 
         return voiceRepository.findVoiceAllByQuestionContentIn(questionContents)
                 .stream()
-                .collect(Collectors.toMap(Voice::getQuestionContent, voice -> voice));
+                .collect(Collectors.toMap(VoiceEntity::getQuestionContent, voice -> voice));
     }
 
-    private User findUserBy(String uniqueValue) {
+    private UserEntity findUserBy(String uniqueValue) {
         SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
         return userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
                 .orElseThrow(UserNotFoundException::new);
@@ -221,10 +221,10 @@ public class AnalysisServiceImp implements AnalysisService {
         return uniqueValue.split("_");
     }
 
-    private List<String> findAnswerContentsByMatchingQuestionWithAnswer(List<Question> questions) {
-        return questions.stream()
+    private List<String> findAnswerContentsByMatchingQuestionWithAnswer(List<QuestionEntity> questionEntities) {
+        return questionEntities.stream()
                 .map(question ->
-                        Optional.ofNullable(question.getAnswerEntity())
+                        Optional.ofNullable(question.getAnswer())
                                 .map(AnswerEntity::getContent)
                                 .orElse(DEFAULT_NO_ANSWER_MESSAGE))
                 .collect(Collectors.toList());
@@ -236,16 +236,16 @@ public class AnalysisServiceImp implements AnalysisService {
                 .collect(Collectors.toList());
     }
 
-    private List<Long> extractQuestionIdBy(List<Question> questions) {
-        return questions.stream()
-                .map(Question::getId).collect(Collectors.toList());
+    private List<Long> extractQuestionIdBy(List<QuestionEntity> questionEntities) {
+        return questionEntities.stream()
+                .map(QuestionEntity::getId).collect(Collectors.toList());
     }
 
-    private Map<QuestionContent, String> mapVoiceToQuestionInformation(List<Voice> findVoices) {
-        return findVoices.stream()
+    private Map<QuestionContent, String> mapVoiceToQuestionInformation(List<VoiceEntity> findVoiceEntities) {
+        return findVoiceEntities.stream()
                 .collect(Collectors.toMap(
-                        Voice::getQuestionContent,
-                        Voice::getAccessUrl,
+                        VoiceEntity::getQuestionContent,
+                        VoiceEntity::getAccessUrl,
                         (existing, replacement) -> existing
                 ));
     }
@@ -256,15 +256,15 @@ public class AnalysisServiceImp implements AnalysisService {
                 .collect(Collectors.toList());
     }
 
-    private List<QuestionContent> extractQuestionContentsBy(List<Question> questions) {
-        return questions.stream()
-                .map(Question::getQuestionContent)
+    private List<QuestionContent> extractQuestionContentsBy(List<QuestionEntity> questionEntities) {
+        return questionEntities.stream()
+                .map(QuestionEntity::getQuestionContent)
                 .collect(Collectors.toList());
     }
 
 
     private List<AnswerEntity> getAnswersFrom(AnalysisEntity findAnalysisEntity) {
-        return findAnalysisEntity.getAnswerEntities();
+        return findAnalysisEntity.getAnswers();
     }
 
     private void updateContentWithTranscribedTextBy(List<AnswerEntity> answerEntities, List<FellingStateCreateResponse> responseByText) {
@@ -281,7 +281,7 @@ public class AnalysisServiceImp implements AnalysisService {
     }
 
 
-    private User findUserWithAnalysisBy(String uniqueValue) {
+    private UserEntity findUserWithAnalysisBy(String uniqueValue) {
         SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
         return userRepository.findUserWithAnalysisBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
                 .orElseThrow(UserNotFoundException::new);
@@ -294,16 +294,16 @@ public class AnalysisServiceImp implements AnalysisService {
                 .orElseThrow(ExternalApiCallException::new);
     }
 
-    private boolean checkToAnalyzeTodayFirstBy(User user) {
-        List<AnalysisEntity> list = user.getAnalysisList().stream()
+    private boolean checkToAnalyzeTodayFirstBy(UserEntity userEntity) {
+        List<AnalysisEntity> list = userEntity.getAnalysisList().stream()
                 .filter(analysis -> analysis.equalsAnalyzeTimeTo(LocalDate.now()))
                 .toList();
         return list.isEmpty();
     }
 
 
-    private List<Voice> getVoiceListFrom(AnalysisEntity findAnalysisEntity) {
-        return findAnalysisEntity.getAnswerEntities().stream()
+    private List<VoiceEntity> getVoiceListFrom(AnalysisEntity findAnalysisEntity) {
+        return findAnalysisEntity.getAnswers().stream()
                 .map(AnswerEntity::getVoice).toList();
     }
 

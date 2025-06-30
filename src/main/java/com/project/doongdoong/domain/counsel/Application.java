@@ -1,3 +1,4 @@
+/*
 package com.project.doongdoong.domain.counsel;
 
 import lombok.RequiredArgsConstructor;
@@ -16,3 +17,4 @@ public class Application implements CommandLineRunner {
         redisRebuilder.rebuildRedisFromRdb();
     }
 }
+*/

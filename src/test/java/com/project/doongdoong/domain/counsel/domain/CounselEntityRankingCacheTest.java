@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.counsel.model;
+package com.project.doongdoong.domain.counsel.domain;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -7,7 +7,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class CounselRankingCacheTest {
+class CounselEntityRankingCacheTest {
 
     @DisplayName("날짜와 상담 유형에 대한 상담 키를 발급합니다.")
     @Test

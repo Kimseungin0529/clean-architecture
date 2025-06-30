@@ -13,8 +13,9 @@ import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
+@Table(name = "question")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Question extends BaseEntity {
+public class QuestionEntity extends BaseEntity {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
@@ -32,14 +33,14 @@ public class Question extends BaseEntity {
 
     @OneToOne(fetch = LAZY, cascade = CascadeType.REMOVE, orphanRemoval = true)
     @JoinColumn(name = "answer_id")
-    private AnswerEntity answerEntity;
+    private AnswerEntity answer;
 
-    private Question(QuestionContent questionContent) {
+    private QuestionEntity(QuestionContent questionContent) {
         this.questionContent = questionContent;
     }
 
-    public static Question of(QuestionContent questionContent) {
-        return new Question(questionContent);
+    public static QuestionEntity of(QuestionContent questionContent) {
+        return new QuestionEntity(questionContent);
     }
 
     public void connectAnalysis(AnalysisEntity analysisEntity) {
@@ -50,11 +51,11 @@ public class Question extends BaseEntity {
     }
 
     public void connectAnswer(AnswerEntity answerEntity) {
-        this.answerEntity = answerEntity;
+        this.answer = answerEntity;
     }
 
 
     public boolean hasAnswer() {
-        return answerEntity != null;
+        return answer != null;
     }
 }

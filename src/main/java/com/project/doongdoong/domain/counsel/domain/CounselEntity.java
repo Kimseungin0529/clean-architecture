@@ -1,7 +1,7 @@
-package com.project.doongdoong.domain.counsel.model;
+package com.project.doongdoong.domain.counsel.domain;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -12,8 +12,9 @@ import lombok.NoArgsConstructor;
 
 @Entity
 @Getter
+@Table(name = "counsel")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Counsel extends BaseEntity {
+public class CounselEntity extends BaseEntity {
 
     @Id
     @Column(name = "counsel_id")
@@ -38,13 +39,13 @@ public class Counsel extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", updatable = false)
-    private User user;
+    private UserEntity user;
 
     @Builder
-    public Counsel(String question, CounselType counselType, User user) {
+    public CounselEntity(String question, CounselType counselType, UserEntity userEntity) {
         this.question = question;
         this.counselType = counselType;
-        this.user = user;
+        this.user = userEntity;
 
     }
 

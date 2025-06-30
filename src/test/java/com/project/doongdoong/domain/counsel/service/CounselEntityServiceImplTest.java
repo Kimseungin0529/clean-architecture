@@ -11,11 +11,11 @@ import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
 import com.project.doongdoong.domain.counsel.exception.CounselNotExistPageException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
-import com.project.doongdoong.domain.counsel.model.Counsel;
-import com.project.doongdoong.domain.counsel.model.CounselType;
+import com.project.doongdoong.domain.counsel.domain.CounselEntity;
+import com.project.doongdoong.domain.counsel.domain.CounselType;
 import com.project.doongdoong.domain.counsel.adapter.out.CounselRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
-import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.global.dto.response.CounselAiResponse;
 import com.project.doongdoong.module.IntegrationSupportTest;
@@ -35,7 +35,7 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 
-class CounselServiceImplTest extends IntegrationSupportTest {
+class CounselEntityServiceImplTest extends IntegrationSupportTest {
     @Autowired
     CounselServiceImpl counselService;
     @Autowired
@@ -50,8 +50,8 @@ class CounselServiceImplTest extends IntegrationSupportTest {
     void consult() {
         //given
         String socialId = "123456";
-        User user = createUser(socialId, SocialType.APPLE);
-        User savedUser = userRepository.save(user);
+        UserEntity userEntity = createUser(socialId, SocialType.APPLE);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
         CounselCreateRequest request = new CounselCreateRequest(
                 "취업진로",
@@ -61,7 +61,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                 "개발자가 되기 위해서는 꾸준한 학습과 프로젝트 경험이 필요합니다.",
                 "http://example.com/image.jpg"
         );
-        String uniqueValue = savedUser.getSocialId() + "_" + savedUser.getSocialType().getDescription();
+        String uniqueValue = savedUserEntity.getSocialId() + "_" + savedUserEntity.getSocialType().getDescription();
 
         when(webClientUtil.callConsult(any(HashMap.class)))
                 .thenReturn(mockResponse);
@@ -80,13 +80,13 @@ class CounselServiceImplTest extends IntegrationSupportTest {
     void consultWithAnalysis() {
         //given
         String socialId = "123456";
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .socialId(socialId)
                 .socialType(SocialType.APPLE)
                 .build();
-        User savedUser = userRepository.save(user);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
-        AnalysisEntity analysisEntity = createAnalysis(savedUser);
+        AnalysisEntity analysisEntity = createAnalysis(savedUserEntity);
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
         AnswerEntity answerEntity1 = createAnswer();
@@ -107,7 +107,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                 "개발자가 되기 위해서는 꾸준한 학습과 프로젝트 경험이 필요합니다.",
                 "http://example.com/image.jpg"
         );
-        String uniqueValue = savedUser.getSocialId() + "_" + savedUser.getSocialType().getDescription();
+        String uniqueValue = savedUserEntity.getSocialId() + "_" + savedUserEntity.getSocialType().getDescription();
 
         when(webClientUtil.callConsult(any(HashMap.class)))
                 .thenReturn(mockResponse);
@@ -128,17 +128,17 @@ class CounselServiceImplTest extends IntegrationSupportTest {
     void exceptionWhenAnalysisDoesNotBelongToUser() {
         //given
         String socialId = "123456";
-        User user = User.builder()
+        UserEntity userEntity = UserEntity.builder()
                 .socialId(socialId)
                 .socialType(SocialType.APPLE)
                 .build();
         String socialId2 = "455678";
-        User otherUser = createUser(socialId2, SocialType.APPLE);
-        User savedUser = userRepository.save(user);
-        User savedOtherUser = userRepository.save(otherUser);
+        UserEntity otherUserEntity = createUser(socialId2, SocialType.APPLE);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
+        UserEntity savedOtherUserEntity = userRepository.save(otherUserEntity);
 
         AnalysisEntity analysisEntity = AnalysisEntity.builder()
-                .user(savedUser)
+                .userEntity(savedUserEntity)
                 .build();
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
         AnswerEntity answerEntity1 = createAnswer();
@@ -159,7 +159,7 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                 "개발자가 되기 위해서는 꾸준한 학습과 프로젝트 경험이 필요합니다.",
                 "http://example.com/image.jpg"
         );
-        String otherUniqueValue = savedOtherUser.getSocialId() + "_" + savedOtherUser.getSocialType().getDescription();
+        String otherUniqueValue = savedOtherUserEntity.getSocialId() + "_" + savedOtherUserEntity.getSocialType().getDescription();
 
         when(webClientUtil.callConsult(any(HashMap.class)))
                 .thenReturn(mockResponse);
@@ -179,33 +179,33 @@ class CounselServiceImplTest extends IntegrationSupportTest {
         // given
         String socialId1 = "123456";
         String socialId2 = "542156";
-        User user1 = createUser(socialId1, SocialType.APPLE);
-        User user2 = createUser(socialId2, SocialType.APPLE);
+        UserEntity userEntity1 = createUser(socialId1, SocialType.APPLE);
+        UserEntity userEntity2 = createUser(socialId2, SocialType.APPLE);
 
-        Counsel counsel = createCounsel(user1, "상담 질문 내용", CounselType.LOVE);
-        userRepository.saveAll(List.of(user1, user2));
-        Counsel savedCounsel = counselRepository.save(counsel);
+        CounselEntity counselEntity = createCounsel(userEntity1, "상담 질문 내용", CounselType.LOVE);
+        userRepository.saveAll(List.of(userEntity1, userEntity2));
+        CounselEntity savedCounselEntity = counselRepository.save(counselEntity);
 
         // when & then
         return List.of(
                 DynamicTest.dynamicTest("상담 내용을 조회합니다.", () -> {
                             //given
-                            String uniqueValue = user1.getSocialId() + "_" + user1.getSocialType().getDescription();
+                            String uniqueValue = userEntity1.getSocialId() + "_" + userEntity1.getSocialType().getDescription();
                             //when
-                            CounselDetailResponse result = counselService.findCounselContent(uniqueValue, savedCounsel.getId());
+                            CounselDetailResponse result = counselService.findCounselContent(uniqueValue, savedCounselEntity.getId());
                             //then
                             assertThat(result)
                                     .extracting("counselId", "question", "answer", "counselType")
-                                    .containsExactly(savedCounsel.getId(), "상담 질문 내용", savedCounsel.getAnswer(), CounselType.LOVE.getDescription());
+                                    .containsExactly(savedCounselEntity.getId(), "상담 질문 내용", savedCounselEntity.getAnswer(), CounselType.LOVE.getDescription());
                         }
 
                 ),
                 DynamicTest.dynamicTest("남의 상담 내용을 조회할 수 없습니다.", () -> {
                     // given
-                    String otherUniqueValue = user2.getSocialId() + "_" + user2.getSocialType().getDescription();
+                    String otherUniqueValue = userEntity2.getSocialId() + "_" + userEntity2.getSocialType().getDescription();
                     // when & then
                     assertThatThrownBy(() ->
-                            counselService.findCounselContent(otherUniqueValue, savedCounsel.getId()))
+                            counselService.findCounselContent(otherUniqueValue, savedCounselEntity.getId()))
                             .isInstanceOf(UnAuthorizedForCounselException.class)
                             .hasMessage("다른 사용자의 상담입니다.");
 
@@ -220,23 +220,23 @@ class CounselServiceImplTest extends IntegrationSupportTest {
         // given
         String socialId = "123456";
         SocialType socialType = SocialType.APPLE;
-        User user = createUser(socialId, socialType);
-        userRepository.save(user);
+        UserEntity userEntity = createUser(socialId, socialType);
+        userRepository.save(userEntity);
 
-        Counsel counsel1 = createCounsel(user, "상담 질문 내용1", CounselType.LOVE);
-        Counsel counsel2 = createCounsel(user, "상담 질문 내용2", CounselType.JOB);
-        Counsel counsel3 = createCounsel(user, "상담 질문 내용3", CounselType.LOVE);
-        Counsel counsel4 = createCounsel(user, "상담 질문 내용4", CounselType.LOVE);
-        Counsel counsel5 = createCounsel(user, "상담 질문 내용5", CounselType.MENTAL_HEALTH);
-        Counsel counsel6 = createCounsel(user, "상담 질문 내용6", CounselType.LOVE);
-        Counsel counsel7 = createCounsel(user, "상담 질문 내용7", CounselType.LOVE);
-        Counsel counsel8 = createCounsel(user, "상담 질문 내용8", CounselType.LOVE);
-        Counsel counsel9 = createCounsel(user, "상담 질문 내용9", CounselType.LOVE);
-        Counsel counsel10 = createCounsel(user, "상담 질문 내용10", CounselType.LOVE);
-        Counsel counsel11 = createCounsel(user, "상담 질문 내용12", CounselType.LOVE);
+        CounselEntity counselEntity1 = createCounsel(userEntity, "상담 질문 내용1", CounselType.LOVE);
+        CounselEntity counselEntity2 = createCounsel(userEntity, "상담 질문 내용2", CounselType.JOB);
+        CounselEntity counselEntity3 = createCounsel(userEntity, "상담 질문 내용3", CounselType.LOVE);
+        CounselEntity counselEntity4 = createCounsel(userEntity, "상담 질문 내용4", CounselType.LOVE);
+        CounselEntity counselEntity5 = createCounsel(userEntity, "상담 질문 내용5", CounselType.MENTAL_HEALTH);
+        CounselEntity counselEntity6 = createCounsel(userEntity, "상담 질문 내용6", CounselType.LOVE);
+        CounselEntity counselEntity7 = createCounsel(userEntity, "상담 질문 내용7", CounselType.LOVE);
+        CounselEntity counselEntity8 = createCounsel(userEntity, "상담 질문 내용8", CounselType.LOVE);
+        CounselEntity counselEntity9 = createCounsel(userEntity, "상담 질문 내용9", CounselType.LOVE);
+        CounselEntity counselEntity10 = createCounsel(userEntity, "상담 질문 내용10", CounselType.LOVE);
+        CounselEntity counselEntity11 = createCounsel(userEntity, "상담 질문 내용12", CounselType.LOVE);
 
-        counselRepository.saveAll(List.of(counsel1, counsel2, counsel3, counsel4, counsel5
-                , counsel6, counsel7, counsel8, counsel9, counsel10, counsel11));
+        counselRepository.saveAll(List.of(counselEntity1, counselEntity2, counselEntity3, counselEntity4, counselEntity5
+                , counselEntity6, counselEntity7, counselEntity8, counselEntity9, counselEntity10, counselEntity11));
 
         String uniqueValue = socialId + "_" + socialType;
         DateTimeFormatter datePattern = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -256,16 +256,16 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                             .hasSize(10)
                             .extracting("date", "counselId", "isAnalysisUsed", "counselType")
                             .containsExactly(
-                                    tuple(getDateFormatBy(counsel1, datePattern), counsel1.getId(), false, counsel1.getCounselType().getDescription()),
-                                    tuple(getDateFormatBy(counsel2, datePattern), counsel2.getId(), false, counsel2.getCounselType().getDescription()),
-                                    tuple(getDateFormatBy(counsel3, datePattern), counsel3.getId(), false, counsel3.getCounselType().getDescription()),
-                                    tuple(getDateFormatBy(counsel4, datePattern), counsel4.getId(), false, counsel4.getCounselType().getDescription()),
-                                    tuple(getDateFormatBy(counsel5, datePattern), counsel5.getId(), false, counsel5.getCounselType().getDescription()),
-                                    tuple(getDateFormatBy(counsel6, datePattern), counsel6.getId(), false, counsel6.getCounselType().getDescription()),
-                                    tuple(getDateFormatBy(counsel7, datePattern), counsel7.getId(), false, counsel7.getCounselType().getDescription()),
-                                    tuple(getDateFormatBy(counsel8, datePattern), counsel8.getId(), false, counsel8.getCounselType().getDescription()),
-                                    tuple(getDateFormatBy(counsel9, datePattern), counsel9.getId(), false, counsel9.getCounselType().getDescription()),
-                                    tuple(getDateFormatBy(counsel10, datePattern), counsel10.getId(), false, counsel10.getCounselType().getDescription())
+                                    tuple(getDateFormatBy(counselEntity1, datePattern), counselEntity1.getId(), false, counselEntity1.getCounselType().getDescription()),
+                                    tuple(getDateFormatBy(counselEntity2, datePattern), counselEntity2.getId(), false, counselEntity2.getCounselType().getDescription()),
+                                    tuple(getDateFormatBy(counselEntity3, datePattern), counselEntity3.getId(), false, counselEntity3.getCounselType().getDescription()),
+                                    tuple(getDateFormatBy(counselEntity4, datePattern), counselEntity4.getId(), false, counselEntity4.getCounselType().getDescription()),
+                                    tuple(getDateFormatBy(counselEntity5, datePattern), counselEntity5.getId(), false, counselEntity5.getCounselType().getDescription()),
+                                    tuple(getDateFormatBy(counselEntity6, datePattern), counselEntity6.getId(), false, counselEntity6.getCounselType().getDescription()),
+                                    tuple(getDateFormatBy(counselEntity7, datePattern), counselEntity7.getId(), false, counselEntity7.getCounselType().getDescription()),
+                                    tuple(getDateFormatBy(counselEntity8, datePattern), counselEntity8.getId(), false, counselEntity8.getCounselType().getDescription()),
+                                    tuple(getDateFormatBy(counselEntity9, datePattern), counselEntity9.getId(), false, counselEntity9.getCounselType().getDescription()),
+                                    tuple(getDateFormatBy(counselEntity10, datePattern), counselEntity10.getId(), false, counselEntity10.getCounselType().getDescription())
                             );
                 }),
                 DynamicTest.dynamicTest("존재하지 않는 페이지에 접근할 수 없습니다.", () -> {
@@ -280,8 +280,8 @@ class CounselServiceImplTest extends IntegrationSupportTest {
         );
     }
 
-    private String getDateFormatBy(Counsel counsel, DateTimeFormatter datePattern) {
-        return counsel.getCreatedTime().format(datePattern);
+    private String getDateFormatBy(CounselEntity counselEntity, DateTimeFormatter datePattern) {
+        return counselEntity.getCreatedTime().format(datePattern);
     }
 
 
@@ -290,24 +290,24 @@ class CounselServiceImplTest extends IntegrationSupportTest {
                 .build();
     }
 
-    private AnalysisEntity createAnalysis(User savedUser) {
+    private AnalysisEntity createAnalysis(UserEntity savedUserEntity) {
         return AnalysisEntity.builder()
-                .user(savedUser)
+                .userEntity(savedUserEntity)
                 .build();
     }
 
-    private User createUser(String socialId, SocialType socialType) {
-        return User.builder()
+    private UserEntity createUser(String socialId, SocialType socialType) {
+        return UserEntity.builder()
                 .socialId(socialId)
                 .socialType(socialType)
                 .build();
     }
 
-    private Counsel createCounsel(User user, String question, CounselType counselType) {
-        return Counsel.builder()
+    private CounselEntity createCounsel(UserEntity userEntity, String question, CounselType counselType) {
+        return CounselEntity.builder()
                 .counselType(counselType)
                 .question(question)
-                .user(user)
+                .userEntity(userEntity)
                 .build();
     }
 

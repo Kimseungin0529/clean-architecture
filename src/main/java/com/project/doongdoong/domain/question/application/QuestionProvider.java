@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.question.application;
 
 import com.project.doongdoong.domain.question.application.port.in.QuestionProvidable;
-import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.question.domain.Questions;
 import lombok.RequiredArgsConstructor;
@@ -19,23 +19,23 @@ public class QuestionProvider implements QuestionProvidable {
 
 
     @Override
-    public Question createFixedQuestion() {
+    public QuestionEntity createFixedQuestion() {
         QuestionContent fixedQuestionContent = QuestionContent.provideRandomFixedQuestionContent();
 
-        return Question.of(fixedQuestionContent);
+        return QuestionEntity.of(fixedQuestionContent);
 
     }
 
     @Override
-    public Question createUnFixedQuestion() {
+    public QuestionEntity createUnFixedQuestion() {
         QuestionContent unQuestionContent = QuestionContent.provideRandomUnFixedQuestionContent();
 
-        return Question.of(unQuestionContent);
+        return QuestionEntity.of(unQuestionContent);
     }
 
 
     @Override
-    public List<Question> createRandomQuestions() {
+    public List<QuestionEntity> createRandomQuestions() {
         Questions fixedQuestions = getQuestions(QuestionContent.getFixedQuestionContents(), FIXED_QUESTION_SIZE);
         Questions unFixedQuestions = getQuestions(QuestionContent.getUnFixedQuestionContents(), UNFIXED_QUESTION_SIZE);
 
@@ -43,16 +43,16 @@ public class QuestionProvider implements QuestionProvidable {
     }
 
     private Questions getQuestions(List<QuestionContent> questionContents, int size) {
-        List<Question> questionList = getQuestionListFrom(questionContents);
+        List<QuestionEntity> questionEntityList = getQuestionListFrom(questionContents);
 
-        Questions questionsCandidate = Questions.from(questionList);
+        Questions questionsCandidate = Questions.from(questionEntityList);
 
         return questionsCandidate.extractRandomQuestions(size);
     }
 
-    private List<Question> getQuestionListFrom(List<QuestionContent> questionContents) {
+    private List<QuestionEntity> getQuestionListFrom(List<QuestionContent> questionContents) {
         return questionContents.stream()
-                .map(Question::of)
+                .map(QuestionEntity::of)
                 .collect(Collectors.toList());
     }
 

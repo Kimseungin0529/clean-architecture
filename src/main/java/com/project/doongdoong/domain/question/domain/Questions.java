@@ -8,14 +8,14 @@ import java.util.List;
 
 @Getter
 public class Questions {
-    private final List<Question> questions;
+    private final List<QuestionEntity> questionEntities;
 
-    private Questions(List<Question> questions) {
-        this.questions = questions;
+    private Questions(List<QuestionEntity> questionEntities) {
+        this.questionEntities = questionEntities;
     }
 
-    public static Questions from(List<Question> questions) {
-        return new Questions(questions);
+    public static Questions from(List<QuestionEntity> questionEntities) {
+        return new Questions(questionEntities);
     }
 
 
@@ -24,11 +24,11 @@ public class Questions {
             throw new IllegalArgumentException("크키는 최소 1 이상입니다.");
         }
 
-        ArrayList<Question> questionList = new ArrayList<>(questions);
-        Collections.shuffle(questionList);
-        List<Question> randomQuestions = questionList.subList(0, size);
+        ArrayList<QuestionEntity> questionEntityList = new ArrayList<>(questionEntities);
+        Collections.shuffle(questionEntityList);
+        List<QuestionEntity> randomQuestionEntities = questionEntityList.subList(0, size);
 
-        return from(randomQuestions);
+        return from(randomQuestionEntities);
     }
 
 
@@ -36,11 +36,11 @@ public class Questions {
         return size <= 0;
     }
 
-    public List<Question> addQuestions(Questions newQuestions) {
-        ArrayList<Question> mergedQuestions = new ArrayList<>(questions);
-        mergedQuestions.addAll(newQuestions.questions);
+    public List<QuestionEntity> addQuestions(Questions newQuestions) {
+        ArrayList<QuestionEntity> mergedQuestionEntities = new ArrayList<>(questionEntities);
+        mergedQuestionEntities.addAll(newQuestions.questionEntities);
 
-        return mergedQuestions;
+        return mergedQuestionEntities;
     }
 
 }

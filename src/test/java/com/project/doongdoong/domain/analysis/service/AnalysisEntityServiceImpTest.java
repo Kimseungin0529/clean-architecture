@@ -5,18 +5,18 @@ import com.project.doongdoong.domain.analysis.application.port.in.AnalysisServic
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException;
+import com.project.doongdoong.domain.question.domain.QuestionEntity;
+import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.answer.application.port.out.AnswerJpaRepository;
-import com.project.doongdoong.domain.question.domain.Question;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.domain.SocialType;
-import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
-import com.project.doongdoong.domain.voice.domain.Voice;
+import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -56,17 +56,17 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
     Collection<DynamicTest> createAnalysis(){
         //given
         for(QuestionContent questionContent : QuestionContent.values()){
-            Voice voice = Voice.initVoiceContentBuilder()
+            VoiceEntity voiceEntity = VoiceEntity.initVoiceContentBuilder()
                     .originName(questionContent.getText() +"_voice.mp3")
                     .questionContent(questionContent)
                     .build();
-            voice.changeAccessUrl("임의의 접근 url 주소");
-            voiceRepository.save(voice);
+            voiceEntity.changeAccessUrl("임의의 접근 url 주소");
+            voiceRepository.save(voiceEntity);
         }
 
-        User user1 = createUser("socialId", SocialType.APPLE);
-        User savedUser = userRepository.save(user1);
-        String uniqueValue1 = savedUser.getSocialId() + "_" + savedUser.getSocialType().getDescription();
+        UserEntity userEntity1 = createUser("socialId", SocialType.APPLE);
+        UserEntity savedUserEntity = userRepository.save(userEntity1);
+        String uniqueValue1 = savedUserEntity.getSocialId() + "_" + savedUserEntity.getSocialType().getDescription();
 
         int analysisRelatedSize = 4;
         List<String> allQuestionTexts = Arrays.stream(QuestionContent.values())
@@ -89,8 +89,8 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
                 }),
                 DynamicTest.dynamicTest("존재하지 않는 사용자 정보로는 분석 관련 정보에 접근할 수 없습니다.", () -> {
                     //given
-                    User user2 = createUser("notFoundSocialId", SocialType.GOOGLE);
-                    String uniqueValue2 = user2.getSocialId() + "_" + user2.getSocialType();
+                    UserEntity userEntity2 = createUser("notFoundSocialId", SocialType.GOOGLE);
+                    String uniqueValue2 = userEntity2.getSocialId() + "_" + userEntity2.getSocialType();
                     //when & then
                     assertThatThrownBy(()->analysisService.createAnalysis(uniqueValue2))
                             .isInstanceOf(UserNotFoundException.class)
@@ -105,12 +105,12 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
     void getAnalysis(){
         //given
         for(QuestionContent questionContent : QuestionContent.values()){ // initProvider 대체 -> TEST용
-            Voice voice = Voice.initVoiceContentBuilder()
+            VoiceEntity voiceEntity = VoiceEntity.initVoiceContentBuilder()
                     .originName(questionContent.getText() +"_voice.mp3")
                     .questionContent(questionContent)
                     .build();
-            voice.changeAccessUrl("임의의 접근 url 주소");
-            voiceRepository.save(voice);
+            voiceEntity.changeAccessUrl("임의의 접근 url 주소");
+            voiceRepository.save(voiceEntity);
         }
 
         AnswerEntity answerEntity1 = createAnswer("답변1보이스를 STT로 변경한 텍스트");
@@ -120,20 +120,20 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         List<AnswerEntity> answerEntities = List.of(answerEntity1, answerEntity2, answerEntity3, answerEntity4);
         answerJpaRepository.saveAll(answerEntities);
 
-        User user = createUser("socialId", SocialType.APPLE);
-        Question question1 = createQuestion(QuestionContent.FIXED_QUESTION1);
-        Question question2 = createQuestion(QuestionContent.FIXED_QUESTION2);
-        Question question3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
-        Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
-        List<Question> questions = List.of(question1, question2, question3, question4);
-        AnalysisEntity analysisEntity = createAnalysis(user, questions);
+        UserEntity userEntity = createUser("socialId", SocialType.APPLE);
+        QuestionEntity questionEntity1 = createQuestion(QuestionContent.FIXED_QUESTION1);
+        QuestionEntity questionEntity2 = createQuestion(QuestionContent.FIXED_QUESTION2);
+        QuestionEntity questionEntity3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
+        QuestionEntity questionEntity4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
+        List<QuestionEntity> questionEntities = List.of(questionEntity1, questionEntity2, questionEntity3, questionEntity4);
+        AnalysisEntity analysisEntity = createAnalysis(userEntity, questionEntities);
 
-        question1.connectAnswer(answerEntity1);
-        question2.connectAnswer(answerEntity2);
-        question3.connectAnswer(answerEntity3);
-        question4.connectAnswer(answerEntity4);
+        questionEntity1.connectAnswer(answerEntity1);
+        questionEntity2.connectAnswer(answerEntity2);
+        questionEntity3.connectAnswer(answerEntity3);
+        questionEntity4.connectAnswer(answerEntity4);
 
-        userRepository.save(user);
+        userRepository.save(userEntity);
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
         LocalDate analyzeTime = now();
@@ -157,7 +157,7 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
                 .containsExactly(
                         analysisEntity.getId(),
                         feelingState,
-                        questions.stream()
+                        questionEntities.stream()
                                 .map(question -> question.getQuestionContent().getText())
                                 .collect(Collectors.toList()),
                         answerEntities.stream()
@@ -171,12 +171,12 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
     void getAnalysis_AnalysisNotFoundException(){
         //given
         for(QuestionContent questionContent : QuestionContent.values()){ // initProvider 대체 -> TEST용
-            Voice voice = Voice.initVoiceContentBuilder()
+            VoiceEntity voiceEntity = VoiceEntity.initVoiceContentBuilder()
                     .originName(questionContent.getText() +"_voice.mp3")
                     .questionContent(questionContent)
                     .build();
-            voice.changeAccessUrl("임의의 접근 url 주소");
-            voiceRepository.save(voice);
+            voiceEntity.changeAccessUrl("임의의 접근 url 주소");
+            voiceRepository.save(voiceEntity);
         }
         AnswerEntity answerEntity1 = createAnswer("답변1보이스를 STT로 변경한 텍스트");
         AnswerEntity answerEntity2 = createAnswer("답변2보이스를 STT로 변경한 텍스트");
@@ -185,19 +185,19 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         List<AnswerEntity> answerEntities = List.of(answerEntity1, answerEntity2, answerEntity3, answerEntity4);
         answerJpaRepository.saveAll(answerEntities);
 
-        Question question1 = createQuestion(QuestionContent.FIXED_QUESTION1);
-        Question question2 = createQuestion(QuestionContent.FIXED_QUESTION2);
-        Question question3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
-        Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
-        List<Question> questions = List.of(question1, question2, question3, question4);
+        QuestionEntity questionEntity1 = createQuestion(QuestionContent.FIXED_QUESTION1);
+        QuestionEntity questionEntity2 = createQuestion(QuestionContent.FIXED_QUESTION2);
+        QuestionEntity questionEntity3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
+        QuestionEntity questionEntity4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
+        List<QuestionEntity> questionEntities = List.of(questionEntity1, questionEntity2, questionEntity3, questionEntity4);
 
         String socialId = "socialId";
         SocialType socialType =SocialType.APPLE;
-        User user = createUser(socialId, socialType);
-        User savedUser = userRepository.save(user);
+        UserEntity userEntity = createUser(socialId, socialType);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
 
-        AnalysisEntity analysisEntity = createAnalysis(savedUser, questions);
+        AnalysisEntity analysisEntity = createAnalysis(savedUserEntity, questionEntities);
 
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
         Long analysisId = savedAnalysisEntity.getId();
@@ -216,25 +216,25 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         //given
         String socialId = "socialId";
         SocialType socialType = SocialType.APPLE;
-        User user = createUser(socialId, socialType);
-        User savedUser = userRepository.save(user);
+        UserEntity userEntity = createUser(socialId, socialType);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
 
-        Question question1 = createQuestion(QuestionContent.FIXED_QUESTION1);
-        Question question2 = createQuestion(QuestionContent.FIXED_QUESTION2);
-        Question question3 = createQuestion(QuestionContent.FIXED_QUESTION3);
-        Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
-        Question question5 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
-        Question question6 = createQuestion(QuestionContent.UNFIXED_QUESTION4);
-        List<Question> questions1 = List.of(question1, question2, question4, question5);
-        List<Question> questions2 = List.of(question2, question3, question5, question6);
+        QuestionEntity questionEntity1 = createQuestion(QuestionContent.FIXED_QUESTION1);
+        QuestionEntity questionEntity2 = createQuestion(QuestionContent.FIXED_QUESTION2);
+        QuestionEntity questionEntity3 = createQuestion(QuestionContent.FIXED_QUESTION3);
+        QuestionEntity questionEntity4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
+        QuestionEntity questionEntity5 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
+        QuestionEntity questionEntity6 = createQuestion(QuestionContent.UNFIXED_QUESTION4);
+        List<QuestionEntity> questions1 = List.of(questionEntity1, questionEntity2, questionEntity4, questionEntity5);
+        List<QuestionEntity> questions2 = List.of(questionEntity2, questionEntity3, questionEntity5, questionEntity6);
 
-        AnalysisEntity analysisEntity1 = createAnalysis(savedUser, questions1);
-        AnalysisEntity analysisEntity2 = createAnalysis(savedUser, questions1);
-        AnalysisEntity analysisEntity3 = createAnalysis(savedUser, questions1);
-        AnalysisEntity analysisEntity4 = createAnalysis(savedUser, questions2);
-        AnalysisEntity analysisEntity5 = createAnalysis(savedUser, questions2);
-        AnalysisEntity analysisEntity6 = createAnalysis(savedUser, questions2);
-        AnalysisEntity analysisEntity7 = createAnalysis(savedUser, questions2);
+        AnalysisEntity analysisEntity1 = createAnalysis(savedUserEntity, questions1);
+        AnalysisEntity analysisEntity2 = createAnalysis(savedUserEntity, questions1);
+        AnalysisEntity analysisEntity3 = createAnalysis(savedUserEntity, questions1);
+        AnalysisEntity analysisEntity4 = createAnalysis(savedUserEntity, questions2);
+        AnalysisEntity analysisEntity5 = createAnalysis(savedUserEntity, questions2);
+        AnalysisEntity analysisEntity6 = createAnalysis(savedUserEntity, questions2);
+        AnalysisEntity analysisEntity7 = createAnalysis(savedUserEntity, questions2);
         List<AnalysisEntity> analysies = List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4, analysisEntity5, analysisEntity6, analysisEntity7);
         analysisJpaRepository.saveAll(analysies);
 
@@ -283,44 +283,44 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         //given
         String socialId = "socialId";
         SocialType socialType = SocialType.APPLE;
-        User user = createUser(socialId, socialType);
-        User savedUser = userRepository.save(user);
-        String uniqueValue = savedUser.getSocialId() + "_" + savedUser.getSocialType().getDescription();
+        UserEntity userEntity = createUser(socialId, socialType);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
+        String uniqueValue = savedUserEntity.getSocialId() + "_" + savedUserEntity.getSocialType().getDescription();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-M-d");
 
         List<AnalysisEntity> arrayList = new ArrayList<>();
         LocalDate nowDate = now();
         double score1 = 10.0;
         for (int i = 0; i < 3; i++) { // 오늘 데이터 3개 추가
-            AnalysisEntity analysisEntity = createAnalysis(user);
+            AnalysisEntity analysisEntity = createAnalysis(userEntity);
             arrayList.add(analysisEntity);
             analysisEntity.changeFeelingStateAndAnalyzeTime(score1, nowDate);
         }
         LocalDate dateTwoDaysAgo = now().minusDays(2);
         double score2 = 30.0;
         for (int i = 0; i < 3; i++) { // 2일 전 데이터 4개 추가
-            AnalysisEntity analysisEntity = createAnalysis(user);
+            AnalysisEntity analysisEntity = createAnalysis(userEntity);
             arrayList.add(analysisEntity);
             analysisEntity.changeFeelingStateAndAnalyzeTime(score2, dateTwoDaysAgo);
         }
         LocalDate dateFourDaysAgo = now().minusDays(4);
         double score3 = 40.0;
         for (int i = 0; i < 4; i++) {        // 4일 전 데이터 4개 추가
-            AnalysisEntity analysisEntity = createAnalysis(user);
+            AnalysisEntity analysisEntity = createAnalysis(userEntity);
             arrayList.add(analysisEntity);
             analysisEntity.changeFeelingStateAndAnalyzeTime(score3, dateFourDaysAgo);
         }
         LocalDate dateFiveDaysAgo = now().minusDays(5);
         double score4 = 50.0;
         for (int i = 0; i < 3; i++) { // 5일 전 데이터 2개 추가
-            AnalysisEntity analysisEntity = createAnalysis(user);
+            AnalysisEntity analysisEntity = createAnalysis(userEntity);
             arrayList.add(analysisEntity);
             analysisEntity.changeFeelingStateAndAnalyzeTime(score4, dateFiveDaysAgo);
         }
         LocalDate dateSevenDaysAgo = now().minusDays(7);
         double score5 = 60.0;
         for (int i = 0; i < 2; i++) { // 7일 전 데이터 2개 추가
-            AnalysisEntity analysisEntity = createAnalysis(user);
+            AnalysisEntity analysisEntity = createAnalysis(userEntity);
             arrayList.add(analysisEntity);
             analysisEntity.changeFeelingStateAndAnalyzeTime(score5, dateSevenDaysAgo);
         }
@@ -347,15 +347,15 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         //given
         String socialId = "socialId";
         SocialType socialType = SocialType.APPLE;
-        User user = createUser(socialId, socialType);
-        User savedUser = userRepository.save(user);
-        String uniqueValue = savedUser.getSocialId() + "_" + savedUser.getSocialType().getDescription();
+        UserEntity userEntity = createUser(socialId, socialType);
+        UserEntity savedUserEntity = userRepository.save(userEntity);
+        String uniqueValue = savedUserEntity.getSocialId() + "_" + savedUserEntity.getSocialType().getDescription();
 
-        Question question1 = createQuestion(QuestionContent.FIXED_QUESTION1);
-        Question question2 = createQuestion(QuestionContent.FIXED_QUESTION2);
-        Question question3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
-        Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION2);
-        AnalysisEntity analysisEntity = createAnalysis(savedUser, List.of(question1, question2, question3, question4));
+        QuestionEntity questionEntity1 = createQuestion(QuestionContent.FIXED_QUESTION1);
+        QuestionEntity questionEntity2 = createQuestion(QuestionContent.FIXED_QUESTION2);
+        QuestionEntity questionEntity3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
+        QuestionEntity questionEntity4 = createQuestion(QuestionContent.UNFIXED_QUESTION2);
+        AnalysisEntity analysisEntity = createAnalysis(savedUserEntity, List.of(questionEntity1, questionEntity2, questionEntity3, questionEntity4));
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
 
         //when & then
@@ -422,12 +422,12 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
     void removeAnalysis(){
         //given
         for(QuestionContent questionContent : QuestionContent.values()){ // initProvider 대체 -> TEST용
-            Voice voice = Voice.initVoiceContentBuilder()
+            VoiceEntity voiceEntity = VoiceEntity.initVoiceContentBuilder()
                     .originName(questionContent.getText() +"_voice.mp3")
                     .questionContent(questionContent)
                     .build();
-            voice.changeAccessUrl("임의의 접근 url 주소");
-            voiceRepository.save(voice);
+            voiceEntity.changeAccessUrl("임의의 접근 url 주소");
+            voiceRepository.save(voiceEntity);
         }
 
         AnswerEntity answerEntity1 = createAnswer("답변1보이스를 STT로 변경한 텍스트");
@@ -437,20 +437,20 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         List<AnswerEntity> answerEntities = List.of(answerEntity1, answerEntity2, answerEntity3, answerEntity4);
         answerJpaRepository.saveAll(answerEntities);
 
-        User user = createUser("socialId", SocialType.APPLE);
-        Question question1 = createQuestion(QuestionContent.FIXED_QUESTION1);
-        Question question2 = createQuestion(QuestionContent.FIXED_QUESTION2);
-        Question question3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
-        Question question4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
-        List<Question> questions = List.of(question1, question2, question3, question4);
-        AnalysisEntity analysisEntity = createAnalysis(user, questions);
+        UserEntity userEntity = createUser("socialId", SocialType.APPLE);
+        QuestionEntity questionEntity1 = createQuestion(QuestionContent.FIXED_QUESTION1);
+        QuestionEntity questionEntity2 = createQuestion(QuestionContent.FIXED_QUESTION2);
+        QuestionEntity questionEntity3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
+        QuestionEntity questionEntity4 = createQuestion(QuestionContent.UNFIXED_QUESTION3);
+        List<QuestionEntity> questionEntities = List.of(questionEntity1, questionEntity2, questionEntity3, questionEntity4);
+        AnalysisEntity analysisEntity = createAnalysis(userEntity, questionEntities);
 
-        question1.connectAnswer(answerEntity1);
-        question2.connectAnswer(answerEntity2);
-        question3.connectAnswer(answerEntity3);
-        question4.connectAnswer(answerEntity4);
+        questionEntity1.connectAnswer(answerEntity1);
+        questionEntity2.connectAnswer(answerEntity2);
+        questionEntity3.connectAnswer(answerEntity3);
+        questionEntity4.connectAnswer(answerEntity4);
 
-        userRepository.save(user);
+        userRepository.save(userEntity);
         AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
         //when
         analysisService.removeAnalysis(savedAnalysisEntity.getId());
@@ -472,8 +472,8 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
                 .build();
     }
 
-    private static Voice createVoice(String fileName) {
-        return Voice.commonBuilder()
+    private static VoiceEntity createVoice(String fileName) {
+        return VoiceEntity.commonBuilder()
                 .originName(fileName)
                 .build();
     }
@@ -485,25 +485,25 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
                 .build();
     }
 
-    private static Question createQuestion(QuestionContent questionContent) {
-        return Question.of(questionContent);
+    private static QuestionEntity createQuestion(QuestionContent questionContent) {
+        return QuestionEntity.of(questionContent);
     }
 
-    private static AnalysisEntity createAnalysis(User user, List<Question> questions) {
+    private static AnalysisEntity createAnalysis(UserEntity userEntity, List<QuestionEntity> questionEntities) {
         return AnalysisEntity.builder()
-                .user(user)
-                .questions(questions)
+                .userEntity(userEntity)
+                .questionEntities(questionEntities)
                 .build();
     }
 
-    private static AnalysisEntity createAnalysis(User user) {
+    private static AnalysisEntity createAnalysis(UserEntity userEntity) {
         return AnalysisEntity.builder()
-                .user(user)
+                .userEntity(userEntity)
                 .build();
     }
 
-    private static User createUser(String socialId, SocialType socialType) {
-        return User.builder()
+    private static UserEntity createUser(String socialId, SocialType socialType) {
+        return UserEntity.builder()
                 .socialId(socialId)
                 .socialType(socialType)
                 .build();

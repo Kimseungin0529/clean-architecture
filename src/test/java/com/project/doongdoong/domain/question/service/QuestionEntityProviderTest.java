@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.question.service;
 
 import com.project.doongdoong.domain.question.application.port.in.QuestionProvidable;
-import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -11,7 +11,7 @@ import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-public class QuestionProviderTest extends IntegrationSupportTest {
+public class QuestionEntityProviderTest extends IntegrationSupportTest {
 
     @Autowired
     QuestionProvidable questionProvider;
@@ -22,9 +22,9 @@ public class QuestionProviderTest extends IntegrationSupportTest {
         //given
         int expectedTotalSize = 4;
         //when
-        List<Question> randomQuestions = questionProvider.createRandomQuestions();
+        List<QuestionEntity> randomQuestionEntities = questionProvider.createRandomQuestions();
         //then
-        assertThat(randomQuestions)
+        assertThat(randomQuestionEntities)
                 .hasSize(expectedTotalSize)
                 .extracting(question -> question.getQuestionContent().isFixedQuestion())
                 .containsExactly(true, true, false, false);
@@ -35,7 +35,7 @@ public class QuestionProviderTest extends IntegrationSupportTest {
     @Test
     void createFixedQuestion() {
         // given & when
-        Question result = questionProvider.createFixedQuestion();
+        QuestionEntity result = questionProvider.createFixedQuestion();
         // then
         assertThat(result.getQuestionContent().isFixedQuestion()).isEqualTo(true);
     }
@@ -44,7 +44,7 @@ public class QuestionProviderTest extends IntegrationSupportTest {
     @Test
     void createUnFixedQuestion() {
         // given & when
-        Question result = questionProvider.createUnFixedQuestion();
+        QuestionEntity result = questionProvider.createUnFixedQuestion();
         // then
         assertThat(result.getQuestionContent().isFixedQuestion()).isEqualTo(false);
     }
