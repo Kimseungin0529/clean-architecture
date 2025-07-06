@@ -4,6 +4,7 @@ import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateRespons
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,11 @@ import java.util.Optional;
 public class AnalysisRepositoryImpl implements AnalysisRepository {
 
     private final AnalysisJpaRepository analysisJpaRepository;
+
+    @Override
+    public AnalysisEntity findById(Long analysisId) {
+        return analysisJpaRepository.findById(analysisId).orElseThrow(AnalysisNotFoundException::new);
+    }
 
     @Override
     public AnalysisEntity save(AnalysisEntity analysisEntity) {

@@ -13,7 +13,7 @@ import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.user.adapter.out.persistence.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.UserEntity;
-import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
+import com.project.doongdoong.domain.voice.application.port.out.VoiceJpaRepository;
 import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;
@@ -45,7 +45,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
     @Autowired
     AnswerRepository answerRepository;
     @Autowired
-    VoiceRepository voiceRepository;
+    VoiceJpaRepository voiceRepository;
 
     @Test
     @DisplayName("접근 회원과 고유 분석 번호를 통해 일치하는 분석 정보를 조회합니다.")

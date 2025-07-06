@@ -1,20 +1,20 @@
 package com.project.doongdoong.domain.answer.application;
 
+import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.answer.adapter.in.dto.AnswerCreateResponseDto;
+import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
 import com.project.doongdoong.domain.answer.application.port.out.AnswerRepository;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
-import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.question.exception.NoMatchingQuestionException;
 import com.project.doongdoong.domain.voice.adapter.in.dto.VoiceDetailResponseDto;
+import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
+import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.domain.voice.exception.VoiceNotFoundException;
-import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
-import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -30,7 +30,7 @@ public class AnswerServiceImp implements AnswerService {
     private final VoiceRepository voiceRepository;
     private final VoiceService voiceService;
     private final AnswerRepository answerRepository;
-    private final AnalysisJpaRepository analysisRepository;
+    private final AnalysisRepository analysisRepository;
 
     public final static int MAX_ANSWER_COUNT = 4;
 
@@ -45,7 +45,7 @@ public class AnswerServiceImp implements AnswerService {
         }
         VoiceEntity voiceEntity = saveVoiceFrom(file);
         AnswerEntity answerEntity = linkAndSaveToAnswer(voiceEntity, matchedQuestionEntity);
-        AnalysisEntity findAnalysisEntity = analysisRepository.findById(analysisId).orElseThrow(AnalysisNotFoundException::new);
+        AnalysisEntity findAnalysisEntity = analysisRepository.findById(analysisId);
         answerEntity.connectAnalysis(findAnalysisEntity);
 
         return AnswerCreateResponseDto.builder()

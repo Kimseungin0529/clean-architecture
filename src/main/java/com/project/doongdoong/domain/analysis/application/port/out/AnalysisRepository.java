@@ -2,6 +2,7 @@ package com.project.doongdoong.domain.analysis.application.port.out;
 
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,6 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AnalysisRepository {
+    AnalysisEntity findById(Long analysisId);
 
     AnalysisEntity save(AnalysisEntity analysisEntity);
 

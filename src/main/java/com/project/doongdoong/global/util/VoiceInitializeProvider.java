@@ -1,9 +1,9 @@
 package com.project.doongdoong.global.util;
 
 import com.project.doongdoong.domain.question.domain.QuestionContent;
-import com.project.doongdoong.domain.voice.domain.VoiceEntity;
-import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
+import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
+import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -25,7 +25,7 @@ public class VoiceInitializeProvider {
     private final static String VOICE_QUESTION = "voice-question";
 
     @PostConstruct
-    public void initQuestionVoiceFiles(){
+    public void initQuestionVoiceFiles() {
 
         for (QuestionContent questionContent : QuestionContent.values()) {
             Optional<VoiceEntity> existingVoice = voiceRepository.findVoiceByQuestionContent(questionContent);

@@ -1,12 +1,12 @@
 package com.project.doongdoong.domain.counsel.application;
 
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
+import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
-import com.project.doongdoong.domain.counsel.application.port.out.CounselRepository;
 import com.project.doongdoong.domain.counsel.application.port.in.CounselService;
+import com.project.doongdoong.domain.counsel.application.port.out.CounselRepository;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import com.project.doongdoong.domain.counsel.domain.CounselType;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CounselServiceImpl implements CounselService {
 
-    private final AnalysisJpaRepository analysisRepository;
+    private final AnalysisRepository analysisRepository;
     private final CounselRepository counselRepository;
     private final UserJpaRepository userRepository;
     private final WebClientUtil webClientUtil;
