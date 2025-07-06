@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.counsel.adapter.out;
+package com.project.doongdoong.domain.counsel.application.port.out;
 
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import com.project.doongdoong.domain.user.domain.UserEntity;

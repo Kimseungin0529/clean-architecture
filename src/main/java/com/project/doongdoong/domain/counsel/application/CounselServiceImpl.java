@@ -5,7 +5,7 @@ import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
-import com.project.doongdoong.domain.counsel.adapter.out.CounselRepository;
+import com.project.doongdoong.domain.counsel.application.port.out.CounselRepository;
 import com.project.doongdoong.domain.counsel.application.port.in.CounselService;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import com.project.doongdoong.domain.counsel.domain.CounselType;
