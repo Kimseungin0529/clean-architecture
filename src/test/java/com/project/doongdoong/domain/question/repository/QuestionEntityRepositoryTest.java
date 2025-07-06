@@ -2,7 +2,7 @@ package com.project.doongdoong.domain.question.repository;
 
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
-import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
+import com.project.doongdoong.domain.question.application.port.out.QuestionJpaRepository;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.module.IntegrationSupportTest;
@@ -18,7 +18,7 @@ import static com.project.doongdoong.domain.question.domain.QuestionContent.*;
 class QuestionEntityRepositoryTest extends IntegrationSupportTest {
 
     @Autowired
-    QuestionRepository questionRepository;
+    QuestionJpaRepository questionRepository;
     @Autowired
     AnalysisJpaRepository analysisRepository;
 

@@ -7,7 +7,7 @@ import com.project.doongdoong.domain.answer.adapter.out.persistence.repository.A
 import com.project.doongdoong.domain.answer.application.port.out.AnswerRepository;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
-import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
+import com.project.doongdoong.domain.question.application.port.out.QuestionJpaRepository;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
@@ -37,7 +37,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
     @Autowired
     AnalysisJpaRepository analysisRepository;
     @Autowired
-    QuestionRepository questionRepository;
+    QuestionJpaRepository questionRepository;
     @Autowired
     UserRepository userRepository;
     @Autowired
