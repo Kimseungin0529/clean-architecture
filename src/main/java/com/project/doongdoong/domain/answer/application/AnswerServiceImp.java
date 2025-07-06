@@ -30,7 +30,7 @@ public class AnswerServiceImp implements AnswerService {
     private final VoiceRepository voiceRepository;
     private final VoiceService voiceService;
     private final AnswerRepository answerRepository;
-    private final AnalysisJpaRepository analysisJpaRepository;
+    private final AnalysisJpaRepository analysisRepository;
 
     public final static int MAX_ANSWER_COUNT = 4;
 
@@ -45,7 +45,7 @@ public class AnswerServiceImp implements AnswerService {
         }
         VoiceEntity voiceEntity = saveVoiceFrom(file);
         AnswerEntity answerEntity = linkAndSaveToAnswer(voiceEntity, matchedQuestionEntity);
-        AnalysisEntity findAnalysisEntity = analysisJpaRepository.findById(analysisId).orElseThrow(AnalysisNotFoundException::new);
+        AnalysisEntity findAnalysisEntity = analysisRepository.findById(analysisId).orElseThrow(AnalysisNotFoundException::new);
         answerEntity.connectAnalysis(findAnalysisEntity);
 
         return AnswerCreateResponseDto.builder()
@@ -70,7 +70,7 @@ public class AnswerServiceImp implements AnswerService {
     }
 
     private QuestionEntity findQuestionFromAnalysis(Long analysisId, Long questionId) {
-        AnalysisEntity findAnalysisEntity = analysisJpaRepository.findAnalysisWithQuestion(analysisId)
+        AnalysisEntity findAnalysisEntity = analysisRepository.findAnalysisWithQuestion(analysisId)
                 .orElseThrow(AnalysisNotFoundException::new);
 
         return findAnalysisEntity.getQuestions().stream()

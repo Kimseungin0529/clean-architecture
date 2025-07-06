@@ -34,7 +34,7 @@ class AnswerEntityServiceImpTest extends IntegrationSupportTest {
     @Autowired
     AnswerService answerService;
     @Autowired
-    AnalysisJpaRepository analysisJpaRepository;
+    AnalysisJpaRepository analysisRepository;
     @Autowired
     UserRepository userRepository;
 
@@ -80,7 +80,7 @@ class AnswerEntityServiceImpTest extends IntegrationSupportTest {
                 .build();
 
         answerEntity.connectAnalysis(analysisEntity);
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
         Long questionId = questionEntity2.getId();
 
         MultipartFile multipartFile = new MockMultipartFile("file",
@@ -121,7 +121,7 @@ class AnswerEntityServiceImpTest extends IntegrationSupportTest {
         answerEntity.connectAnalysis(analysisEntity);
         questionEntity2.connectAnswer(answerEntity);
 
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
         Long questionId = questionEntity2.getId();
 
         MultipartFile multipartFile = new MockMultipartFile("file",

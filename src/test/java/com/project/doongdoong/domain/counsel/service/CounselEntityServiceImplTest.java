@@ -13,7 +13,7 @@ import com.project.doongdoong.domain.counsel.exception.CounselNotExistPageExcept
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import com.project.doongdoong.domain.counsel.domain.CounselType;
-import com.project.doongdoong.domain.counsel.adapter.out.CounselRepository;
+import com.project.doongdoong.domain.counsel.adapter.out.CounselJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
@@ -39,9 +39,9 @@ class CounselEntityServiceImplTest extends IntegrationSupportTest {
     @Autowired
     CounselServiceImpl counselService;
     @Autowired
-    AnalysisJpaRepository analysisJpaRepository;
+    AnalysisJpaRepository analysisRepository;
     @Autowired
-    CounselRepository counselRepository;
+    CounselJpaRepository counselRepository;
     @Autowired
     UserRepository userRepository;
 
@@ -87,7 +87,7 @@ class CounselEntityServiceImplTest extends IntegrationSupportTest {
         UserEntity savedUserEntity = userRepository.save(userEntity);
 
         AnalysisEntity analysisEntity = createAnalysis(savedUserEntity);
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
 
         AnswerEntity answerEntity1 = createAnswer();
         AnswerEntity answerEntity2 = createAnswer();
@@ -140,7 +140,7 @@ class CounselEntityServiceImplTest extends IntegrationSupportTest {
         AnalysisEntity analysisEntity = AnalysisEntity.builder()
                 .userEntity(savedUserEntity)
                 .build();
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
         AnswerEntity answerEntity1 = createAnswer();
         AnswerEntity answerEntity2 = createAnswer();
         AnswerEntity answerEntity3 = createAnswer();

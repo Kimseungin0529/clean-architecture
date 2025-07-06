@@ -52,7 +52,7 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
     @Autowired
     AnswerRepository answerRepository;
     @Autowired
-    AnalysisJpaRepository analysisJpaRepository;
+    AnalysisJpaRepository analysisRepository;
 
     @TestFactory
     @DisplayName("서비스 회원 정보와 존재하지 않는 서비스 회원 정보의 경우, 분석에 관한 정보 접근 시나리오")
@@ -137,7 +137,7 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         questionEntity4.connectAnswer(answerEntity4);
 
         userRepository.save(userEntity);
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
 
         LocalDate analyzeTime = now();
         double feelingState = 72.1;
@@ -202,7 +202,7 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
 
         AnalysisEntity analysisEntity = createAnalysis(savedUserEntity, questionEntities);
 
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
         Long analysisId = savedAnalysisEntity.getId();
         Long anyLongValue = 10L;
         Long notFoundAnalysisId = analysisId + anyLongValue;
@@ -239,7 +239,7 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         AnalysisEntity analysisEntity6 = createAnalysis(savedUserEntity, questions2);
         AnalysisEntity analysisEntity7 = createAnalysis(savedUserEntity, questions2);
         List<AnalysisEntity> analysies = List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4, analysisEntity5, analysisEntity6, analysisEntity7);
-        analysisJpaRepository.saveAll(analysies);
+        analysisRepository.saveAll(analysies);
 
         String uniqueValue = socialId + "_" + socialType.getDescription();
         int pageNumber = 0;
@@ -327,7 +327,7 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
             arrayList.add(analysisEntity);
             analysisEntity.changeFeelingStateAndAnalyzeTime(score5, dateSevenDaysAgo);
         }
-        analysisJpaRepository.saveAll(arrayList);
+        analysisRepository.saveAll(arrayList);
 
         //when
         FeelingStateResponseListDto result = analysisService.getAnalysisListGroupByDay(uniqueValue);
@@ -359,7 +359,7 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         QuestionEntity questionEntity3 = createQuestion(QuestionContent.UNFIXED_QUESTION1);
         QuestionEntity questionEntity4 = createQuestion(QuestionContent.UNFIXED_QUESTION2);
         AnalysisEntity analysisEntity = createAnalysis(savedUserEntity, List.of(questionEntity1, questionEntity2, questionEntity3, questionEntity4));
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
 
         //when & then
         return List.of(
@@ -454,11 +454,11 @@ class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
         questionEntity4.connectAnswer(answerEntity4);
 
         userRepository.save(userEntity);
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
         //when
         analysisService.removeAnalysis(savedAnalysisEntity.getId());
         //then
-        boolean exists = analysisJpaRepository.existsById(savedAnalysisEntity.getId());
+        boolean exists = analysisRepository.existsById(savedAnalysisEntity.getId());
         assertThat(exists).isFalse(); // 삭제되었음을 검증
     }
 

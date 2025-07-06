@@ -1,13 +1,13 @@
 package com.project.doongdoong.domain.counsel.repository;
 
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.counsel.adapter.out.CounselRepository;
-import com.project.doongdoong.domain.counsel.domain.CounselEntity;
-import com.project.doongdoong.module.IntegrationSupportTest;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.counsel.adapter.out.CounselJpaRepository;
+import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import com.project.doongdoong.domain.counsel.domain.CounselType;
-import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.module.IntegrationSupportTest;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -19,19 +19,18 @@ import java.util.List;
 import java.util.Optional;
 
 
-//@DataJpaTest
-class CounselEntityRepositoryTest extends IntegrationSupportTest{
+class CounselEntityRepositoryTest extends IntegrationSupportTest {
 
     @Autowired
-    CounselRepository counselRepository;
+    CounselJpaRepository counselRepository;
     @Autowired
-    AnalysisJpaRepository analysisJpaRepository;
+    AnalysisJpaRepository analysisRepository;
     @Autowired
     UserRepository userRepository;
 
     @Test
     @DisplayName("상담 고유 번호로 분석 정보가 담긴 상담 정보를 조회한다.")
-    void findWithAnalysisById(){
+    void findWithAnalysisById() {
         //given
         AnalysisEntity analysisEntity = AnalysisEntity.builder()
                 .build();
@@ -42,7 +41,7 @@ class CounselEntityRepositoryTest extends IntegrationSupportTest{
                 .build();
 
         counselEntity.addAnalysis(analysisEntity);
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
         CounselEntity savedCounselEntity = counselRepository.save(counselEntity);
 
 
@@ -59,7 +58,7 @@ class CounselEntityRepositoryTest extends IntegrationSupportTest{
 
     @Test
     @DisplayName("본인의 상담 기록 중 특정 페이지를 조회한다.")
-    void searchPageCounselList(){
+    void searchPageCounselList() {
         //given
         UserEntity userEntity = UserEntity.builder()
                 .nickname("짱구")
@@ -69,7 +68,7 @@ class CounselEntityRepositoryTest extends IntegrationSupportTest{
 
         AnalysisEntity analysisEntity = AnalysisEntity.builder()
                 .build();
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
 
         CounselEntity counselEntity1 = CounselEntity.builder()
                 .userEntity(savedUserEntity)

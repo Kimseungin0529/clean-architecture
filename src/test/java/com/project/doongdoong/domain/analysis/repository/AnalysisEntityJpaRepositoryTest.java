@@ -35,7 +35,7 @@ import static org.assertj.core.api.Assertions.tuple;
 class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
 
     @Autowired
-    AnalysisJpaRepository analysisJpaRepository;
+    AnalysisJpaRepository analysisRepository;
     @Autowired
     QuestionRepository questionRepository;
     @Autowired
@@ -55,12 +55,12 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         UserEntity savedUserEntity = userRepository.save(userEntity);
 
         AnalysisEntity analysisEntity = createAnalysis(userEntity);
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
 
         Long requestId = savedAnalysisEntity.getId();
 
         //when
-        Optional<AnalysisEntity> findAnalysis = analysisJpaRepository.findByUserAndId(savedUserEntity, requestId);
+        Optional<AnalysisEntity> findAnalysis = analysisRepository.findByUserAndId(savedUserEntity, requestId);
 
         //then
         assertThat(findAnalysis.get())
@@ -97,10 +97,10 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         analysisEntity6.changeFeelingStateAndAnalyzeTime(60, null);
         analysisEntity7.changeFeelingStateAndAnalyzeTime(70, null);
 
-        analysisJpaRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4, analysisEntity5, analysisEntity6, analysisEntity7));
+        analysisRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4, analysisEntity5, analysisEntity6, analysisEntity7));
 
         //when
-        Page<AnalysisEntity> result = analysisJpaRepository.findAllByUserOrderByCreatedTime(savedUserEntity, pageRequest);
+        Page<AnalysisEntity> result = analysisRepository.findAllByUserOrderByCreatedTime(savedUserEntity, pageRequest);
 
         //then
         assertThat(result.hasNext()).isFalse();
@@ -137,10 +137,10 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         analysisEntity4.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 3, 15));
         analysisEntity5.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 3, 31));
 
-        analysisJpaRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4, analysisEntity5));
+        analysisRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4, analysisEntity5));
 
         //when
-        List<FeelingStateResponseDto> result = analysisJpaRepository.findAllByDateBetween(savedUserEntity, startTime, endTime);
+        List<FeelingStateResponseDto> result = analysisRepository.findAllByDateBetween(savedUserEntity, startTime, endTime);
         //then
         assertThat(result).hasSize(2)
                 .extracting("date", "avgFeelingState")
@@ -168,10 +168,10 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         analysisEntity3.changeFeelingStateAndAnalyzeTime(80, LocalDate.of(2024, 6, 27));
         analysisEntity4.changeFeelingStateAndAnalyzeTime(90, LocalDate.of(2024, 11, 19));
 
-        analysisJpaRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4));
+        analysisRepository.saveAll(List.of(analysisEntity1, analysisEntity2, analysisEntity3, analysisEntity4));
 
         //when
-        Optional<AnalysisEntity> result = analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(savedUserEntity);
+        Optional<AnalysisEntity> result = analysisRepository.findFirstByUserOrderByAnalyzeTimeDesc(savedUserEntity);
 
         //then
         assertThat(result.get()).isNotNull()
@@ -200,10 +200,10 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         questionEntity3.connectAnalysis(analysisEntity);
         questionEntity4.connectAnalysis(analysisEntity);
 
-        AnalysisEntity savedAnalysisEntity = analysisJpaRepository.save(analysisEntity);
+        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
 
         //when
-        Optional<AnalysisEntity> result = analysisJpaRepository.findAnalysisWithQuestion(savedAnalysisEntity.getId());
+        Optional<AnalysisEntity> result = analysisRepository.findAnalysisWithQuestion(savedAnalysisEntity.getId());
         //then
         assertThat(result.get()).isNotNull()
                 .isEqualTo(savedAnalysisEntity)
@@ -244,10 +244,10 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
 
         voiceRepository.saveAll(List.of(voiceEntity1, voiceEntity2, voiceEntity3));
         answerJpaRepository.saveAll(List.of(answerEntity1, answerEntity2, answerEntity3));
-        analysisJpaRepository.save(analysisEntity);
+        analysisRepository.save(analysisEntity);
 
         //when
-        Optional<AnalysisEntity> result = analysisJpaRepository.searchFullAnalysisBy(analysisEntity.getId());
+        Optional<AnalysisEntity> result = analysisRepository.searchFullAnalysisBy(analysisEntity.getId());
 
         //then
         AnalysisEntity findAnalysisEntity = result.get();
@@ -312,10 +312,10 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
         questionEntity4.connectAnswer(answerEntity4);
 
         answerJpaRepository.saveAll(List.of(answerEntity1, answerEntity2, answerEntity3, answerEntity4));
-        analysisJpaRepository.save(analysisEntity);
+        analysisRepository.save(analysisEntity);
 
         // when
-        Optional<AnalysisEntity> result = analysisJpaRepository.searchAnalysisWithVoiceOfAnswer(analysisEntity.getId());
+        Optional<AnalysisEntity> result = analysisRepository.searchAnalysisWithVoiceOfAnswer(analysisEntity.getId());
 
         // then
         assertThat(result).isPresent();

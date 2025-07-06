@@ -1,26 +1,20 @@
 package com.project.doongdoong.domain.counsel.adapter.out;
 
-
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
+import com.project.doongdoong.domain.user.domain.UserEntity;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import java.util.List;
 import java.util.Optional;
 
-@Repository
-public interface CounselRepository extends JpaRepository<CounselEntity, Long>, CounselCustomRepository {
+public interface CounselRepository {
 
-    @Query("select c from CounselEntity c left outer join fetch c.analysis where c.id = :counselId")
-    Optional<CounselEntity> findWithAnalysisById(@Param("counselId") Long counselId);
+    CounselEntity save(CounselEntity counselEntity);
 
-    @Query(value = """
-            SELECT DATE(created_time) AS date, counsel_type, COUNT(*) AS count
-            FROM counselEntity
-            GROUP BY DATE(created_time), counsel_type
-            """, nativeQuery = true)
+    Optional<CounselEntity> findWithAnalysisById(Long counselId);
+
+    Page<CounselEntity> searchPageCounselList(UserEntity userEntity, Pageable pageable);
+
     List<Object[]> countCounselGroupByDateAndType();
-
 }

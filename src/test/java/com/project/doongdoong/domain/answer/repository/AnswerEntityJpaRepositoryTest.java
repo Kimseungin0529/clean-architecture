@@ -17,7 +17,7 @@ class AnswerEntityJpaRepositoryTest extends IntegrationSupportTest {
     @Autowired
     AnswerJpaRepository answerJpaRepository;
     @Autowired
-    AnalysisJpaRepository analysisJpaRepository;
+    AnalysisJpaRepository analysisRepository;
 
     @DisplayName("해당하는 분석에 대한 모든 답변을 삭제한다.")
     @Test
@@ -36,7 +36,7 @@ class AnswerEntityJpaRepositoryTest extends IntegrationSupportTest {
         answerEntity3.connectAnalysis(analysisEntity);
         answerEntity4.connectAnalysis(analysisEntity);
 
-        analysisJpaRepository.save(analysisEntity);
+        analysisRepository.save(analysisEntity);
 
         AnswerEntity answerEntity5 = createAnswer("답변 5입니다.");
         answerJpaRepository.save(answerEntity5);

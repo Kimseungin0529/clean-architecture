@@ -20,7 +20,7 @@ class QuestionEntityRepositoryTest extends IntegrationSupportTest {
     @Autowired
     QuestionRepository questionRepository;
     @Autowired
-    AnalysisJpaRepository analysisJpaRepository;
+    AnalysisJpaRepository analysisRepository;
 
     @DisplayName("해당하는 분석에 대한 모든 질문을 삭제한다.")
     @Test
@@ -39,7 +39,7 @@ class QuestionEntityRepositoryTest extends IntegrationSupportTest {
         questionEntity3.connectAnalysis(analysisEntity);
         questionEntity4.connectAnalysis(analysisEntity);
 
-        analysisJpaRepository.save(analysisEntity);
+        analysisRepository.save(analysisEntity);
         questionRepository.saveAll(List.of(questionEntity1, questionEntity2, questionEntity3, questionEntity4));
 
         QuestionEntity questionEntity5 = createQuestion(FIXED_QUESTION4);

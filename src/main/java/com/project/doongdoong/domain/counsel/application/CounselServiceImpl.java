@@ -43,7 +43,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class CounselServiceImpl implements CounselService {
 
-    private final AnalysisJpaRepository analysisJpaRepository;
+    private final AnalysisJpaRepository analysisRepository;
     private final CounselRepository counselRepository;
     private final UserRepository userRepository;
     private final WebClientUtil webClientUtil;
@@ -66,7 +66,7 @@ public class CounselServiceImpl implements CounselService {
                 .build();
 
         if (request.getAnalysisId() != null) { // 기존 분석 결과 반영하기
-            AnalysisEntity findAnalysisEntity = analysisJpaRepository.findByUserAndId(userEntity, request.getAnalysisId()).orElseThrow(() -> new AnalysisAccessDeny());
+            AnalysisEntity findAnalysisEntity = analysisRepository.findByUserAndId(userEntity, request.getAnalysisId()).orElseThrow(() -> new AnalysisAccessDeny());
             checkCounselAlreadyProcessed(findAnalysisEntity); // 해당 분석의 정보로 상담한 경우 예외
             counselEntity.addAnalysis(findAnalysisEntity); // 연관관계 매핑
         }
