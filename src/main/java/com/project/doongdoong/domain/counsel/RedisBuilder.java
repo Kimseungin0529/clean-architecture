@@ -1,8 +1,7 @@
-/*
 package com.project.doongdoong.domain.counsel;
 
-import com.project.doongdoong.domain.counsel.model.CounselCacheKey;
-import com.project.doongdoong.domain.counsel.adapter.out.CounselCustomRepository;
+import com.project.doongdoong.domain.counsel.adapter.out.CounselRepository;
+import com.project.doongdoong.domain.counsel.domain.CounselCacheKey;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
@@ -13,7 +12,7 @@ import java.util.concurrent.TimeUnit;
 
 @Component
 @RequiredArgsConstructor
-public class RedisRebuilder {
+public class RedisBuilder {
 
     private final RedisTemplate<String, Object> redisTemplate;
     private final CounselRepository counselRepository; // 또는 JPA Query로 구현
@@ -41,4 +40,3 @@ public class RedisRebuilder {
         }
     }
 }
-*/
