@@ -18,7 +18,7 @@ import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.adapter.out.persistence.UserJpaRepository;
 import com.project.doongdoong.domain.voice.domain.VoiceEntity;
-import com.project.doongdoong.domain.voice.application.port.out.VoiceJpaRepository;
+import com.project.doongdoong.domain.voice.adapter.out.persistence.VoiceJpaRepository;
 import org.junit.jupiter.api.*;
 import org.springframework.beans.factory.annotation.Autowired;
 

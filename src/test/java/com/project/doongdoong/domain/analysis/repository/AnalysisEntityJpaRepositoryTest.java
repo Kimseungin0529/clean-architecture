@@ -13,7 +13,7 @@ import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.user.adapter.out.persistence.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.UserEntity;
-import com.project.doongdoong.domain.voice.application.port.out.VoiceJpaRepository;
+import com.project.doongdoong.domain.voice.adapter.out.persistence.VoiceJpaRepository;
 import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;

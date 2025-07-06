@@ -1,6 +1,7 @@
-package com.project.doongdoong.domain.voice.application.port.out;
+package com.project.doongdoong.domain.voice.adapter.out.persistence;
 
 import com.project.doongdoong.domain.question.domain.QuestionContent;
+import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
