@@ -4,7 +4,7 @@ import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.UserEntity;
-import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.user.application.port.out.UserJpaRepository;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -22,7 +22,7 @@ import static org.assertj.core.api.Assertions.tuple;
 
 class UserEntityRepositoryTest extends IntegrationSupportTest {
     @Autowired
-    UserRepository userRepository;
+    UserJpaRepository userRepository;
 
     @DisplayName("감정 분석 리스트를 포함한 사용자 정보를 조회합니다.")
     @Test

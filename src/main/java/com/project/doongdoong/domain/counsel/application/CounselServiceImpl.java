@@ -18,7 +18,7 @@ import com.project.doongdoong.domain.counsel.exception.CounselAlreadyProcessedEx
 import com.project.doongdoong.domain.counsel.exception.CounselNotExistPageException;
 import com.project.doongdoong.domain.counsel.exception.CounselNotFoundException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
-import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.user.application.port.out.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialIdentifier;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
@@ -45,7 +45,7 @@ public class CounselServiceImpl implements CounselService {
 
     private final AnalysisJpaRepository analysisRepository;
     private final CounselRepository counselRepository;
-    private final UserRepository userRepository;
+    private final UserJpaRepository userRepository;
     private final WebClientUtil webClientUtil;
     private final CounselRankingCache counselRankingCache;
 

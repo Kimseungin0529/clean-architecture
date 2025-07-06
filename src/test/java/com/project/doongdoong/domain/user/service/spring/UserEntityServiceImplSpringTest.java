@@ -3,7 +3,7 @@ package com.project.doongdoong.domain.user.service.spring;
 import com.project.doongdoong.domain.user.adapter.in.dto.UserInformationResponseDto;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.exeception.RefreshTokenNotFoundException;
-import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.user.application.port.out.UserJpaRepository;
 import com.project.doongdoong.domain.user.application.port.in.UserService;
 import com.project.doongdoong.global.common.BlackAccessToken;
 import com.project.doongdoong.global.dto.request.LogoutDto;
@@ -31,7 +31,7 @@ class UserEntityServiceImplSpringTest extends IntegrationSupportTest {
     @Autowired
     UserService userService;
     @Autowired
-    UserRepository userRepository;
+    UserJpaRepository userRepository;
     @Autowired
     RefreshTokenRepository refreshTokenRepository;
     @Autowired

@@ -16,7 +16,7 @@ import com.project.doongdoong.domain.counsel.domain.CounselType;
 import com.project.doongdoong.domain.counsel.adapter.out.CounselJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.UserEntity;
-import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.user.application.port.out.UserJpaRepository;
 import com.project.doongdoong.global.dto.response.CounselAiResponse;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;
@@ -43,7 +43,7 @@ class CounselEntityServiceImplTest extends IntegrationSupportTest {
     @Autowired
     CounselJpaRepository counselRepository;
     @Autowired
-    UserRepository userRepository;
+    UserJpaRepository userRepository;
 
     @Test
     @DisplayName("회원의 질문에 대한 상담 답변을 제공한다.")

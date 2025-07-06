@@ -10,7 +10,7 @@ import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import com.project.doongdoong.domain.question.adapter.out.persistence.QuestionJpaRepository;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
-import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.user.application.port.out.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
@@ -39,7 +39,7 @@ class AnalysisEntityJpaRepositoryTest extends IntegrationSupportTest {
     @Autowired
     QuestionJpaRepository questionRepository;
     @Autowired
-    UserRepository userRepository;
+    UserJpaRepository userRepository;
     @Autowired
     AnswerJpaRepository answerJpaRepository;
     @Autowired

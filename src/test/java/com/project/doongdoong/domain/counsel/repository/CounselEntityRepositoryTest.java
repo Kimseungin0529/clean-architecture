@@ -5,7 +5,7 @@ import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.counsel.adapter.out.CounselJpaRepository;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import com.project.doongdoong.domain.counsel.domain.CounselType;
-import com.project.doongdoong.domain.user.application.port.out.UserRepository;
+import com.project.doongdoong.domain.user.application.port.out.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.assertj.core.api.Assertions;
@@ -26,7 +26,7 @@ class CounselEntityRepositoryTest extends IntegrationSupportTest {
     @Autowired
     AnalysisJpaRepository analysisRepository;
     @Autowired
-    UserRepository userRepository;
+    UserJpaRepository userRepository;
 
     @Test
     @DisplayName("상담 고유 번호로 분석 정보가 담긴 상담 정보를 조회한다.")
