@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.question.application.port.out;
+package com.project.doongdoong.domain.question.adapter.out.persistence;
 
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import io.lettuce.core.dynamic.annotation.Param;

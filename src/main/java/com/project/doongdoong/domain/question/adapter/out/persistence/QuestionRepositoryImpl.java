@@ -1,5 +1,6 @@
-package com.project.doongdoong.domain.question.application.port.out;
+package com.project.doongdoong.domain.question.adapter.out.persistence;
 
+import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
