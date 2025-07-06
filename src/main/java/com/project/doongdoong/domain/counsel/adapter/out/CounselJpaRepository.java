@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.counsel.adapter.out;
 
 
+import com.project.doongdoong.domain.counsel.adapter.out.querydsl.CounselCustomJpaRepository;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -11,7 +12,7 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface CounselJpaRepository extends JpaRepository<CounselEntity, Long>, CounselCustomRepository {
+public interface CounselJpaRepository extends JpaRepository<CounselEntity, Long>, CounselCustomJpaRepository {
 
     @Query("select c from CounselEntity c left outer join fetch c.analysis where c.id = :counselId")
     Optional<CounselEntity> findWithAnalysisById(@Param("counselId") Long counselId);

@@ -1,8 +1,7 @@
-package com.project.doongdoong.domain.counsel.adapter.out;
+package com.project.doongdoong.domain.counsel.adapter.out.querydsl;
 
 
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
-import com.project.doongdoong.domain.counsel.domain.QCounselEntity;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.querydsl.core.types.dsl.BooleanExpression;
 import com.querydsl.jpa.impl.JPAQuery;
@@ -17,11 +16,11 @@ import java.util.List;
 import static com.project.doongdoong.domain.analysis.domain.QAnalysisEntity.analysisEntity;
 import static com.project.doongdoong.domain.counsel.domain.QCounselEntity.counselEntity;
 
-public class CounselCustomRepositoryImpl implements CounselCustomRepository {
+public class CounselCustomJpaRepositoryImpl implements CounselCustomJpaRepository {
 
     private final JPAQueryFactory queryFactory;
 
-    public CounselCustomRepositoryImpl(EntityManager em) {
+    public CounselCustomJpaRepositoryImpl(EntityManager em) {
         this.queryFactory = new JPAQueryFactory(em);
     }
 
