@@ -18,7 +18,7 @@ import com.project.doongdoong.domain.counsel.exception.CounselAlreadyProcessedEx
 import com.project.doongdoong.domain.counsel.exception.CounselNotExistPageException;
 import com.project.doongdoong.domain.counsel.exception.CounselNotFoundException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
-import com.project.doongdoong.domain.user.application.port.out.UserJpaRepository;
+import com.project.doongdoong.domain.user.adapter.out.persistence.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialIdentifier;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;

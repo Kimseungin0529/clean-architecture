@@ -10,7 +10,7 @@ import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import com.project.doongdoong.domain.question.adapter.out.persistence.QuestionJpaRepository;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
-import com.project.doongdoong.domain.user.application.port.out.UserJpaRepository;
+import com.project.doongdoong.domain.user.adapter.out.persistence.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;

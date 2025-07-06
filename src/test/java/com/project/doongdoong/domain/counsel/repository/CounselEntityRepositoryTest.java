@@ -5,7 +5,7 @@ import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.counsel.adapter.out.CounselJpaRepository;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import com.project.doongdoong.domain.counsel.domain.CounselType;
-import com.project.doongdoong.domain.user.application.port.out.UserJpaRepository;
+import com.project.doongdoong.domain.user.adapter.out.persistence.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.assertj.core.api.Assertions;

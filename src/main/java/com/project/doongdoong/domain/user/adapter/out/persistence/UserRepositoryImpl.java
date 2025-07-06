@@ -1,5 +1,6 @@
-package com.project.doongdoong.domain.user.application.port.out;
+package com.project.doongdoong.domain.user.adapter.out.persistence;
 
+import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;

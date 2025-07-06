@@ -16,7 +16,7 @@ import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.user.domain.SocialType;
-import com.project.doongdoong.domain.user.application.port.out.UserJpaRepository;
+import com.project.doongdoong.domain.user.adapter.out.persistence.UserJpaRepository;
 import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import org.junit.jupiter.api.*;

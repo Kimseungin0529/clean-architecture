@@ -4,7 +4,7 @@ import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.UserEntity;
-import com.project.doongdoong.domain.user.application.port.out.UserJpaRepository;
+import com.project.doongdoong.domain.user.adapter.out.persistence.UserJpaRepository;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
