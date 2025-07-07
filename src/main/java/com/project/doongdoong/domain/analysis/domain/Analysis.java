@@ -16,7 +16,7 @@ public class Analysis {
 
     private double feelingState;
 
-    private LocalDate analyzeTime;
+    private LocalDate analyzedDate;
 
     private User user;
 
@@ -24,9 +24,8 @@ public class Analysis {
 
     private List<Answer> answers = new ArrayList<>();
 
-    private static final int MAX_ANSWER_COUNT = 4;
-
     public static Analysis of(User user, List<Question> questions) {
+
         return Analysis.builder()
                 .user(user)
                 .questions(questions)
@@ -41,29 +40,24 @@ public class Analysis {
     }
 
     public boolean hasAllAnswer() {
-        return this.answers.size() == MAX_ANSWER_COUNT;
+        return questions.size() == answers.size();
     }
 
 
     public void changeFeelingStateAndAnalyzeTime(double feelingState, LocalDate analyzeTime) {
         this.feelingState = feelingState;
-        this.analyzeTime = analyzeTime;
+        this.analyzedDate = analyzeTime;
     }
 
     public boolean equalsAnalyzeTimeTo(LocalDate time) {
-        if (this.analyzeTime == null || time == null) {
+        if (this.analyzedDate == null || time == null) {
             return false;
         }
-        return time.equals(this.analyzeTime);
+        return time.equals(this.analyzedDate);
     }
 
     public boolean isAlreadyAnalyzed() {
-        return this.analyzeTime != null;
-    }
-
-    public void addUser(User user) {
-        this.user = user;
-        user.getAnalysisList().add(this);
+        return this.analyzedDate != null;
     }
 
 }

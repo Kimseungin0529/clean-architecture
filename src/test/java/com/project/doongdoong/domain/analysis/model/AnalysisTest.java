@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.analysis.model;
 
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.answer.domain.AnswerEntity;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.answer.domain.Answer;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -9,7 +9,7 @@ import java.time.LocalDate;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-class AnalysisEntityTest {
+class AnalysisTest {
 
 
     @DisplayName("감정 분석 날짜과 비교 날짜가 일치합니다.")
@@ -18,9 +18,9 @@ class AnalysisEntityTest {
         // given
         LocalDate time = LocalDate.of(2024, 5, 10);
         LocalDate analyzeTime = LocalDate.of(2024, 5, 10);
-        AnalysisEntity analysisEntity = createAnalysis(analyzeTime);
+        Analysis analysis = createAnalysis(analyzeTime);
         // when
-        boolean result = analysisEntity.equalsAnalyzeTimeTo(time);
+        boolean result = analysis.equalsAnalyzeTimeTo(time);
         // then
         assertThat(result).isTrue();
     }
@@ -31,9 +31,9 @@ class AnalysisEntityTest {
         // given
         LocalDate time = LocalDate.of(2024, 3, 24);
         LocalDate analyzeTime = LocalDate.of(2024, 5, 10);
-        AnalysisEntity analysisEntity = createAnalysis(analyzeTime);
+        Analysis analysis = createAnalysis(analyzeTime);
         // when
-        boolean result = analysisEntity.equalsAnalyzeTimeTo(time);
+        boolean result = analysis.equalsAnalyzeTimeTo(time);
         // then
         assertThat(result).isFalse();
     }
@@ -42,19 +42,19 @@ class AnalysisEntityTest {
     @Test
     void hasAllAnswer() {
         // given
-        AnalysisEntity analysisEntity = createAnalysis();
-        AnswerEntity answerEntity1 = createAnswer("답변 내용1");
-        AnswerEntity answerEntity2 = createAnswer("답변 내용2");
-        AnswerEntity answerEntity3 = createAnswer("답변 내용3");
-        AnswerEntity answerEntity4 = createAnswer("답변 내용4");
+        Analysis analysis = createAnalysis();
+        Answer answer1 = createAnswer("답변 내용1");
+        Answer answer2 = createAnswer("답변 내용2");
+        Answer answer3 = createAnswer("답변 내용3");
+        Answer answer4 = createAnswer("답변 내용4");
 
-        answerEntity1.connectAnalysis(analysisEntity);
-        answerEntity2.connectAnalysis(analysisEntity);
-        answerEntity3.connectAnalysis(analysisEntity);
-        answerEntity4.connectAnalysis(analysisEntity);
+        answer1.connectAnalysis(analysis);
+        answer2.connectAnalysis(analysis);
+        answer3.connectAnalysis(analysis);
+        answer4.connectAnalysis(analysis);
 
         // when
-        boolean result = analysisEntity.hasAllAnswer();
+        boolean result = analysis.hasAllAnswer();
         // then
         assertThat(result).isTrue();
     }
@@ -64,31 +64,31 @@ class AnalysisEntityTest {
     void isAlreadyAnalyzed() {
         // given
         LocalDate analyzeTime = LocalDate.of(2024, 5, 10);
-        AnalysisEntity analysisEntity = createAnalysis(analyzeTime);
+        Analysis analysis = createAnalysis(analyzeTime);
 
         // when
-        boolean result = analysisEntity.isAlreadyAnalyzed();
+        boolean result = analysis.isAlreadyAnalyzed();
 
         // then
         assertThat(result).isTrue();
     }
 
-    private AnalysisEntity createAnalysis(LocalDate analyzeDate) {
-        AnalysisEntity analysisEntity = AnalysisEntity.builder()
+    private Analysis createAnalysis(LocalDate analyzeDate) {
+        Analysis analysisEntity = Analysis.builder()
                 .build();
         analysisEntity.changeFeelingStateAndAnalyzeTime(0, analyzeDate);
 
         return analysisEntity;
     }
 
-    private AnalysisEntity createAnalysis() {
+    private Analysis createAnalysis() {
 
-        return AnalysisEntity.builder()
+        return Analysis.builder()
                 .build();
     }
 
-    private AnswerEntity createAnswer(String content) {
-        return AnswerEntity.builder()
+    private Answer createAnswer(String content) {
+        return Answer.builder()
                 .content(content)
                 .build();
     }
