@@ -58,4 +58,13 @@ public class QuestionEntity extends BaseEntity {
     public boolean hasAnswer() {
         return answer != null;
     }
+
+    public Question toModel() {
+        return Question.builder()
+                .id(id)
+                .questionContent(questionContent)
+                .analysis(analysis.toModel())
+                .answer(answer.toModel())
+                .build();
+    }
 }

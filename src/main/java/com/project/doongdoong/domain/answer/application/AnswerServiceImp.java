@@ -45,7 +45,8 @@ public class AnswerServiceImp implements AnswerService {
         }
         VoiceEntity voiceEntity = saveVoiceFrom(file);
         AnswerEntity answerEntity = linkAndSaveToAnswer(voiceEntity, matchedQuestionEntity);
-        AnalysisEntity findAnalysisEntity = analysisRepository.findById(analysisId);
+        AnalysisEntity findAnalysis = analysisRepository.findById(analysisId)
+                .orElseThrow(() -> new AnalysisNotFoundException());
         answerEntity.connectAnalysis(findAnalysisEntity);
 
         return AnswerCreateResponseDto.builder()

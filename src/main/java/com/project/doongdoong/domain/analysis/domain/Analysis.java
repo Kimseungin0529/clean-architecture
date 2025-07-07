@@ -20,6 +20,7 @@ import java.util.List;
  * 이 부분은 아키텍처 리팩토링과 관련 없어 적용하지 않으나 추후 숙제 혹은 객체지향 시야를 기르기 위한 주석으로 남긴다.
  */
 @Getter
+@Builder
 public class Analysis {
     private Long id;
 
@@ -47,6 +48,7 @@ public class Analysis {
         this.questions = questions;
         this.user = user;
     }
+
 
     public boolean hasAllAnswer() {
         return questions.size() == answers.size();

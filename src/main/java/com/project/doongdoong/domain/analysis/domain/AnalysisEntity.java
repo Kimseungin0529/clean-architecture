@@ -93,4 +93,15 @@ public class AnalysisEntity extends BaseEntity {
         user.getAnalysisList().add(this);
     }
 
+    public Analysis toModel() {
+        return Analysis.builder()
+                .id(id)
+                .feelingState(feelingState)
+                .analyzedDate(analyzeTime)
+                .user(user.toModel())
+                .questions(questions.stream().map(QuestionEntity::toModel).toList())
+                .answers(answers.stream().map(AnswerEntity::toModel).toList())
+                .build();
+
+    }
 }

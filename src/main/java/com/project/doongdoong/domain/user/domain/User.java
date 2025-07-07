@@ -9,6 +9,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
+@Builder
 public class User {
 
     private Long id;

@@ -3,8 +3,8 @@ package com.project.doongdoong.domain.analysis.adapter.out.persistence;
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
 import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
 import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -25,23 +25,24 @@ public class AnalysisRepositoryImpl implements AnalysisRepository {
     private final AnalysisJpaRepository analysisJpaRepository;
 
     @Override
-    public AnalysisEntity findById(Long analysisId) {
-        return analysisJpaRepository.findById(analysisId).orElseThrow(AnalysisNotFoundException::new);
+    public Optional<Analysis> findById(Long analysisId) {
+        return analysisJpaRepository.findById(analysisId).map(AnalysisEntity::toModel);
     }
 
     @Override
-    public AnalysisEntity save(AnalysisEntity analysisEntity) {
-        return analysisJpaRepository.save(analysisEntity);
+    public Analysis save(AnalysisEntity analysisEntity) {
+        return analysisJpaRepository.save(analysisEntity).toModel();
     }
 
     @Override
-    public Optional<AnalysisEntity> findByUserAndId(UserEntity userEntity, Long analysisId) {
-        return analysisJpaRepository.findByUserAndId(userEntity, analysisId);
+    public Optional<Analysis> findByUserAndId(UserEntity userEntity, Long analysisId) {
+        return analysisJpaRepository.findByUserAndId(userEntity, analysisId).map(AnalysisEntity::toModel);
     }
 
     @Override
-    public Page<AnalysisEntity> findAllByUserOrderByCreatedTime(UserEntity userEntity, Pageable pageable) {
-        return analysisJpaRepository.findAllByUserOrderByCreatedTime(userEntity, pageable);
+    public Page<Analysis> findAllByUserOrderByCreatedTime(UserEntity userEntity, Pageable pageable) {
+        return analysisJpaRepository.findAllByUserOrderByCreatedTime(userEntity, pageable)
+                .map(AnalysisEntity::toModel);
     }
 
     @Override
@@ -50,18 +51,20 @@ public class AnalysisRepositoryImpl implements AnalysisRepository {
     }
 
     @Override
-    public Optional<AnalysisEntity> findFirstByUserOrderByAnalyzeTimeDesc(UserEntity userEntity) {
-        return analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(userEntity);
+    public Optional<Analysis> findFirstByUserOrderByAnalyzeTimeDesc(UserEntity userEntity) {
+        return analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(userEntity)
+                .map(AnalysisEntity::toModel);
     }
 
     @Override
-    public Optional<AnalysisEntity> findAnalysisWithQuestion(Long analysisId) {
-        return analysisJpaRepository.findAnalysisWithQuestion(analysisId);
+    public Optional<Analysis> findAnalysisWithQuestion(Long analysisId) {
+        return analysisJpaRepository.findAnalysisWithQuestion(analysisId)
+                .map(AnalysisEntity::toModel);
     }
 
     @Override
-    public Optional<AnalysisEntity> findAnalysis(Long id) {
-        return analysisJpaRepository.findAnalysis(id);
+    public Optional<Analysis> findAnalysis(Long id) {
+        return analysisJpaRepository.findAnalysis(id).map(AnalysisEntity::toModel);
     }
 
     @Override
@@ -70,12 +73,12 @@ public class AnalysisRepositoryImpl implements AnalysisRepository {
     }
 
     @Override
-    public Optional<AnalysisEntity> searchFullAnalysisBy(Long analysisId) {
-        return analysisJpaRepository.searchFullAnalysisBy(analysisId);
+    public Optional<Analysis> searchFullAnalysisBy(Long analysisId) {
+        return analysisJpaRepository.searchFullAnalysisBy(analysisId).map(AnalysisEntity::toModel);
     }
 
     @Override
-    public Optional<AnalysisEntity> searchAnalysisWithVoiceOfAnswer(Long analysisId) {
-        return analysisJpaRepository.searchAnalysisWithVoiceOfAnswer(analysisId);
+    public Optional<Analysis> searchAnalysisWithVoiceOfAnswer(Long analysisId) {
+        return analysisJpaRepository.searchAnalysisWithVoiceOfAnswer(analysisId).map(AnalysisEntity::toModel);
     }
 }

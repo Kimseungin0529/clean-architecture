@@ -55,4 +55,13 @@ public class AnswerEntity extends BaseEntity {
     public void changeContent(String content) {
         this.content = content;
     }
+
+    public Answer toModel() {
+        return Answer.builder()
+                .id(id)
+                .content(content)
+                .analysis(analysis.toModel())
+                .voice(voice.toModel())
+                .build();
+    }
 }

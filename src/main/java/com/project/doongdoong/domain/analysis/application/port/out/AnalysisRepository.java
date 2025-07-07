@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.analysis.application.port.out;
 
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.user.domain.UserEntity;
@@ -12,26 +13,26 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AnalysisRepository {
-    AnalysisEntity findById(Long analysisId);
+    Optional<Analysis> findById(Long analysisId);
 
-    AnalysisEntity save(AnalysisEntity analysisEntity);
+    Analysis save(AnalysisEntity analysisEntity);
 
-    Optional<AnalysisEntity> findByUserAndId(UserEntity userEntity, Long analysisId);
+    Optional<Analysis> findByUserAndId(UserEntity userEntity, Long analysisId);
 
-    Page<AnalysisEntity> findAllByUserOrderByCreatedTime(UserEntity userEntity, Pageable pageable);
+    Page<Analysis> findAllByUserOrderByCreatedTime(UserEntity userEntity, Pageable pageable);
 
     List<FeelingStateResponseDto> findAllByDateBetween(UserEntity userEntity, LocalDate startTime, LocalDate endTime);
 
-    Optional<AnalysisEntity> findFirstByUserOrderByAnalyzeTimeDesc(UserEntity userEntity);
+    Optional<Analysis> findFirstByUserOrderByAnalyzeTimeDesc(UserEntity userEntity);
 
-    Optional<AnalysisEntity> findAnalysisWithQuestion(Long analysisId);
+    Optional<Analysis> findAnalysisWithQuestion(Long analysisId);
 
-    Optional<AnalysisEntity> findAnalysis(Long id);
+    Optional<Analysis> findAnalysis(Long id);
 
     void deleteAnalysis(Long id);
 
-    Optional<AnalysisEntity> searchFullAnalysisBy(Long analysisId);
+    Optional<Analysis> searchFullAnalysisBy(Long analysisId);
 
-    Optional<AnalysisEntity> searchAnalysisWithVoiceOfAnswer(Long analysisId);
+    Optional<Analysis> searchAnalysisWithVoiceOfAnswer(Long analysisId);
 
 }

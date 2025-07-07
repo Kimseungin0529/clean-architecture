@@ -54,4 +54,14 @@ public class VoiceEntity extends BaseEntity {
         int index = originName.lastIndexOf('.');
         return originName.substring(index);
     }
+
+    public Voice toModel() {
+        return Voice.builder()
+                .voiceId(voiceId)
+                .originName(originName)
+                .storedName(storedName)
+                .accessUrl(accessUrl)
+                .questionContent(questionContent)
+                .build();
+    }
 }
