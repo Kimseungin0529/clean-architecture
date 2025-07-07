@@ -2,11 +2,16 @@ package com.project.doongdoong.domain.analysis.model;
 
 import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.answer.domain.Answer;
+import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
+import org.aspectj.weaver.patterns.TypePatternQuestions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.time.LocalDate;
+import java.util.List;
 
+import static com.project.doongdoong.domain.question.domain.QuestionContent.*;
 import static org.assertj.core.api.Assertions.assertThat;
 
 class AnalysisTest {
@@ -42,7 +47,12 @@ class AnalysisTest {
     @Test
     void hasAllAnswer() {
         // given
-        Analysis analysis = createAnalysis();
+        List<Question> questions = List.of(
+                createQuestion(FIXED_QUESTION1), createQuestion(FIXED_QUESTION2)
+                , createQuestion(UNFIXED_QUESTION1), createQuestion(UNFIXED_QUESTION2)
+        );
+        Analysis analysis = createAnalysis(questions);
+
         Answer answer1 = createAnswer("답변 내용1");
         Answer answer2 = createAnswer("답변 내용2");
         Answer answer3 = createAnswer("답변 내용3");
@@ -81,9 +91,10 @@ class AnalysisTest {
         return analysisEntity;
     }
 
-    private Analysis createAnalysis() {
+    private Analysis createAnalysis(List<Question> questions) {
 
         return Analysis.builder()
+                .questions(questions)
                 .build();
     }
 
@@ -91,6 +102,10 @@ class AnalysisTest {
         return Answer.builder()
                 .content(content)
                 .build();
+    }
+
+    private Question createQuestion(QuestionContent questionContent) {
+        return Question.of(questionContent);
     }
 
 }
