@@ -1,6 +1,6 @@
 package com.project.doongdoong.global.util.unit;
 
-import com.project.doongdoong.domain.user.service.UserService;
+import com.project.doongdoong.domain.user.application.port.in.UserService;
 import com.project.doongdoong.global.dto.request.LogoutDto;
 import com.project.doongdoong.global.dto.response.TokenDto;
 import com.project.doongdoong.global.util.JwtProvider;

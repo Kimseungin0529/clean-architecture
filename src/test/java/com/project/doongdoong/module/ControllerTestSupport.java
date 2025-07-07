@@ -1,14 +1,14 @@
 package com.project.doongdoong.module;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.project.doongdoong.domain.analysis.controller.AnalysisController;
-import com.project.doongdoong.domain.analysis.service.AnalysisService;
-import com.project.doongdoong.domain.answer.service.AnswerService;
-import com.project.doongdoong.domain.counsel.controller.CounselController;
-import com.project.doongdoong.domain.counsel.service.CounselService;
-import com.project.doongdoong.domain.counsel.service.CounselStatisticsService;
-import com.project.doongdoong.domain.user.controller.UserController;
-import com.project.doongdoong.domain.user.service.UserService;
+import com.project.doongdoong.domain.analysis.adapter.in.web.AnalysisController;
+import com.project.doongdoong.domain.analysis.application.port.in.AnalysisService;
+import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
+import com.project.doongdoong.domain.counsel.adapter.in.web.CounselController;
+import com.project.doongdoong.domain.counsel.application.port.in.CounselService;
+import com.project.doongdoong.domain.counsel.application.port.in.CounselStatisticsService;
+import com.project.doongdoong.domain.user.adapter.in.web.UserController;
+import com.project.doongdoong.domain.user.application.port.in.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;

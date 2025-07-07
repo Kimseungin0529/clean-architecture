@@ -1,7 +1,7 @@
 package com.project.doongdoong.global.util;
 
-import com.project.doongdoong.domain.counsel.model.CounselRank;
-import com.project.doongdoong.domain.counsel.model.CounselType;
+import com.project.doongdoong.domain.counsel.domain.CounselRank;
+import com.project.doongdoong.domain.counsel.domain.CounselType;
 
 import java.util.List;
 

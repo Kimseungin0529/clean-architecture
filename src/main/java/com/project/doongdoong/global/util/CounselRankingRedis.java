@@ -1,8 +1,8 @@
 package com.project.doongdoong.global.util;
 
-import com.project.doongdoong.domain.counsel.model.CounselCacheKey;
-import com.project.doongdoong.domain.counsel.model.CounselRank;
-import com.project.doongdoong.domain.counsel.model.CounselType;
+import com.project.doongdoong.domain.counsel.domain.CounselCacheKey;
+import com.project.doongdoong.domain.counsel.domain.CounselRank;
+import com.project.doongdoong.domain.counsel.domain.CounselType;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ZSetOperations;

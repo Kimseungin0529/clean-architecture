@@ -1,6 +1,6 @@
 package com.project.doongdoong.global.util;
 
-import com.project.doongdoong.domain.user.model.SocialIdentifier;
+import com.project.doongdoong.domain.user.domain.SocialIdentifier;
 import com.project.doongdoong.global.dto.response.TokenDto;
 import com.project.doongdoong.global.exception.MissingRoleClaimException;
 import com.project.doongdoong.global.exception.MissingSocialTypeClaimException;
@@ -14,7 +14,6 @@ import jakarta.annotation.PostConstruct;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.hibernate.mapping.Join;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
