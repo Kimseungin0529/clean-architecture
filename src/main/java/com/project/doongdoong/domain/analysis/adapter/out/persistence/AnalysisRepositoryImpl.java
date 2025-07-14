@@ -31,7 +31,7 @@ public class AnalysisRepositoryImpl implements AnalysisRepository {
 
     @Override
     public Analysis save(Analysis analysis) {
-        return analysisJpaRepository.save(AnalysisEntity.fromModel(analysis).toModel();
+        return analysisJpaRepository.save(AnalysisEntity.fromModel(analysis)).toModel();
     }
 
     @Override

@@ -15,7 +15,7 @@ import java.util.Optional;
 public interface AnalysisRepository {
     Optional<Analysis> findById(Long analysisId);
 
-    Analysis save(AnalysisEntity analysisEntity);
+    Analysis save(Analysis analysis);
 
     Optional<Analysis> findByUserAndId(UserEntity userEntity, Long analysisId);
 
