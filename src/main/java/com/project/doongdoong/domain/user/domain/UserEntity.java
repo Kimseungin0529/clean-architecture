@@ -3,10 +3,7 @@ package com.project.doongdoong.domain.user.domain;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -16,6 +13,8 @@ import java.util.List;
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
 public class UserEntity extends BaseEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -47,6 +46,17 @@ public class UserEntity extends BaseEntity {
         this.nickname = nickname;
         this.email = email;
         this.socialType = socialType;
+    }
+
+    public static UserEntity fromModel(User user) {
+        return UserEntity.builder()
+                .id(user.getId())
+                .email(user.getEmail())
+                .nickname(user.getNickname())
+                .socialId(user.getSocialId())
+                .socialType(user.getSocialType())
+                .roles(user.getRoles())
+                .build();
     }
 
     public void changeEmail(String email) {

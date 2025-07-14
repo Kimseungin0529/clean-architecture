@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.answer.adapter.out.persistence.repository;
 
 import com.project.doongdoong.domain.answer.application.port.out.AnswerRepository;
+import com.project.doongdoong.domain.answer.domain.Answer;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -11,9 +12,8 @@ public class AnswerRepositoryImpl implements AnswerRepository {
     private final AnswerJpaRepository answerJpaRepository;
 
     @Override
-    public AnswerEntity save(AnswerEntity answerEntity) {
-        return answerJpaRepository.save(answerEntity);
-    }
+    public Answer save(Answer answer) {
+        return answerJpaRepository.save(answer);
 
     @Override
     public void deleteAnswersById(Long analysisId) {

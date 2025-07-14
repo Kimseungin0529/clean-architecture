@@ -3,6 +3,7 @@ package com.project.doongdoong.domain.analysis.domain;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
+import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -61,6 +62,15 @@ public class AnalysisEntity extends BaseEntity {
         this.feelingState = 0;
         this.questions = questionEntities;
         this.user = userEntity;
+    }
+
+    public static AnalysisEntity fromModel(Analysis analysis) {
+        return AnalysisEntity.builder()
+                .userEntity(UserEntity.fromModel(analysis.getUser()))
+                .questionEntities(analysis.getQuestions()
+                        .stream()
+                        .map(question -> QuestionEntity.fromModel(question)))
+                .build();
     }
 
     public boolean hasAllAnswer() {
