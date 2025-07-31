@@ -19,17 +19,17 @@ public class Answer {
         this.voice = voice;
     }
 
-    public static Answer of(String content, Voice voice) {
+    public static Answer of(Voice voice) {
 
         return Answer.builder()
-                .content(content)
                 .voice(voice)
                 .build();
     }
 
     public static Answer of(Long id, String content, Voice voice) {
-        Answer answer = Answer.of(content, voice);
+        Answer answer = Answer.of(voice);
         answer.id = id;
+        answer.content = content;
         return answer;
     }
 

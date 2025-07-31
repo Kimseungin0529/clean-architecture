@@ -1,19 +1,19 @@
 package com.project.doongdoong.domain.answer.application;
 
 import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.answer.adapter.in.dto.AnswerCreateResponseDto;
 import com.project.doongdoong.domain.answer.application.port.in.AnswerService;
 import com.project.doongdoong.domain.answer.application.port.out.AnswerRepository;
-import com.project.doongdoong.domain.answer.domain.AnswerEntity;
+import com.project.doongdoong.domain.answer.domain.Answer;
 import com.project.doongdoong.domain.answer.exception.AnswerConflictException;
-import com.project.doongdoong.domain.question.domain.QuestionEntity;
+import com.project.doongdoong.domain.question.domain.Question;
 import com.project.doongdoong.domain.question.exception.NoMatchingQuestionException;
 import com.project.doongdoong.domain.voice.adapter.in.dto.VoiceDetailResponseDto;
 import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
-import com.project.doongdoong.domain.voice.domain.VoiceEntity;
+import com.project.doongdoong.domain.voice.domain.Voice;
 import com.project.doongdoong.domain.voice.exception.VoiceNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -38,43 +38,36 @@ public class AnswerServiceImp implements AnswerService {
     @Transactional
     @Override
     public AnswerCreateResponseDto createAnswer(Long analysisId, MultipartFile file, Long questionId) {
-        QuestionEntity matchedQuestionEntity = findQuestionFromAnalysis(analysisId, questionId);
+        Question matchedQuestion = findQuestionFromAnalysis(analysisId, questionId);
 
-        if (matchedQuestionEntity.hasAnswer()) { // 이미 설정된 question - answer이 존재할 때 다시 접근하려고 하면 예외 발생
+        if (matchedQuestion.hasAnswer()) { // 이미 설정된 question - answer이 존재할 때 다시 접근하려고 하면 예외 발생
             throw new AnswerConflictException();
         }
-        VoiceEntity voiceEntity = saveVoiceFrom(file);
-        AnswerEntity answerEntity = linkAndSaveToAnswer(voiceEntity, matchedQuestionEntity);
-        AnalysisEntity findAnalysis = analysisRepository.findById(analysisId)
-                .orElseThrow(() -> new AnalysisNotFoundException());
-        answerEntity.connectAnalysis(findAnalysisEntity);
+        Voice voice = saveVoiceFrom(file);
+        Answer answer = linkWith(voice, matchedQuestion);
+        answerRepository.save(answer);
 
         return AnswerCreateResponseDto.builder()
-                .answerId(answerEntity.getId())
+                .answerId(answer.getId())
                 .build();
     }
 
-    private AnswerEntity linkAndSaveToAnswer(VoiceEntity voiceEntity, QuestionEntity matchedQuestionEntity) {
-        AnswerEntity answerEntity = AnswerEntity.builder()
-                .content(null)
-                .voice(voiceEntity)
-                .build();
-
-        matchedQuestionEntity.connectAnswer(answerEntity);
-        answerRepository.save(answerEntity);
-        return answerEntity;
-    }
-
-    private VoiceEntity saveVoiceFrom(MultipartFile file) {
+    private Voice saveVoiceFrom(MultipartFile file) {
         VoiceDetailResponseDto voiceDto = voiceService.saveVoice(file);
         return voiceRepository.findVoiceByAccessUrl(voiceDto.getAccessUrl()).orElseThrow(VoiceNotFoundException::new);
     }
 
-    private QuestionEntity findQuestionFromAnalysis(Long analysisId, Long questionId) {
-        AnalysisEntity findAnalysisEntity = analysisRepository.findAnalysisWithQuestion(analysisId)
+    private Answer linkWith(Voice voice, Question matchedQuestion) {
+        Answer answer = Answer.of(voice);
+        matchedQuestion.connectAnswer(answer);
+        return answer;
+    }
+
+    private Question findQuestionFromAnalysis(Long analysisId, Long questionId) {
+        Analysis findAnalysis = analysisRepository.findAnalysisWithQuestion(analysisId)
                 .orElseThrow(AnalysisNotFoundException::new);
 
-        return findAnalysisEntity.getQuestions().stream()
+        return findAnalysis.getQuestions().stream()
                 .filter(question -> question.getId() == (long) questionId)
                 .findFirst().orElseThrow(NoMatchingQuestionException::new);
     }
