@@ -2,9 +2,7 @@ package com.project.doongdoong.domain.analysis.application.port.out;
 
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -17,13 +15,13 @@ public interface AnalysisRepository {
 
     Analysis save(Analysis analysis);
 
-    Optional<Analysis> findByUserAndId(UserEntity userEntity, Long analysisId);
+    Optional<Analysis> findByUserAndId(User user, Long analysisId);
 
-    Page<Analysis> findAllByUserOrderByCreatedTime(UserEntity userEntity, Pageable pageable);
+    Page<Analysis> findAllByUserOrderByCreatedTime(User user, Pageable pageable);
 
-    List<FeelingStateResponseDto> findAllByDateBetween(UserEntity userEntity, LocalDate startTime, LocalDate endTime);
+    List<FeelingStateResponseDto> findAllByDateBetween(User user, LocalDate startTime, LocalDate endTime);
 
-    Optional<Analysis> findFirstByUserOrderByAnalyzeTimeDesc(UserEntity userEntity);
+    Optional<Analysis> findFirstByUserOrderByAnalyzeTimeDesc(User user);
 
     Optional<Analysis> findAnalysisWithQuestion(Long analysisId);
 

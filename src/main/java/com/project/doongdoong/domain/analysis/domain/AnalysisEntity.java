@@ -3,7 +3,6 @@ package com.project.doongdoong.domain.analysis.domain;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
-import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -105,7 +104,7 @@ public class AnalysisEntity extends BaseEntity {
     }
 
     public Analysis toModel() {
-        return Analysis.of(
+        return Analysis.ofAll(
                 id, feelingState, analyzeTime,
                 user.toModel(),
                 questions.stream().map(QuestionEntity::toModel).toList()

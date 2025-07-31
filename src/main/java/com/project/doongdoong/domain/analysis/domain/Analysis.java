@@ -1,14 +1,16 @@
 package com.project.doongdoong.domain.analysis.domain;
 
-import com.project.doongdoong.domain.answer.domain.Answer;
 import com.project.doongdoong.domain.question.domain.Question;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.user.domain.User;
+import com.project.doongdoong.domain.voice.domain.Voice;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * [Analysis 도메인 객체지행 의견]
@@ -39,7 +41,7 @@ public class Analysis {
                 .build();
     }
 
-    public static Analysis of(Long id, double feelingState, LocalDate analyzedDate, User user, List<Question> questions) {
+    public static Analysis ofAll(Long id, double feelingState, LocalDate analyzedDate, User user, List<Question> questions) {
         Analysis analysis = Analysis.of(user, questions);
 
         analysis.id = id;
@@ -73,4 +75,7 @@ public class Analysis {
         return this.analyzedDate != null;
     }
 
+    public void linkWith(Map<QuestionContent, Voice> voicesMap) {
+
+    }
 }

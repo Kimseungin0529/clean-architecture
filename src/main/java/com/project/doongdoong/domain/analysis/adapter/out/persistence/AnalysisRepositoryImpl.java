@@ -5,6 +5,7 @@ import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository
 import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -35,19 +36,19 @@ public class AnalysisRepositoryImpl implements AnalysisRepository {
     }
 
     @Override
-    public Optional<Analysis> findByUserAndId(UserEntity userEntity, Long analysisId) {
-        return analysisJpaRepository.findByUserAndId(userEntity, analysisId).map(AnalysisEntity::toModel);
+    public Optional<Analysis> findByUserAndId(User user, Long analysisId) {
+        return analysisJpaRepository.findByUserAndId(UserEntity.fromModel(user), analysisId).map(AnalysisEntity::toModel);
     }
 
     @Override
-    public Page<Analysis> findAllByUserOrderByCreatedTime(UserEntity userEntity, Pageable pageable) {
-        return analysisJpaRepository.findAllByUserOrderByCreatedTime(userEntity, pageable)
+    public Page<Analysis> findAllByUserOrderByCreatedTime(User user, Pageable pageable) {
+        return analysisJpaRepository.findAllByUserOrderByCreatedTime(UserEntity.fromModel(user), pageable)
                 .map(AnalysisEntity::toModel);
     }
 
     @Override
-    public List<FeelingStateResponseDto> findAllByDateBetween(UserEntity userEntity, LocalDate startTime, LocalDate endTime) {
-        return analysisJpaRepository.findAllByDateBetween(userEntity, startTime, endTime);
+    public List<FeelingStateResponseDto> findAllByDateBetween(User user, LocalDate startTime, LocalDate endTime) {
+        return analysisJpaRepository.findAllByDateBetween(UserEntity.fromModel(user), startTime, endTime);
     }
 
     @Override
