@@ -32,8 +32,6 @@ public class Analysis {
 
     private List<Question> questions = new ArrayList<>();
 
-    private List<Answer> answers = new ArrayList<>();
-
     public static Analysis of(User user, List<Question> questions) {
 
         return Analysis.builder()
@@ -47,11 +45,6 @@ public class Analysis {
         this.feelingState = 0;
         this.questions = questions;
         this.user = user;
-    }
-
-
-    public boolean hasAllAnswer() {
-        return questions.size() == answers.size();
     }
 
 

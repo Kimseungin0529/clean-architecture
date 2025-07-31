@@ -23,14 +23,6 @@ public class Answer {
         this.voice = voice;
     }
 
-    public void connectAnalysis(Analysis analysis) {
-        if (this.analysis != null) {
-            return;
-        }
-        this.analysis = analysis;
-        analysis.getAnswers().add(this);
-    }
-
     public void disconnectWithVoice() {
         this.voice = null;
     }

@@ -26,7 +26,6 @@ public class User {
 
     private List<String> roles = new ArrayList<>();
 
-    private List<Analysis> analysisList = new ArrayList<>();
 
     @Builder
     public User(String socialId, String nickname, String email, SocialType socialType) {
