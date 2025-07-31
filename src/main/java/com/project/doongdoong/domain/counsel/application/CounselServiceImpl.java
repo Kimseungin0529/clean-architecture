@@ -89,22 +89,6 @@ public class CounselServiceImpl implements CounselService {
 
     }
 
-    private HashMap<String, Object> setupParameters(Counsel counsel) {
-        HashMap<String, Object> parameters = new HashMap<String, Object>(); // 외부 API request 설정
-        parameters.put("question", counsel.getQuestion()); // 고민은 필수
-        parameters.put("category", counsel.getCounselType().getDescription());
-
-
-        Optional.ofNullable(counsel.getAnalysis()) // 분석 -> 상담 으로 연결되는 경우, 분석에 대한 답변 항목 추가
-                .ifPresent(analysis -> {
-                    String content = getConcatenatedAnswerText(analysis);
-                    parameters.put("analysisContent", content);
-                });
-
-        parameters.putIfAbsent("analysisContent", ""); // 없는 경우, 빈 문자열값
-        return parameters;
-    }
-
     @Override
     public CounselDetailResponse findCounselContent(String uniqueValue, Long counselId) {
         SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
@@ -163,6 +147,22 @@ public class CounselServiceImpl implements CounselService {
         if (findAnalysis.isUsed()) {
             throw new CounselAlreadyProcessedException();
         }
+    }
+
+    private HashMap<String, Object> setupParameters(Counsel counsel) {
+        HashMap<String, Object> parameters = new HashMap<String, Object>(); // 외부 API request 설정
+        parameters.put("question", counsel.getQuestion()); // 고민은 필수
+        parameters.put("category", counsel.getCounselType().getDescription());
+
+
+        Optional.ofNullable(counsel.getAnalysis()) // 분석 -> 상담 으로 연결되는 경우, 분석에 대한 답변 항목 추가
+                .ifPresent(analysis -> {
+                    String content = getConcatenatedAnswerText(analysis);
+                    parameters.put("analysisContent", content);
+                });
+
+        parameters.putIfAbsent("analysisContent", ""); // 없는 경우, 빈 문자열값
+        return parameters;
     }
 
     private int convertPageIndexFrom(int pageNumber) {
