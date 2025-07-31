@@ -4,28 +4,22 @@ import com.project.doongdoong.domain.analysis.adapter.in.dto.*;
 import com.project.doongdoong.domain.analysis.application.port.in.AnalysisService;
 import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.analysis.exception.AllAnswersNotFoundException;
 import com.project.doongdoong.domain.analysis.exception.AlreadyAnalyzedException;
 import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
 import com.project.doongdoong.domain.answer.application.port.out.AnswerRepository;
 import com.project.doongdoong.domain.answer.domain.Answer;
-import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.domain.question.application.port.in.QuestionProvidable;
 import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
 import com.project.doongdoong.domain.question.domain.Question;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
-import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.domain.user.domain.SocialIdentifier;
 import com.project.doongdoong.domain.user.domain.User;
-import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import com.project.doongdoong.domain.voice.domain.Voice;
-import com.project.doongdoong.domain.voice.domain.VoiceEntity;
-import com.project.doongdoong.domain.voice.exception.VoiceNotFoundException;
 import com.project.doongdoong.global.exception.servererror.ExternalApiCallException;
 import com.project.doongdoong.global.util.WebClientUtil;
 import lombok.RequiredArgsConstructor;
@@ -36,10 +30,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -77,15 +68,25 @@ public class AnalysisServiceImp implements AnalysisService {
 
         Map<QuestionContent, Voice> voicesMap = generateVoicesMapFor(questions);
 
-        List<Long> questionIds = questions.stream().map(Question::getId)
-                .toList();
-        List<QuestionContent> questionTexts = questions.stream().map(Question::getQuestionContent)
-                .toList();
+        List<Long> questionIds = getQuestionIdsFrom(questions);
+        List<QuestionContent> questionTexts = getQuestionTextsFrom(questions);
         List<String> accessUrls = extractAccessUrlsFrom(questions, voicesMap);
 
         analysisRepository.save(analysis);
 
         return AnalysisCreateResponseDto.of(analysis.getId(), questionIds, questionTexts, accessUrls);
+    }
+
+    private static List<QuestionContent> getQuestionTextsFrom(List<Question> questions) {
+        return questions.stream()
+                .map(Question::getQuestionContent)
+                .toList();
+    }
+
+    private static List<Long> getQuestionIdsFrom(List<Question> questions) {
+        return questions.stream()
+                .map(Question::getId)
+                .toList();
     }
 
     private List<String> extractAccessUrlsFrom(List<Question> questions, Map<QuestionContent, Voice> voicesMap) {
