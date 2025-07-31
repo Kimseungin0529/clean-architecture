@@ -69,7 +69,8 @@ public class AnalysisEntity extends BaseEntity {
                 .userEntity(UserEntity.fromModel(analysis.getUser()))
                 .questionEntities(analysis.getQuestions()
                         .stream()
-                        .map(question -> QuestionEntity.fromModel(question)))
+                        .map(question -> QuestionEntity.fromModel(question))
+                        .toList())
                 .build();
     }
 
@@ -104,14 +105,10 @@ public class AnalysisEntity extends BaseEntity {
     }
 
     public Analysis toModel() {
-        return Analysis.builder()
-                .id(id)
-                .feelingState(feelingState)
-                .analyzedDate(analyzeTime)
-                .user(user.toModel())
-                .questions(questions.stream().map(QuestionEntity::toModel).toList())
-                .answers(answers.stream().map(AnswerEntity::toModel).toList())
-                .build();
-
+        return Analysis.of(
+                id, feelingState, analyzeTime,
+                user.toModel(),
+                questions.stream().map(QuestionEntity::toModel).toList()
+        );
     }
 }

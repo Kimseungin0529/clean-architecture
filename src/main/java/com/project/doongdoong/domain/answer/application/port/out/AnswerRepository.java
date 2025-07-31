@@ -1,10 +1,10 @@
 package com.project.doongdoong.domain.answer.application.port.out;
 
-import com.project.doongdoong.domain.answer.domain.AnswerEntity;
+import com.project.doongdoong.domain.answer.domain.Answer;
 
 public interface AnswerRepository {
 
-    AnswerEntity save(AnswerEntity answerEntity);
+    Answer save(Answer answer);
 
     void deleteAnswersById(Long analysisId);
 

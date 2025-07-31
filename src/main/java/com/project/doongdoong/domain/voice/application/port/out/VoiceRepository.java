@@ -1,19 +1,19 @@
 package com.project.doongdoong.domain.voice.application.port.out;
 
 import com.project.doongdoong.domain.question.domain.QuestionContent;
-import com.project.doongdoong.domain.voice.domain.VoiceEntity;
+import com.project.doongdoong.domain.voice.domain.Voice;
 
 import java.util.List;
 import java.util.Optional;
 
 public interface VoiceRepository {
-    VoiceEntity save(VoiceEntity voiceEntity);
+    Voice save(Voice voice);
 
-    Optional<VoiceEntity> findVoiceByQuestionContent(QuestionContent questionContent);
+    Optional<Voice> findVoiceByQuestionContent(QuestionContent questionContent);
 
-    List<VoiceEntity> findVoiceAllByQuestionContentIn(List<QuestionContent> questionContent);
+    List<Voice> findVoiceAllByQuestionContentIn(List<QuestionContent> questionContent);
 
-    Optional<VoiceEntity> findVoiceByAccessUrl(String accessUrl);
+    Optional<Voice> findVoiceByAccessUrl(String accessUrl);
 
     void deleteVoicesByUrls(List<Long> voiceIds);
 }

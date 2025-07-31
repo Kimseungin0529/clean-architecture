@@ -38,6 +38,13 @@ public class VoiceEntity extends BaseEntity {
         this.accessUrl = "";
         this.questionContent = questionContent;
     }
+
+    public static VoiceEntity fromModel(Voice voice) {
+        return VoiceEntity.commonBuilder()
+                .originName(voice.getOriginName())
+                .build();
+    }
+
     public void changeAccessUrl(String accessUrl) {
         this.accessUrl = accessUrl;
     }
@@ -56,12 +63,9 @@ public class VoiceEntity extends BaseEntity {
     }
 
     public Voice toModel() {
-        return Voice.builder()
-                .voiceId(voiceId)
-                .originName(originName)
-                .storedName(storedName)
-                .accessUrl(accessUrl)
-                .questionContent(questionContent)
-                .build();
+        return Voice.ofAll(voiceId,
+                originName,
+                storedName,
+                questionContent);
     }
 }

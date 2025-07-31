@@ -28,7 +28,7 @@ public class VoiceInitializeProvider {
     public void initQuestionVoiceFiles() {
 
         for (QuestionContent questionContent : QuestionContent.values()) {
-            Optional<VoiceEntity> existingVoice = voiceRepository.findVoiceByQuestionContent(questionContent);
+            Optional<Voice> existingVoice = voiceRepository.findVoiceByQuestionContent(questionContent);
 
             if (existingVoice.isEmpty()) {
                 byte[] audioContent = ttsConverter.convertTextToSpeech(questionContent.getText());

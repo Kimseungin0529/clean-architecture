@@ -7,7 +7,6 @@ import lombok.Getter;
 import java.util.UUID;
 
 @Getter
-@Builder
 public class Voice {
 
     private Long voiceId;
@@ -29,11 +28,24 @@ public class Voice {
     }
 
     @Builder(builderClassName = "InitVoiceContentBuilder", builderMethodName = "initVoiceContentBuilder")
-    public Voice(String originName, QuestionContent questionContent) {
+    private Voice(String originName, QuestionContent questionContent) {
         this.originName = originName;
         this.storedName = gainRandomFileName() + originName;
         this.accessUrl = "";
         this.questionContent = questionContent;
+    }
+
+    public static Voice of(String originName) {
+        return new Voice(originName);
+    }
+
+    public static Voice ofAll(Long voiceId, String originName, String accessUrl, QuestionContent questionContent) {
+        Voice voice = of(originName);
+        voice.voiceId = voiceId;
+        voice.accessUrl = accessUrl;
+        voice.questionContent = questionContent;
+
+        return voice;
     }
 
     public void changeAccessUrl(String accessUrl) {

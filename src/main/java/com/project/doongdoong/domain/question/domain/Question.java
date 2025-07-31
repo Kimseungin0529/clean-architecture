@@ -6,7 +6,6 @@ import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class Question {
 
     private Long id;
@@ -21,6 +20,13 @@ public class Question {
 
     public static Question of(QuestionContent questionContent) {
         return new Question(questionContent);
+    }
+
+    public static Question ofAll(Long id, QuestionContent questionContent, Answer answer) {
+        Question question = Question.of(questionContent);
+        question.id = id;
+        question.answer = answer;
+        return question;
     }
 
 

@@ -40,6 +40,13 @@ public class AnswerEntity extends BaseEntity {
         this.voice = voice;
     }
 
+    public static AnswerEntity fromModel(Answer answer) {
+        return AnswerEntity.builder()
+                .content(answer.getContent())
+                .voice(VoiceEntity.fromModel(answer.getVoice()))
+                .build();
+    }
+
     public void connectAnalysis(AnalysisEntity analysisEntity) {
         if (this.analysis != null) {
             return;
@@ -57,11 +64,6 @@ public class AnswerEntity extends BaseEntity {
     }
 
     public Answer toModel() {
-        return Answer.builder()
-                .id(id)
-                .content(content)
-                .analysis(analysis.toModel())
-                .voice(voice.toModel())
-                .build();
+        return Answer.of(id, content, voice.toModel());
     }
 }

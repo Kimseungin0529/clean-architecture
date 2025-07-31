@@ -20,7 +20,6 @@ import java.util.List;
  * 이 부분은 아키텍처 리팩토링과 관련 없어 적용하지 않으나 추후 숙제 혹은 객체지향 시야를 기르기 위한 주석으로 남긴다.
  */
 @Getter
-@Builder
 public class Analysis {
     private Long id;
 
@@ -38,6 +37,16 @@ public class Analysis {
                 .user(user)
                 .questions(questions)
                 .build();
+    }
+
+    public static Analysis of(Long id, double feelingState, LocalDate analyzedDate, User user, List<Question> questions) {
+        Analysis analysis = Analysis.of(user, questions);
+
+        analysis.id = id;
+        analysis.feelingState = feelingState;
+        analysis.analyzedDate = analyzedDate;
+
+        return analysis;
     }
 
     @Builder

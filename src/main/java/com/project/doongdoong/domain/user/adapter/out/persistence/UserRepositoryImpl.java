@@ -2,6 +2,7 @@ package com.project.doongdoong.domain.user.adapter.out.persistence;
 
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
+import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -15,17 +16,19 @@ public class UserRepositoryImpl implements UserRepository {
     private final UserJpaRepository userJpaRepository;
 
     @Override
-    public UserEntity save(UserEntity userEntity) {
-        return userJpaRepository.save(userEntity);
+    public User save(User user) {
+        return userJpaRepository.save(UserEntity.fromModel(user)).toModel();
     }
 
     @Override
-    public Optional<UserEntity> findBySocialTypeAndSocialId(SocialType socialType, String socialId) {
-        return userJpaRepository.findBySocialTypeAndSocialId(socialType, socialId);
+    public Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId) {
+        return userJpaRepository.findBySocialTypeAndSocialId(socialType, socialId)
+                .map(UserEntity::toModel);
     }
 
     @Override
-    public Optional<UserEntity> findUserWithAnalysisBySocialTypeAndSocialId(SocialType socialType, String socialId) {
-        return userJpaRepository.findUserWithAnalysisBySocialTypeAndSocialId(socialType, socialId);
+    public Optional<User> findUserWithAnalysisBySocialTypeAndSocialId(SocialType socialType, String socialId) {
+        return userJpaRepository.findUserWithAnalysisBySocialTypeAndSocialId(socialType, socialId)
+                .map(UserEntity::toModel);
     }
 }

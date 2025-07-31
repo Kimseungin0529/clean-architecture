@@ -1,6 +1,7 @@
 package com.project.doongdoong.domain.question.service;
 
 import com.project.doongdoong.domain.question.application.port.in.QuestionProvidable;
+import com.project.doongdoong.domain.question.domain.Question;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;
@@ -22,9 +23,9 @@ public class QuestionEntityProviderTest extends IntegrationSupportTest {
         //given
         int expectedTotalSize = 4;
         //when
-        List<QuestionEntity> randomQuestionEntities = questionProvider.createRandomQuestions();
+        List<Question> result = questionProvider.createRandomQuestions();
         //then
-        assertThat(randomQuestionEntities)
+        assertThat(result)
                 .hasSize(expectedTotalSize)
                 .extracting(question -> question.getQuestionContent().isFixedQuestion())
                 .containsExactly(true, true, false, false);
@@ -35,7 +36,7 @@ public class QuestionEntityProviderTest extends IntegrationSupportTest {
     @Test
     void createFixedQuestion() {
         // given & when
-        QuestionEntity result = questionProvider.createFixedQuestion();
+        Question result = questionProvider.createFixedQuestion();
         // then
         assertThat(result.getQuestionContent().isFixedQuestion()).isEqualTo(true);
     }
@@ -44,7 +45,7 @@ public class QuestionEntityProviderTest extends IntegrationSupportTest {
     @Test
     void createUnFixedQuestion() {
         // given & when
-        QuestionEntity result = questionProvider.createUnFixedQuestion();
+        Question result = questionProvider.createUnFixedQuestion();
         // then
         assertThat(result.getQuestionContent().isFixedQuestion()).isEqualTo(false);
     }

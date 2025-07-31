@@ -93,15 +93,6 @@ public class UserEntity extends BaseEntity {
 
 
     public User toModel() {
-        return User.builder()
-                .id(id)
-                .socialId(socialId)
-                .nickname(nickname)
-                .email(email)
-                .socialType(socialType)
-                .emotionGrowth(emotionGrowth)
-                .roles(roles)
-                .analysisList(analysisList.stream().map(AnalysisEntity::toModel).toList())
-                .build();
+        return User.ofAll(id, socialId, nickname, email, socialType, emotionGrowth, roles);
     }
 }

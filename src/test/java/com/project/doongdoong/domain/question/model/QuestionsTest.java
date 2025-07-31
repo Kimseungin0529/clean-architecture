@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.question.model;
 
+import com.project.doongdoong.domain.question.domain.Question;
 import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.question.domain.Questions;
 import org.junit.jupiter.api.BeforeEach;
@@ -15,16 +16,16 @@ import static org.assertj.core.api.Assertions.assertThatThrownBy;
 class QuestionsTest {
 
     Questions questions;
-    List<QuestionEntity> questionEntityList = List.of(
-            QuestionEntity.of(FIXED_QUESTION1),
-            QuestionEntity.of(FIXED_QUESTION5),
-            QuestionEntity.of(UNFIXED_QUESTION2),
-            QuestionEntity.of(UNFIXED_QUESTION4)
+    List<Question> questionList = List.of(
+            Question.of(FIXED_QUESTION1),
+            Question.of(FIXED_QUESTION5),
+            Question.of(UNFIXED_QUESTION2),
+            Question.of(UNFIXED_QUESTION4)
     );
 
     @BeforeEach
     void setUp() {
-        questions = Questions.from(questionEntityList);
+        questions = Questions.from(questionList);
     }
 
     @DisplayName("질문 리스트에서 임의로 지정한 크기만큼 질문을 반환한다.")
@@ -62,13 +63,13 @@ class QuestionsTest {
     @Test
     void createRandomQuestions() {
         // given
-        QuestionEntity questionEntity1 = QuestionEntity.of(FIXED_QUESTION2);
-        QuestionEntity questionEntity2 = QuestionEntity.of(FIXED_QUESTION3);
-        QuestionEntity questionEntity3 = QuestionEntity.of(UNFIXED_QUESTION1);
+        Question questionEntity1 = Question.of(FIXED_QUESTION2);
+        Question questionEntity2 = Question.of(FIXED_QUESTION3);
+        Question questionEntity3 = Question.of(UNFIXED_QUESTION1);
         Questions nextQuestions = Questions.from(List.of(questionEntity1, questionEntity2, questionEntity3));
 
         // when
-        List<QuestionEntity> result = questions.addQuestions(nextQuestions);
+        List<Question> result = questions.addQuestions(nextQuestions);
 
         // then
         assertThat(result)

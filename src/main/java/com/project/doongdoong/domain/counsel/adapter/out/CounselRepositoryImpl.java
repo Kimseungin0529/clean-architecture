@@ -1,7 +1,9 @@
 package com.project.doongdoong.domain.counsel.adapter.out;
 
 import com.project.doongdoong.domain.counsel.application.port.out.CounselRepository;
+import com.project.doongdoong.domain.counsel.domain.Counsel;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
+import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
@@ -18,18 +20,19 @@ public class CounselRepositoryImpl implements CounselRepository {
     private final CounselJpaRepository counselJpaRepository;
 
     @Override
-    public CounselEntity save(CounselEntity counselEntity) {
-        return counselJpaRepository.save(counselEntity);
+    public Counsel save(Counsel counsel) {
+        return counselJpaRepository.save(CounselEntity.fromModel(counsel)).toModel();
     }
 
     @Override
-    public Optional<CounselEntity> findWithAnalysisById(Long counselId) {
-        return counselJpaRepository.findById(counselId);
+    public Optional<Counsel> findWithAnalysisById(Long counselId) {
+        return counselJpaRepository.findById(counselId).map(counselEntity -> counselEntity.toModel());
     }
 
     @Override
-    public Page<CounselEntity> searchPageCounselList(UserEntity userEntity, Pageable pageable) {
-        return counselJpaRepository.searchPageCounselList(userEntity, pageable);
+    public Page<Counsel> searchPageCounselList(User user, Pageable pageable) {
+        return counselJpaRepository.searchPageCounselList(UserEntity.fromModel(user), pageable)
+                .map(CounselEntity::toModel);
     }
 
     @Override

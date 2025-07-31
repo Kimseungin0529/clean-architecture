@@ -1,19 +1,15 @@
 package com.project.doongdoong.domain.answer.domain;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.voice.domain.Voice;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
-@Builder
 public class Answer {
 
     private Long id;
 
     private String content;
-
-    private Analysis analysis;
 
     private Voice voice;
 
@@ -21,6 +17,20 @@ public class Answer {
     public Answer(String content, Voice voice) {
         this.content = content;
         this.voice = voice;
+    }
+
+    public static Answer of(String content, Voice voice) {
+
+        return Answer.builder()
+                .content(content)
+                .voice(voice)
+                .build();
+    }
+
+    public static Answer of(Long id, String content, Voice voice) {
+        Answer answer = Answer.of(content, voice);
+        answer.id = id;
+        return answer;
     }
 
     public void disconnectWithVoice() {

@@ -49,6 +49,14 @@ public class CounselEntity extends BaseEntity {
 
     }
 
+    public static CounselEntity fromModel(Counsel counsel) {
+        return CounselEntity.builder()
+                .question(counsel.getQuestion())
+                .counselType(counsel.getCounselType())
+                .userEntity(UserEntity.fromModel(counsel.getUser()))
+                .build();
+    }
+
     public void addAnalysis(AnalysisEntity analysisEntity) {
         this.analysis = analysisEntity;
     }
@@ -64,5 +72,13 @@ public class CounselEntity extends BaseEntity {
 
     public void saveImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;
+    }
+
+    public Counsel toModel() {
+        return Counsel.ofAll(
+                id, question, counselType,
+                user.toModel(),
+                analysis.toModel()
+        );
     }
 }

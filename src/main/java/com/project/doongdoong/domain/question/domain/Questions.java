@@ -8,13 +8,13 @@ import java.util.List;
 
 @Getter
 public class Questions {
-    private final List<QuestionEntity> questionEntities;
+    private final List<Question> questionEntities;
 
-    private Questions(List<QuestionEntity> questionEntities) {
+    private Questions(List<Question> questionEntities) {
         this.questionEntities = questionEntities;
     }
 
-    public static Questions from(List<QuestionEntity> questionEntities) {
+    public static Questions from(List<Question> questionEntities) {
         return new Questions(questionEntities);
     }
 
@@ -24,9 +24,9 @@ public class Questions {
             throw new IllegalArgumentException("크키는 최소 1 이상입니다.");
         }
 
-        ArrayList<QuestionEntity> questionEntityList = new ArrayList<>(questionEntities);
+        ArrayList<Question> questionEntityList = new ArrayList<>(questionEntities);
         Collections.shuffle(questionEntityList);
-        List<QuestionEntity> randomQuestionEntities = questionEntityList.subList(0, size);
+        List<Question> randomQuestionEntities = questionEntityList.subList(0, size);
 
         return from(randomQuestionEntities);
     }
@@ -36,8 +36,8 @@ public class Questions {
         return size <= 0;
     }
 
-    public List<QuestionEntity> addQuestions(Questions newQuestions) {
-        ArrayList<QuestionEntity> mergedQuestionEntities = new ArrayList<>(questionEntities);
+    public List<Question> addQuestions(Questions newQuestions) {
+        ArrayList<Question> mergedQuestionEntities = new ArrayList<>(questionEntities);
         mergedQuestionEntities.addAll(newQuestions.questionEntities);
 
         return mergedQuestionEntities;

@@ -22,11 +22,30 @@ public class Counsel {
     private User user;
 
     @Builder
-    public Counsel(String question, CounselType counselType, User user) {
+    private Counsel(String question, CounselType counselType, User user) {
         this.question = question;
         this.counselType = counselType;
         this.user = user;
+    }
 
+    public static Counsel of(String question, CounselType counselType, User user) {
+        return Counsel.builder()
+                .question(question)
+                .counselType(counselType)
+                .user(user)
+                .build();
+    }
+
+    public static Counsel ofAll(Long id, String question, CounselType counselType, User user, Analysis analysis) {
+        Counsel counsel = Counsel.of(question, counselType, user, analysis);
+        counsel.id = id;
+        return counsel;
+    }
+
+    public static Counsel of(String question, CounselType counselType, User user, Analysis analysis) {
+        Counsel counsel = Counsel.of(question, counselType, user);
+        counsel.analysis = analysis;
+        return counsel;
     }
 
     public void addAnalysis(Analysis analysis) {

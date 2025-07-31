@@ -4,17 +4,17 @@ import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.answer.domain.AnswerEntity;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @Getter
+@Builder
 @Table(name = "question")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 public class QuestionEntity extends BaseEntity {
 
     @Id
@@ -60,11 +60,17 @@ public class QuestionEntity extends BaseEntity {
     }
 
     public Question toModel() {
-        return Question.builder()
-                .id(id)
-                .questionContent(questionContent)
-                .analysis(analysis.toModel())
-                .answer(answer.toModel())
+        return Question.ofAll(
+                id, questionContent
+                , answer.toModel()
+        );
+    }
+
+    public static QuestionEntity fromModel(Question question) {
+        return QuestionEntity.builder()
+                .id(question.getId())
+                .questionContent(question.getQuestionContent())
+                .answer(AnswerEntity.fromModel(question.getAnswer()))
                 .build();
     }
 }
