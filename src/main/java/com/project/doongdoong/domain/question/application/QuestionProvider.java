@@ -2,7 +2,6 @@ package com.project.doongdoong.domain.question.application;
 
 import com.project.doongdoong.domain.question.application.port.in.QuestionProvidable;
 import com.project.doongdoong.domain.question.domain.Question;
-import com.project.doongdoong.domain.question.domain.QuestionEntity;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.question.domain.Questions;
 import lombok.RequiredArgsConstructor;
@@ -44,16 +43,16 @@ public class QuestionProvider implements QuestionProvidable {
     }
 
     private Questions getQuestions(List<QuestionContent> questionContents, int size) {
-        List<QuestionEntity> questionEntityList = getQuestionListFrom(questionContents);
+        List<Question> questionList = getQuestionListFrom(questionContents);
 
-        Questions questionsCandidate = Questions.from(questionEntityList);
+        Questions questionsCandidate = Questions.from(questionList);
 
         return questionsCandidate.extractRandomQuestions(size);
     }
 
-    private List<QuestionEntity> getQuestionListFrom(List<QuestionContent> questionContents) {
+    private List<Question> getQuestionListFrom(List<QuestionContent> questionContents) {
         return questionContents.stream()
-                .map(QuestionEntity::of)
+                .map(Question::of)
                 .collect(Collectors.toList());
     }
 
