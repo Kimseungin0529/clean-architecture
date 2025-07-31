@@ -35,12 +35,16 @@ public class Voice {
         this.questionContent = questionContent;
     }
 
-    public static Voice of(String originName) {
-        return new Voice(originName);
+    public static Voice commonOf(String originName) {
+        return Voice.commonBuilder().originName(originName).build();
+    }
+
+    public static Voice initialOf(String originName, QuestionContent questionContent) {
+        return Voice.initialOf(originName, questionContent);
     }
 
     public static Voice ofAll(Long voiceId, String originName, String accessUrl, QuestionContent questionContent) {
-        Voice voice = of(originName);
+        Voice voice = commonOf(originName);
         voice.voiceId = voiceId;
         voice.accessUrl = accessUrl;
         voice.questionContent = questionContent;

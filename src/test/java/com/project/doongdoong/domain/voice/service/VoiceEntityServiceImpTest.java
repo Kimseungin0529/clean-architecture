@@ -8,6 +8,7 @@ import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.voice.adapter.in.dto.VoiceDetailResponseDto;
 import com.project.doongdoong.domain.voice.application.VoiceServiceImp;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
+import com.project.doongdoong.domain.voice.domain.Voice;
 import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -54,7 +55,7 @@ class VoiceEntityServiceImpTest {
 
         String expectedUrl = "https://s3.amazonaws.com/bucket/voice/test.mp3";
 
-        VoiceEntity voiceEntity = VoiceEntity.commonBuilder()
+        Voice voice = Voice.commonBuilder()
                 .originName(originalFilename)
                 .build();
 
@@ -62,15 +63,15 @@ class VoiceEntityServiceImpTest {
                 .willReturn(new URL(expectedUrl));
         given(amazonS3Client.putObject(anyString(), anyString(), any(InputStream.class), any(ObjectMetadata.class)))
                 .willReturn(new PutObjectResult());
-        given(voiceRepository.save(any(VoiceEntity.class)))
-                .willReturn(voiceEntity);
+        given(voiceRepository.save(any(Voice.class)))
+                .willReturn(voice);
         // when
         VoiceDetailResponseDto result = voiceService.saveVoice(mockFile);
 
         // then
         assertThat(result.getAccessUrl()).isEqualTo(expectedUrl);
 
-        verify(voiceRepository).save(any(VoiceEntity.class));
+        verify(voiceRepository).save(any(Voice.class));
         verify(amazonS3Client).putObject(anyString(), anyString(), any(InputStream.class), any(ObjectMetadata.class));
     }
 
@@ -95,7 +96,7 @@ class VoiceEntityServiceImpTest {
         // then
         verify(amazonS3Client).putObject(anyString(), anyString(), any(InputStream.class), any(ObjectMetadata.class));
         verify(amazonS3Client).getUrl(anyString(), anyString());
-        verify(voiceRepository).save(any(VoiceEntity.class));
+        verify(voiceRepository).save(any(Voice.class));
     }
 
     @DisplayName("제시한 음성 파일 목록을 삭제합니다.")
@@ -104,16 +105,16 @@ class VoiceEntityServiceImpTest {
         // given
         String originalFilename1 = "test1.mp3";
         String originalFilename2 = "test2.mp3";
-        VoiceEntity voiceEntity1 = VoiceEntity.commonBuilder()
+        Voice voiceEntity1 = Voice.commonBuilder()
                 .originName(originalFilename1)
                 .build();
-        VoiceEntity voiceEntity2 = VoiceEntity.commonBuilder()
+        Voice voiceEntity2 = Voice.commonBuilder()
                 .originName(originalFilename2)
                 .build();
-        List<VoiceEntity> voiceEntities = List.of(voiceEntity1, voiceEntity2);
+        List<Voice> voices = List.of(voiceEntity1, voiceEntity2);
 
         // when
-        voiceService.deleteVoices(voiceEntities);
+        voiceService.deleteVoices(voices);
 
         // then
         verify(amazonS3Client).deleteObjects(any(DeleteObjectsRequest.class));
