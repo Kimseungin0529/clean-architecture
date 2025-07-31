@@ -36,6 +36,7 @@ public class UserServiceImpl implements UserService {
     private final JwtProvider jwtProvider;
 
 
+    @Override
     @Transactional
     public TokenDto checkRegistration(OAuthTokenDto oAuthTokenInfo) {
 
@@ -48,7 +49,6 @@ public class UserServiceImpl implements UserService {
 
         blackAccessTokenRepository.findById(BlackAccessToken.generateUniqueKeyWith(socialId, socialType.getDescription()))
                 .ifPresent(blackAccessTokenRepository::delete);
-
         TokenDto tokenInfoResponse = jwtProvider.generateToken(socialId, socialType.getDescription(), user.getRoles());
 
         RefreshToken refresh = RefreshToken.of(user.getSocialId(), user.getSocialType().getDescription(), tokenInfoResponse.getRefreshToken());
@@ -59,30 +59,7 @@ public class UserServiceImpl implements UserService {
         return tokenInfoResponse;
     }
 
-    private User findOrRegisterUserBy(SocialType socialType, String socialId, String email, String nickname) {
-        User user = userRepository.findBySocialTypeAndSocialId(socialType, socialId)
-                .orElse(createUser(socialId, email, nickname, socialType));
-        checkChange(email, nickname, user);
-        user.checkRoles();
-
-        return userRepository.save(user);
-    }
-
-    private void checkChange(String email, String nickname, User user) {
-
-        if (!user.isSameEmail(email)) {
-            user.changeEmail(email);
-        }
-
-        if (!user.isSameNickname(nickname)) {
-            user.changeNickname(nickname);
-        }
-    }
-
-    private User createUser(String socialId, String email, String nickname, SocialType socialType) {
-        return User.of(socialId, email, nickname, socialType);
-    }
-
+    @Override
     @Transactional
     public TokenDto reissue(ReissueDto reissueTokenDto) {
         String refreshToken = reissueTokenDto.getRefreshToken();
@@ -98,6 +75,7 @@ public class UserServiceImpl implements UserService {
         return TokenDto.of(tokenDto.getAccessToken());
     }
 
+    @Override
     @Transactional
     public void logout(LogoutDto tokenInfoDto, String accessToken) {
         String socialType = jwtProvider.extractSocialType(accessToken);
@@ -113,18 +91,43 @@ public class UserServiceImpl implements UserService {
         blackAccessTokenRepository.save(blackAccessToken);
     }
 
-    private void validateTokenConsistency(String accessSocialId, String socialId, String accessSocialType, String socialType) {
-        if (!accessSocialId.equals(socialId) || !accessSocialType.equals(socialType)) {
-            throw new TokenInfoFobiddenException();
-        }
-    }
-
+    @Override
     public UserInformationResponseDto getMyPage(String uniqueValue) {
         SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
         User findUser = userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
                 .orElseThrow(UserNotFoundException::new);
 
         return UserInformationResponseDto.of(findUser.getNickname(), findUser.getEmail(), findUser.getSocialType().getDescription(), findUser.getEmotionGrowth());
+    }
+
+    private User findOrRegisterUserBy(SocialType socialType, String socialId, String email, String nickname) {
+        User user = userRepository.findBySocialTypeAndSocialId(socialType, socialId)
+                .orElse(createUser(socialId, email, nickname, socialType));
+        checkChange(email, nickname, user);
+        user.checkRoles();
+
+        return userRepository.save(user);
+    }
+
+    private User createUser(String socialId, String email, String nickname, SocialType socialType) {
+        return User.of(socialId, email, nickname, socialType);
+    }
+
+    private void checkChange(String email, String nickname, User user) {
+
+        if (!user.isSameEmail(email)) {
+            user.changeEmail(email);
+        }
+
+        if (!user.isSameNickname(nickname)) {
+            user.changeNickname(nickname);
+        }
+    }
+
+    private void validateTokenConsistency(String accessSocialId, String socialId, String accessSocialType, String socialType) {
+        if (!accessSocialId.equals(socialId) || !accessSocialType.equals(socialType)) {
+            throw new TokenInfoFobiddenException();
+        }
     }
 
 
