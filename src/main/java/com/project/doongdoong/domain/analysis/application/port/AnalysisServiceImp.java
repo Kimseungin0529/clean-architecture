@@ -77,24 +77,6 @@ public class AnalysisServiceImp implements AnalysisService {
         return AnalysisCreateResponseDto.of(analysis.getId(), questionIds, questionTexts, accessUrls);
     }
 
-    private static List<QuestionContent> getQuestionTextsFrom(List<Question> questions) {
-        return questions.stream()
-                .map(Question::getQuestionContent)
-                .toList();
-    }
-
-    private static List<Long> getQuestionIdsFrom(List<Question> questions) {
-        return questions.stream()
-                .map(Question::getId)
-                .toList();
-    }
-
-    private List<String> extractAccessUrlsFrom(List<Question> questions, Map<QuestionContent, Voice> voicesMap) {
-        return questions.stream()
-                .map(question -> voicesMap.get(question.getQuestionContent()))
-                .map(Voice::getAccessUrl)
-                .toList();
-    }
 
     @Override
     public AnalysisDetailResponse getAnalysis(Long analysisId) {
@@ -102,14 +84,12 @@ public class AnalysisServiceImp implements AnalysisService {
 
         List<Question> questions = findAnalysis.getQuestions();
         List<QuestionContent> questionContents = extractQuestionContentsBy(questions);
-
         List<String> questionTexts = extractQuestionTextBy(questionContents);
         List<Long> questionIds = extractQuestionIdBy(questions);
 
         List<Voice> findVoice = voiceRepository.findVoiceAllByQuestionContentIn(questionContents);
         Map<QuestionContent, String> voiceMap = mapVoiceToQuestionInformation(findVoice);
         List<String> questionVoiceAccessUrls = findUrlsByMatchingQuestionContentsWithVoice(questionContents, voiceMap);
-
         List<String> answerContents = findAnswerContentsByMatchingQuestionWithAnswer(questions);
 
         return AnalysisDetailResponse.of(analysisId, findAnalysis.getFeelingState(), findAnalysis.getAnalyzedDate().format(DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT)),
@@ -119,12 +99,9 @@ public class AnalysisServiceImp implements AnalysisService {
     @Override
     public AnalysisListResponseDto getAnalysisList(String uniqueValue, int pageNumber) {
         User user = findUserBy(uniqueValue);
-
         PageRequest pageable = PageRequest.of(pageNumber, ANALYSIS_PAGE_SIZE);
         Page<Analysis> analysisPages = analysisRepository.findAllByUserOrderByCreatedTime(user, pageable);
-
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern(DEFAULT_DATE_TIME_FORMAT);
-
 
         return AnalysisListResponseDto.of(analysisPages, formatter);
     }
@@ -134,7 +111,6 @@ public class AnalysisServiceImp implements AnalysisService {
         SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
         User user = userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
                 .orElseThrow(UserNotFoundException::new);
-
 
         Optional<Analysis> analysis = analysisRepository.findFirstByUserOrderByAnalyzeTimeDesc(user);
         List<FeelingStateResponseDto> result = null;
@@ -157,7 +133,8 @@ public class AnalysisServiceImp implements AnalysisService {
 
         Analysis findAnalysis = analysisRepository.searchFullAnalysisBy(analysisId).orElseThrow(AnalysisNotFoundException::new);
         boolean allAnswerPresent = findAnalysis.getQuestions()
-                .stream().anyMatch(question -> question.getAnswer() != null);
+                .stream()
+                .anyMatch(question -> question.getAnswer() != null);
 
         if (allAnswerPresent) { //만약 모든 질문에 대한 답변이 없는 경우, 답변이 부족하다는 예외 발생
             throw new AllAnswersNotFoundException();
@@ -210,29 +187,35 @@ public class AnalysisServiceImp implements AnalysisService {
                 .collect(Collectors.toMap(Voice::getQuestionContent, voice -> voice));
     }
 
-    private User findUserBy(String uniqueValue) {
-        SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
-        return userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
-                .orElseThrow(UserNotFoundException::new);
-
-    }
-
-    private String[] parseUniqueValue(String uniqueValue) {
-        return uniqueValue.split("_");
-    }
-
-    private List<String> findAnswerContentsByMatchingQuestionWithAnswer(List<Question> questions) {
+    private static List<Long> getQuestionIdsFrom(List<Question> questions) {
         return questions.stream()
-                .map(question ->
-                        Optional.ofNullable(question.getAnswer())
-                                .map(Answer::getContent)
-                                .orElse(DEFAULT_NO_ANSWER_MESSAGE))
+                .map(Question::getId)
+                .toList();
+    }
+
+    private static List<QuestionContent> getQuestionTextsFrom(List<Question> questions) {
+        return questions.stream()
+                .map(Question::getQuestionContent)
+                .toList();
+    }
+
+    private List<String> extractAccessUrlsFrom(List<Question> questions, Map<QuestionContent, Voice> voicesMap) {
+        return questions.stream()
+                .map(question -> voicesMap.get(question.getQuestionContent()))
+                .map(Voice::getAccessUrl)
+                .toList();
+    }
+
+
+    private List<QuestionContent> extractQuestionContentsBy(List<Question> questionEntities) {
+        return questionEntities.stream()
+                .map(Question::getQuestionContent)
                 .collect(Collectors.toList());
     }
 
-    private List<String> findUrlsByMatchingQuestionContentsWithVoice(List<QuestionContent> questionContents, Map<QuestionContent, String> voiceMap) {
+    private List<String> extractQuestionTextBy(List<QuestionContent> questionContents) {
         return questionContents.stream()
-                .map(voiceMap::get)
+                .map(QuestionContent::getText)
                 .collect(Collectors.toList());
     }
 
@@ -250,15 +233,18 @@ public class AnalysisServiceImp implements AnalysisService {
                 ));
     }
 
-    private List<String> extractQuestionTextBy(List<QuestionContent> questionContents) {
-        return questionContents.stream()
-                .map(QuestionContent::getText)
+    private List<String> findAnswerContentsByMatchingQuestionWithAnswer(List<Question> questions) {
+        return questions.stream()
+                .map(question ->
+                        Optional.ofNullable(question.getAnswer())
+                                .map(Answer::getContent)
+                                .orElse(DEFAULT_NO_ANSWER_MESSAGE))
                 .collect(Collectors.toList());
     }
 
-    private List<QuestionContent> extractQuestionContentsBy(List<Question> questionEntities) {
-        return questionEntities.stream()
-                .map(Question::getQuestionContent)
+    private List<String> findUrlsByMatchingQuestionContentsWithVoice(List<QuestionContent> questionContents, Map<QuestionContent, String> voiceMap) {
+        return questionContents.stream()
+                .map(voiceMap::get)
                 .collect(Collectors.toList());
     }
 
@@ -279,15 +265,12 @@ public class AnalysisServiceImp implements AnalysisService {
         }
     }
 
-    private double calculateTotalEmotionScoreFrom(double resultByText, double resultByVoice) {
-        return ANALYSIS_TEXT_RATE * resultByText + ANALYSIS_VOICE_RATE * resultByVoice;
-    }
 
-
-    private User findUserWithAnalysisBy(String uniqueValue) {
-        SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
-        return userRepository.findUserWithAnalysisBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
-                .orElseThrow(UserNotFoundException::new);
+    private List<Voice> getVoiceListFrom(Analysis findAnalysis) {
+        return findAnalysis.getQuestions().stream()
+                .map(Question::getAnswer)
+                .map(Answer::getVoice)
+                .toList();
     }
 
     private double calculateFellingStatusAverage(List<FellingStateCreateResponse> responseByText) {
@@ -298,12 +281,15 @@ public class AnalysisServiceImp implements AnalysisService {
     }
 
 
-    private List<Voice> getVoiceListFrom(Analysis findAnalysis) {
-        return findAnalysis.getQuestions().stream()
-                .map(Question::getAnswer)
-                .map(Answer::getVoice)
-                .toList();
+    private double calculateTotalEmotionScoreFrom(double resultByText, double resultByVoice) {
+        return ANALYSIS_TEXT_RATE * resultByText + ANALYSIS_VOICE_RATE * resultByVoice;
     }
 
+    private User findUserBy(String uniqueValue) {
+        SocialIdentifier identifier = SocialIdentifier.from(uniqueValue);
+        return userRepository.findBySocialTypeAndSocialId(identifier.getSocialType(), identifier.getSocialId())
+                .orElseThrow(UserNotFoundException::new);
+
+    }
 
 }
