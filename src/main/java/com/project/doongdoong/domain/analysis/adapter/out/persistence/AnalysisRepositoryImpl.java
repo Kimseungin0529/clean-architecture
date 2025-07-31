@@ -52,8 +52,8 @@ public class AnalysisRepositoryImpl implements AnalysisRepository {
     }
 
     @Override
-    public Optional<Analysis> findFirstByUserOrderByAnalyzeTimeDesc(UserEntity userEntity) {
-        return analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(userEntity)
+    public Optional<Analysis> findFirstByUserOrderByAnalyzeTimeDesc(User user) {
+        return analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(UserEntity.fromModel(user))
                 .map(AnalysisEntity::toModel);
     }
 

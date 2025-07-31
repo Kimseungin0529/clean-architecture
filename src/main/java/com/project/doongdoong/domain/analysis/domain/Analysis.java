@@ -29,6 +29,8 @@ public class Analysis {
 
     private LocalDate analyzedDate;
 
+    private boolean isUsed;
+
     private User user;
 
     private List<Question> questions = new ArrayList<>();
@@ -41,12 +43,13 @@ public class Analysis {
                 .build();
     }
 
-    public static Analysis ofAll(Long id, double feelingState, LocalDate analyzedDate, User user, List<Question> questions) {
+    public static Analysis ofAll(Long id, double feelingState, boolean isUsed, LocalDate analyzedDate, User user, List<Question> questions) {
         Analysis analysis = Analysis.of(user, questions);
 
         analysis.id = id;
         analysis.feelingState = feelingState;
         analysis.analyzedDate = analyzedDate;
+        analysis.isUsed = true;
 
         return analysis;
     }

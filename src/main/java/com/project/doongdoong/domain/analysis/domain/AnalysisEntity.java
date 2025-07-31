@@ -34,6 +34,8 @@ public class AnalysisEntity extends BaseEntity {
 
     private LocalDate analyzeTime;
 
+    private boolean isUsed;
+
     @ManyToOne(fetch = LAZY)
     @JoinColumn(name = "user_id")
     private UserEntity user;
@@ -57,8 +59,9 @@ public class AnalysisEntity extends BaseEntity {
     }
 
     @Builder
-    public AnalysisEntity(UserEntity userEntity, List<QuestionEntity> questionEntities) {
+    public AnalysisEntity(boolean isUsed, UserEntity userEntity, List<QuestionEntity> questionEntities) {
         this.feelingState = 0;
+        this.isUsed = isUsed;
         this.questions = questionEntities;
         this.user = userEntity;
     }

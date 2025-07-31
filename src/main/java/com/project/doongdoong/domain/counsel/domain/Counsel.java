@@ -5,6 +5,8 @@ import com.project.doongdoong.domain.user.domain.User;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
 public class Counsel {
     private Long id;
@@ -21,29 +23,33 @@ public class Counsel {
 
     private User user;
 
+    private LocalDateTime createdAt;
+
     @Builder
-    private Counsel(String question, CounselType counselType, User user) {
+    private Counsel(String question, CounselType counselType, User user, LocalDateTime createdAt) {
         this.question = question;
         this.counselType = counselType;
         this.user = user;
+        this.createdAt = createdAt;
     }
 
-    public static Counsel of(String question, CounselType counselType, User user) {
+    public static Counsel of(String question, CounselType counselType, User user, LocalDateTime createdAt) {
         return Counsel.builder()
                 .question(question)
                 .counselType(counselType)
                 .user(user)
+                .createdAt(createdAt)
                 .build();
     }
 
-    public static Counsel ofAll(Long id, String question, CounselType counselType, User user, Analysis analysis) {
-        Counsel counsel = Counsel.of(question, counselType, user, analysis);
+    public static Counsel ofAll(Long id, String question, CounselType counselType, User user, Analysis analysis, LocalDateTime createdAt) {
+        Counsel counsel = Counsel.of(question, counselType, user, analysis, createdAt);
         counsel.id = id;
         return counsel;
     }
 
-    public static Counsel of(String question, CounselType counselType, User user, Analysis analysis) {
-        Counsel counsel = Counsel.of(question, counselType, user);
+    public static Counsel of(String question, CounselType counselType, User user, Analysis analysis, LocalDateTime createdAt) {
+        Counsel counsel = Counsel.of(question, counselType, user, createdAt);
         counsel.analysis = analysis;
         return counsel;
     }
