@@ -1,8 +1,8 @@
-package com.project.doongdoong.domain.analysis.adapter.out.persistence;
+package com.project.doongdoong.domain.analysis.adapter.out.persistence.mapper;
 
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisEntity;
+import com.project.doongdoong.domain.user.adapter.out.persistence.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component // 매퍼 전용 어노테이션 구현 필

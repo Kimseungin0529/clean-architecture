@@ -3,7 +3,6 @@ package com.project.doongdoong.global.util;
 
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FellingStateCreateResponse;
 import com.project.doongdoong.domain.voice.domain.Voice;
-import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import com.project.doongdoong.global.dto.request.ConsultRequest;
 import com.project.doongdoong.global.dto.request.VoiceToS3Request;
 import com.project.doongdoong.global.dto.response.CounselAiResponse;

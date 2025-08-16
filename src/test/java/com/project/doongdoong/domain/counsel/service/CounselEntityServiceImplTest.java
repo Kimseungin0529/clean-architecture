@@ -1,19 +1,17 @@
 package com.project.doongdoong.domain.counsel.service;
 
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
-import com.project.doongdoong.domain.counsel.adapter.out.CounselJpaRepository;
+import com.project.doongdoong.domain.counsel.adapter.out.repository.CounselJpaRepository;
 import com.project.doongdoong.domain.counsel.application.CounselServiceImpl;
-import com.project.doongdoong.domain.counsel.domain.CounselEntity;
+import com.project.doongdoong.domain.counsel.adapter.out.entitiy.CounselEntity;
 import com.project.doongdoong.domain.counsel.domain.CounselType;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
-import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
 import com.project.doongdoong.domain.counsel.exception.CounselNotExistPageException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
 import com.project.doongdoong.domain.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.user.adapter.out.persistence.entity.UserEntity;
 import com.project.doongdoong.global.dto.response.CounselAiResponse;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;

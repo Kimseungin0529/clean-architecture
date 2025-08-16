@@ -1,7 +1,7 @@
-package com.project.doongdoong.domain.question.adapter.out.persistence;
+package com.project.doongdoong.domain.question.adapter.out.persistence.repository;
 
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.question.domain.QuestionEntity;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisEntity;
+import com.project.doongdoong.domain.question.adapter.out.persistence.entity.QuestionEntity;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

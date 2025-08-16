@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.user.adapter.out.persistence.mapper;
 
 import com.project.doongdoong.domain.user.domain.User;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.user.adapter.out.persistence.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component

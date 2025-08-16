@@ -1,10 +1,10 @@
-package com.project.doongdoong.domain.question.adapter.out.persistence;
+package com.project.doongdoong.domain.question.adapter.out.persistence.mapper;
 
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisEntity;
 import com.project.doongdoong.domain.answer.domain.Answer;
-import com.project.doongdoong.domain.answer.domain.AnswerEntity;
+import com.project.doongdoong.domain.answer.adapter.out.persistence.entity.AnswerEntity;
 import com.project.doongdoong.domain.question.domain.Question;
-import com.project.doongdoong.domain.question.domain.QuestionEntity;
+import com.project.doongdoong.domain.question.adapter.out.persistence.entity.QuestionEntity;
 import org.springframework.stereotype.Component;
 
 @Component

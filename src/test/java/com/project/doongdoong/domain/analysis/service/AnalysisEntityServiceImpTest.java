@@ -4,10 +4,10 @@ import com.project.doongdoong.domain.analysis.application.port.in.AnalysisServic
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.user.adapter.out.persistence.entity.UserEntity;
 import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.voice.adapter.out.persistence.repository.VoiceJpaRepository;
-import com.project.doongdoong.domain.voice.domain.VoiceEntity;
+import com.project.doongdoong.domain.voice.adapter.out.persistence.entity.VoiceEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;

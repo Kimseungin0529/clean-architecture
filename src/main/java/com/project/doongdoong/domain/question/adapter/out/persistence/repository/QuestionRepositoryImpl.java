@@ -1,13 +1,14 @@
-package com.project.doongdoong.domain.question.adapter.out.persistence;
+package com.project.doongdoong.domain.question.adapter.out.persistence.repository;
 
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.AnalysisEntityMapper;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.mapper.AnalysisEntityMapper;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.answer.adapter.out.persistence.repository.AnswerEntityMapper;
+import com.project.doongdoong.domain.answer.adapter.out.persistence.mapper.AnswerEntityMapper;
+import com.project.doongdoong.domain.question.adapter.out.persistence.mapper.QuestionEntityMapper;
 import com.project.doongdoong.domain.question.application.port.dto.AnalysisQuestionsAnswersDto;
 import com.project.doongdoong.domain.question.application.port.dto.QuestionAnswer;
 import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
 import com.project.doongdoong.domain.question.domain.Question;
-import com.project.doongdoong.domain.question.domain.QuestionEntity;
+import com.project.doongdoong.domain.question.adapter.out.persistence.entity.QuestionEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

@@ -1,13 +1,13 @@
-package com.project.doongdoong.domain.analysis.adapter.out.persistence;
+package com.project.doongdoong.domain.analysis.adapter.out.persistence.repository;
 
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.mapper.AnalysisEntityMapper;
 import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisEntity;
 import com.project.doongdoong.domain.user.adapter.out.persistence.mapper.UserEntityMapper;
 import com.project.doongdoong.domain.user.domain.User;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.user.adapter.out.persistence.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

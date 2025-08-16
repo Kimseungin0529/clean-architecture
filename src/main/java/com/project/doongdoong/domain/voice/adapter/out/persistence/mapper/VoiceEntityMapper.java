@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.voice.adapter.out.persistence.mapper;
 
 import com.project.doongdoong.domain.voice.domain.Voice;
-import com.project.doongdoong.domain.voice.domain.VoiceEntity;
+import com.project.doongdoong.domain.voice.adapter.out.persistence.entity.VoiceEntity;
 import org.springframework.stereotype.Component;
 
 @Component

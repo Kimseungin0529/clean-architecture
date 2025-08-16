@@ -1,9 +1,9 @@
-package com.project.doongdoong.domain.counsel.adapter.out;
+package com.project.doongdoong.domain.counsel.adapter.out.mapper;
 
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisEntity;
 import com.project.doongdoong.domain.counsel.domain.Counsel;
-import com.project.doongdoong.domain.counsel.domain.CounselEntity;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.counsel.adapter.out.entitiy.CounselEntity;
+import com.project.doongdoong.domain.user.adapter.out.persistence.entity.UserEntity;
 import org.springframework.stereotype.Component;
 
 @Component

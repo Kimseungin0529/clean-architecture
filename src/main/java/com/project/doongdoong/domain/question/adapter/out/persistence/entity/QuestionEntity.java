@@ -1,8 +1,8 @@
-package com.project.doongdoong.domain.question.domain;
+package com.project.doongdoong.domain.question.adapter.out.persistence.entity;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.answer.domain.AnswerEntity;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisEntity;
+import com.project.doongdoong.domain.answer.adapter.out.persistence.entity.AnswerEntity;
+import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

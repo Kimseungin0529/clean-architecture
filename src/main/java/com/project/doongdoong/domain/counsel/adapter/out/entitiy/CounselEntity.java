@@ -1,7 +1,8 @@
-package com.project.doongdoong.domain.counsel.domain;
+package com.project.doongdoong.domain.counsel.adapter.out.entitiy;
 
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisEntity;
+import com.project.doongdoong.domain.counsel.domain.CounselType;
+import com.project.doongdoong.domain.user.adapter.out.persistence.entity.UserEntity;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;

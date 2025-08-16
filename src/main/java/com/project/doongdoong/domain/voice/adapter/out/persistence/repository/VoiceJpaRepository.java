@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.voice.adapter.out.persistence.repository;
 
 import com.project.doongdoong.domain.question.domain.QuestionContent;
-import com.project.doongdoong.domain.voice.domain.VoiceEntity;
+import com.project.doongdoong.domain.voice.adapter.out.persistence.entity.VoiceEntity;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;

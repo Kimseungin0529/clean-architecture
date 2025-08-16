@@ -4,7 +4,7 @@ import com.project.doongdoong.domain.user.adapter.out.persistence.mapper.UserEnt
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.User;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.user.adapter.out.persistence.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

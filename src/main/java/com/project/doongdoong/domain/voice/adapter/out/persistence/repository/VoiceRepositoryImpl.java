@@ -4,7 +4,7 @@ import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.voice.adapter.out.persistence.mapper.VoiceEntityMapper;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import com.project.doongdoong.domain.voice.domain.Voice;
-import com.project.doongdoong.domain.voice.domain.VoiceEntity;
+import com.project.doongdoong.domain.voice.adapter.out.persistence.entity.VoiceEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 

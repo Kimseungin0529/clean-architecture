@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.voice.domain;
+package com.project.doongdoong.domain.voice.adapter.out.persistence.entity;
 
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.global.common.BaseEntity;

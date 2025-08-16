@@ -1,13 +1,14 @@
-package com.project.doongdoong.domain.counsel.adapter.out;
+package com.project.doongdoong.domain.counsel.adapter.out.repository;
 
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.AnalysisEntityMapper;
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.mapper.AnalysisEntityMapper;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisEntity;
+import com.project.doongdoong.domain.counsel.adapter.out.mapper.CounselEntityMapper;
 import com.project.doongdoong.domain.counsel.application.port.out.CounselRepository;
 import com.project.doongdoong.domain.counsel.domain.Counsel;
-import com.project.doongdoong.domain.counsel.domain.CounselEntity;
+import com.project.doongdoong.domain.counsel.adapter.out.entitiy.CounselEntity;
 import com.project.doongdoong.domain.user.adapter.out.persistence.mapper.UserEntityMapper;
 import com.project.doongdoong.domain.user.domain.User;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.user.adapter.out.persistence.entity.UserEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

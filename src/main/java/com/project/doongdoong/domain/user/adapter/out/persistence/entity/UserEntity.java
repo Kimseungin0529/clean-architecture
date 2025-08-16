@@ -1,5 +1,6 @@
-package com.project.doongdoong.domain.user.domain;
+package com.project.doongdoong.domain.user.adapter.out.persistence.entity;
 
+import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
