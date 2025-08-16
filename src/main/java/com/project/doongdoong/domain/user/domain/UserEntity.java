@@ -1,19 +1,17 @@
 package com.project.doongdoong.domain.user.domain;
 
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 @Entity
 @Getter
 @Table(name = "users")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
 @Builder
 public class UserEntity extends BaseEntity {
     @Id
@@ -30,69 +28,9 @@ public class UserEntity extends BaseEntity {
     @Enumerated(EnumType.STRING)
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
-    private long emotionGrowth = 0L;
+    private long emotionGrowth;
 
     @ElementCollection(fetch = FetchType.EAGER) // security와 같이 사용할 권한 역할
     private List<String> roles = new ArrayList<>();
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<AnalysisEntity> analysisList = new ArrayList<>();
-
-    // 권한 추가
-
-    @Builder
-    public UserEntity(String socialId, String nickname, String email, SocialType socialType) {
-        this.socialId = socialId;
-        this.nickname = nickname;
-        this.email = email;
-        this.socialType = socialType;
-    }
-
-    public static UserEntity fromModel(User user) {
-        return UserEntity.builder()
-                .id(user.getId())
-                .email(user.getEmail())
-                .nickname(user.getNickname())
-                .socialId(user.getSocialId())
-                .socialType(user.getSocialType())
-                .roles(user.getRoles())
-                .build();
-    }
-
-    public void changeEmail(String email) {
-        this.email = email;
-    }
-
-    public void changeNickname(String nickname) {
-        this.nickname = nickname;
-    }
-
-    public void checkRoles() {
-        this.roles = roles.isEmpty() ? Collections.singletonList(Role.ROLE_USER.toString()) : roles;
-
-    }
-
-    public boolean isSameEmail(String email) {
-        return this.email.equals(email);
-    }
-
-    public boolean isSameNickname(String nickname) {
-        return this.nickname.equals(nickname);
-    }
-
-
-    public void growUp() {
-        this.emotionGrowth++;
-        checkGrowth();
-    }
-
-    private void checkGrowth() {
-        if (this.emotionGrowth == 101L)
-            this.emotionGrowth %= 101;
-    }
-
-
-    public User toModel() {
-        return User.ofAll(id, socialId, nickname, email, socialType, emotionGrowth, roles);
-    }
 }

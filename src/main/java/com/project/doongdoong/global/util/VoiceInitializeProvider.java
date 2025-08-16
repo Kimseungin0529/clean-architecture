@@ -3,6 +3,7 @@ package com.project.doongdoong.global.util;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.voice.application.port.in.VoiceService;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
+import com.project.doongdoong.domain.voice.domain.Voice;
 import com.project.doongdoong.domain.voice.domain.VoiceEntity;
 import jakarta.annotation.PostConstruct;
 import lombok.RequiredArgsConstructor;

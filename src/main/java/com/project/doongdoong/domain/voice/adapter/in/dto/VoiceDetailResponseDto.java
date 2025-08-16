@@ -1,7 +1,6 @@
 package com.project.doongdoong.domain.voice.adapter.in.dto;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -9,16 +8,15 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class VoiceDetailResponseDto {
     private String accessUrl;
+    private Long voiceId;
 
-    @Builder
-    private VoiceDetailResponseDto(String accessUrl) {
-        this.accessUrl = accessUrl;
+    public static VoiceDetailResponseDto of(String accessUrl, Long voiceId) {
+        return new VoiceDetailResponseDto(accessUrl, voiceId);
     }
 
-    public static VoiceDetailResponseDto of(String accessUrl){
-        return VoiceDetailResponseDto.builder()
-                .accessUrl(accessUrl)
-                .build();
+    private VoiceDetailResponseDto(String accessUrl, Long voiceId) {
+        this.accessUrl = accessUrl;
+        this.voiceId = voiceId;
     }
 }
 

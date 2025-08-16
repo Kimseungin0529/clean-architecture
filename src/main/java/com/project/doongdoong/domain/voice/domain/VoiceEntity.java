@@ -7,12 +7,16 @@ import lombok.*;
 
 import java.util.UUID;
 
-@Entity @Getter
+@Entity
+@Getter
 @Table(name = "voice")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class VoiceEntity extends BaseEntity {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long voiceId;
 
     private String originName; // 음성 파일의 본래 이름
@@ -31,6 +35,7 @@ public class VoiceEntity extends BaseEntity {
         this.storedName = gainRandomFileName(originName);
         this.accessUrl = "";
     }
+
     @Builder(builderClassName = "InitVoiceContentBuilder", builderMethodName = "initVoiceContentBuilder")
     public VoiceEntity(String originName, QuestionContent questionContent) {
         this.originName = originName;
@@ -39,18 +44,13 @@ public class VoiceEntity extends BaseEntity {
         this.questionContent = questionContent;
     }
 
-    public static VoiceEntity fromModel(Voice voice) {
-        return VoiceEntity.commonBuilder()
-                .originName(voice.getOriginName())
-                .build();
-    }
 
     public void changeAccessUrl(String accessUrl) {
         this.accessUrl = accessUrl;
     }
 
     private String gainRandomFileName(String originName) {
-        return UUID.randomUUID()  + extractExtension(originName);
+        return UUID.randomUUID() + extractExtension(originName);
     }
 
     private String gainRandomFileName() {
@@ -60,12 +60,5 @@ public class VoiceEntity extends BaseEntity {
     private String extractExtension(String originName) {
         int index = originName.lastIndexOf('.');
         return originName.substring(index);
-    }
-
-    public Voice toModel() {
-        return Voice.ofAll(voiceId,
-                originName,
-                storedName,
-                questionContent);
     }
 }

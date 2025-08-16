@@ -1,16 +1,10 @@
 package com.project.doongdoong.domain.analysis.domain;
 
-import com.project.doongdoong.domain.question.domain.Question;
-import com.project.doongdoong.domain.question.domain.QuestionContent;
-import com.project.doongdoong.domain.user.domain.User;
-import com.project.doongdoong.domain.voice.domain.Voice;
+import jakarta.persistence.Column;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
 
 /**
  * [Analysis 도메인 객체지행 의견]
@@ -25,46 +19,25 @@ import java.util.Map;
 public class Analysis {
     private Long id;
 
+    @Column(name = "user_id", nullable = false)
+    private Long userId;
+
     private double feelingState;
 
     private LocalDate analyzedDate;
 
     private boolean isUsed;
 
-    private User user;
 
-    private List<Question> questions = new ArrayList<>();
-
-    public static Analysis of(User user, List<Question> questions) {
-
-        return Analysis.builder()
-                .user(user)
-                .questions(questions)
-                .build();
-    }
-
-    public static Analysis ofAll(Long id, double feelingState, boolean isUsed, LocalDate analyzedDate, User user, List<Question> questions) {
-        Analysis analysis = Analysis.of(user, questions);
-
-        analysis.id = id;
-        analysis.feelingState = feelingState;
-        analysis.analyzedDate = analyzedDate;
-        analysis.isUsed = true;
-
-        return analysis;
-    }
-
-    @Builder
-    public Analysis(User user, List<Question> questions) {
-        this.feelingState = 0;
-        this.questions = questions;
-        this.user = user;
+    public static Analysis of(Long userId, boolean isUsed, double feelingState, LocalDate analyzedDate) {
+        return new Analysis(userId, feelingState, analyzedDate, isUsed);
     }
 
 
     public void changeFeelingStateAndAnalyzeTime(double feelingState, LocalDate analyzeTime) {
         this.feelingState = feelingState;
         this.analyzedDate = analyzeTime;
+        isUsed = true;
     }
 
     public boolean equalsAnalyzeTimeTo(LocalDate time) {
@@ -78,7 +51,21 @@ public class Analysis {
         return this.analyzedDate != null;
     }
 
-    public void linkWith(Map<QuestionContent, Voice> voicesMap) {
 
+    private Analysis(Long userId, double feelingState, LocalDate analyzedDate, boolean isUsed) {
+        this.userId = userId;
+        this.feelingState = feelingState;
+        this.analyzedDate = analyzedDate;
+        this.isUsed = isUsed;
     }
+
+    @Builder
+    private Analysis(Long id, Long userId, double feelingState, LocalDate analyzedDate, boolean isUsed) {
+        this.id = id;
+        this.userId = null;
+        this.feelingState = feelingState;
+        this.analyzedDate = analyzedDate;
+        this.isUsed = isUsed;
+    }
+
 }

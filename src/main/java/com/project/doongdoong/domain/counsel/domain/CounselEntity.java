@@ -4,22 +4,31 @@ import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
+
+import java.time.LocalDateTime;
 
 
 @Entity
 @Getter
 @Table(name = "counsel")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor
+@Builder
 public class CounselEntity extends BaseEntity {
 
     @Id
     @Column(name = "counsel_id")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+
+    @OneToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "analysis_id")
+    private AnalysisEntity analysis;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id", nullable = false)
+    private UserEntity user;
 
     @Column(length = 5000)
     private String question;
@@ -33,52 +42,7 @@ public class CounselEntity extends BaseEntity {
     @Enumerated(value = EnumType.STRING)
     private CounselType counselType;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "analysis_id", unique = true, updatable = false)
-    private AnalysisEntity analysis;
+    @Column(updatable = false)
+    private LocalDateTime createdAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id", updatable = false)
-    private UserEntity user;
-
-    @Builder
-    public CounselEntity(String question, CounselType counselType, UserEntity userEntity) {
-        this.question = question;
-        this.counselType = counselType;
-        this.user = userEntity;
-
-    }
-
-    public static CounselEntity fromModel(Counsel counsel) {
-        return CounselEntity.builder()
-                .question(counsel.getQuestion())
-                .counselType(counsel.getCounselType())
-                .userEntity(UserEntity.fromModel(counsel.getUser()))
-                .build();
-    }
-
-    public void addAnalysis(AnalysisEntity analysisEntity) {
-        this.analysis = analysisEntity;
-    }
-
-    public void saveAnswer(String answer) {
-        this.answer = answer;
-    }
-
-    public boolean hasAnalysis() {
-        return this.getAnalysis() != null;
-    }
-
-
-    public void saveImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
-    }
-
-    public Counsel toModel() {
-        return Counsel.ofAll(
-                id, question, counselType,
-                user.toModel(),
-                analysis.toModel()
-        );
-    }
 }

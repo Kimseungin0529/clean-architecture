@@ -165,7 +165,7 @@ public class AnalysisEntityControllerDocsTest extends RestDocsSupport {
     @DisplayName("본인의 분석 결과들을 페이징 조회한다.")
     void getAnalysisList() throws Exception {
         //given
-        AnaylsisResponseDto detailResult = AnaylsisResponseDto.builder()
+        AnalysisResponseDto detailResult = AnalysisResponseDto.builder()
                 .analysisId(1L)
                 .time("test time")
                 .feelingState(30.5)

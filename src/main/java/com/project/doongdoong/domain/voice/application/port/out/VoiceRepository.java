@@ -13,7 +13,4 @@ public interface VoiceRepository {
 
     List<Voice> findVoiceAllByQuestionContentIn(List<QuestionContent> questionContent);
 
-    Optional<Voice> findVoiceByAccessUrl(String accessUrl);
-
-    void deleteVoicesByUrls(List<Long> voiceIds);
 }

@@ -5,6 +5,7 @@ import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository
 import com.project.doongdoong.domain.analysis.application.port.out.AnalysisRepository;
 import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
+import com.project.doongdoong.domain.user.adapter.out.persistence.mapper.UserEntityMapper;
 import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -23,63 +24,38 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class AnalysisRepositoryImpl implements AnalysisRepository {
 
+    private final AnalysisEntityMapper analysisEntityMapper;
+    private final UserEntityMapper userEntityMapper;
+
     private final AnalysisJpaRepository analysisJpaRepository;
 
     @Override
-    public Optional<Analysis> findById(Long analysisId) {
-        return analysisJpaRepository.findById(analysisId).map(AnalysisEntity::toModel);
-    }
-
-    @Override
     public Analysis save(Analysis analysis) {
-        return analysisJpaRepository.save(AnalysisEntity.fromModel(analysis)).toModel();
+        UserEntity userEntity = userEntityMapper.fromId(analysis.getUserId());
+        AnalysisEntity analysisEntity = analysisJpaRepository.save(analysisEntityMapper.fromModel(analysis, userEntity));
+        return analysisEntityMapper.toModel(analysisEntity);
     }
 
     @Override
-    public Optional<Analysis> findByUserAndId(User user, Long analysisId) {
-        return analysisJpaRepository.findByUserAndId(UserEntity.fromModel(user), analysisId).map(AnalysisEntity::toModel);
+    public Optional<Analysis> findByUserIdAndId(Long userId, Long analysisId) {
+        return analysisJpaRepository.findByUserAndId(userId, analysisId).map(analysisEntityMapper::toModel);
     }
 
     @Override
-    public Page<Analysis> findAllByUserOrderByCreatedTime(User user, Pageable pageable) {
-        return analysisJpaRepository.findAllByUserOrderByCreatedTime(UserEntity.fromModel(user), pageable)
-                .map(AnalysisEntity::toModel);
+    public Page<Analysis> findAllByUserIdOrderByCreatedTime(Long userId, Pageable pageable) {
+        return analysisJpaRepository.findAllByUserIdOrderByCreatedTime(userId, pageable)
+                .map(analysisEntityMapper::toModel);
     }
 
     @Override
-    public List<FeelingStateResponseDto> findAllByDateBetween(User user, LocalDate startTime, LocalDate endTime) {
-        return analysisJpaRepository.findAllByDateBetween(UserEntity.fromModel(user), startTime, endTime);
+    public List<FeelingStateResponseDto> findAllByDateBetween(Long userId, LocalDate startTime, LocalDate endTime) {
+        return analysisJpaRepository.findAllByDateBetween(userId, startTime, endTime);
     }
 
     @Override
     public Optional<Analysis> findFirstByUserOrderByAnalyzeTimeDesc(User user) {
-        return analysisJpaRepository.findFirstByUserOrderByAnalyzeTimeDesc(UserEntity.fromModel(user))
-                .map(AnalysisEntity::toModel);
+        return analysisJpaRepository.findFirstByUserIdOrderByAnalyzeTimeDesc(user.getId())
+                .map(analysisEntityMapper::toModel);
     }
 
-    @Override
-    public Optional<Analysis> findAnalysisWithQuestion(Long analysisId) {
-        return analysisJpaRepository.findAnalysisWithQuestion(analysisId)
-                .map(AnalysisEntity::toModel);
-    }
-
-    @Override
-    public Optional<Analysis> findAnalysis(Long id) {
-        return analysisJpaRepository.findAnalysis(id).map(AnalysisEntity::toModel);
-    }
-
-    @Override
-    public void deleteAnalysis(Long id) {
-        analysisJpaRepository.deleteAnalysis(id);
-    }
-
-    @Override
-    public Optional<Analysis> searchFullAnalysisBy(Long analysisId) {
-        return analysisJpaRepository.searchFullAnalysisBy(analysisId).map(AnalysisEntity::toModel);
-    }
-
-    @Override
-    public Optional<Analysis> searchAnalysisWithVoiceOfAnswer(Long analysisId) {
-        return analysisJpaRepository.searchAnalysisWithVoiceOfAnswer(analysisId).map(AnalysisEntity::toModel);
-    }
 }

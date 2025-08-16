@@ -14,6 +14,5 @@ public interface VoiceService {
 
     void saveVoice(byte[] audioContent, String originName, QuestionContent questionContent);
 
-    void deleteVoices(List<Voice> voices);
 
 }

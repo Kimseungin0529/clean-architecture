@@ -1,7 +1,5 @@
 package com.project.doongdoong.domain.question.domain;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.answer.domain.Answer;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -10,9 +8,19 @@ public class Question {
 
     private Long id;
 
-    private QuestionContent questionContent;
+    private Long analysisId;
 
-    private Answer answer;
+    private Long answerId;
+
+    private final QuestionContent questionContent;
+
+    @Builder
+    public Question(Long id, QuestionContent questionContent, Long analysisId, Long answerId) {
+        this.id = id;
+        this.questionContent = questionContent;
+        this.analysisId = analysisId;
+        this.answerId = answerId;
+    }
 
     private Question(QuestionContent questionContent) {
         this.questionContent = questionContent;
@@ -22,20 +30,12 @@ public class Question {
         return new Question(questionContent);
     }
 
-    public static Question ofAll(Long id, QuestionContent questionContent, Answer answer) {
-        Question question = Question.of(questionContent);
-        question.id = id;
-        question.answer = answer;
-        return question;
+    public boolean isSame(Long id) {
+        return this.id.equals(id);
     }
-
-
-    public void connectAnswer(Answer Answer) {
-        this.answer = Answer;
-    }
-
 
     public boolean hasAnswer() {
-        return answer != null;
+        return answerId != null;
     }
+
 }

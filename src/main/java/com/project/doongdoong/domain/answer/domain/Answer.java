@@ -1,40 +1,30 @@
 package com.project.doongdoong.domain.answer.domain;
 
-import com.project.doongdoong.domain.voice.domain.Voice;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 @Getter
+@Builder
+@AllArgsConstructor
 public class Answer {
 
     private Long id;
 
+    private Long analysisId;
+
+    private Long voiceId;
+
     private String content;
 
-    private Voice voice;
-
-    @Builder
-    public Answer(String content, Voice voice) {
-        this.content = content;
-        this.voice = voice;
-    }
-
-    public static Answer of(Voice voice) {
-
+    public static Answer of(Long voiceId) {
         return Answer.builder()
-                .voice(voice)
+                .voiceId(voiceId)
                 .build();
     }
 
-    public static Answer of(Long id, String content, Voice voice) {
-        Answer answer = Answer.of(voice);
-        answer.id = id;
-        answer.content = content;
-        return answer;
-    }
-
     public void disconnectWithVoice() {
-        this.voice = null;
+        this.voiceId = null;
     }
 
     public void changeContent(String content) {

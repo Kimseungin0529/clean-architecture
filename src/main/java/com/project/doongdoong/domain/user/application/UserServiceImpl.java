@@ -110,7 +110,12 @@ public class UserServiceImpl implements UserService {
     }
 
     private User createUser(String socialId, String email, String nickname, SocialType socialType) {
-        return User.of(socialId, email, nickname, socialType);
+        return User.builder()
+                .socialId(socialId)
+                .email(email)
+                .nickname(nickname)
+                .socialType(socialType)
+                .build();
     }
 
     private void checkChange(String email, String nickname, User user) {

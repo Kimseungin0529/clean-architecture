@@ -11,26 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AnalysisRepository {
-    Optional<Analysis> findById(Long analysisId);
 
     Analysis save(Analysis analysis);
 
-    Optional<Analysis> findByUserAndId(User user, Long analysisId);
+    Optional<Analysis> findByUserIdAndId(Long userId, Long analysisId);
 
-    Page<Analysis> findAllByUserOrderByCreatedTime(User user, Pageable pageable);
+    Page<Analysis> findAllByUserIdOrderByCreatedTime(Long userId, Pageable pageable);
 
-    List<FeelingStateResponseDto> findAllByDateBetween(User user, LocalDate startTime, LocalDate endTime);
+    List<FeelingStateResponseDto> findAllByDateBetween(Long userId, LocalDate startTime, LocalDate endTime);
 
     Optional<Analysis> findFirstByUserOrderByAnalyzeTimeDesc(User user);
 
-    Optional<Analysis> findAnalysisWithQuestion(Long analysisId);
-
-    Optional<Analysis> findAnalysis(Long id);
-
-    void deleteAnalysis(Long id);
-
-    Optional<Analysis> searchFullAnalysisBy(Long analysisId);
-
-    Optional<Analysis> searchAnalysisWithVoiceOfAnswer(Long analysisId);
 
 }

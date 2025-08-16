@@ -8,14 +8,14 @@ import java.util.List;
 
 @Getter
 @NoArgsConstructor
-public class AnaylsisResponseDto {
+public class AnalysisResponseDto {
     private Long analysisId;
     private String time;
     private double feelingState;
     private List<String> questionContent;
 
     @Builder
-    public AnaylsisResponseDto(Long analysisId, double feelingState, String time, List<String> questionContent) {
+    public AnalysisResponseDto(Long analysisId, double feelingState, String time, List<String> questionContent) {
         this.analysisId = analysisId;
         this.time = time;
         this.feelingState = feelingState;

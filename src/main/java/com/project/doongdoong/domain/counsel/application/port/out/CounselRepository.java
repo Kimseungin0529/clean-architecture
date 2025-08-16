@@ -14,7 +14,7 @@ public interface CounselRepository {
 
     Counsel save(Counsel counsel);
 
-    Optional<Counsel> findWithAnalysisById(Long counselId);
+    Optional<Counsel> findCounselWithUserById(Long counselId);
 
     Page<Counsel> searchPageCounselList(User user, Pageable pageable);
 

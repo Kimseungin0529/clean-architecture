@@ -19,22 +19,6 @@ public class QuestionProvider implements QuestionProvidable {
 
 
     @Override
-    public Question createFixedQuestion() {
-        QuestionContent fixedQuestionContent = QuestionContent.provideRandomFixedQuestionContent();
-
-        return Question.of(fixedQuestionContent);
-
-    }
-
-    @Override
-    public Question createUnFixedQuestion() {
-        QuestionContent unQuestionContent = QuestionContent.provideRandomUnFixedQuestionContent();
-
-        return Question.of(unQuestionContent);
-    }
-
-
-    @Override
     public List<Question> createRandomQuestions() {
         Questions fixedQuestions = getQuestions(QuestionContent.getFixedQuestionContents(), FIXED_QUESTION_SIZE);
         Questions unFixedQuestions = getQuestions(QuestionContent.getUnFixedQuestionContents(), UNFIXED_QUESTION_SIZE);

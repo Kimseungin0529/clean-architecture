@@ -43,32 +43,6 @@ class AnalysisTest {
         assertThat(result).isFalse();
     }
 
-    @DisplayName("분석에 대한 모든 답변을 했습니다.")
-    @Test
-    void hasAllAnswer() {
-        // given
-        List<Question> questions = List.of(
-                createQuestion(FIXED_QUESTION1), createQuestion(FIXED_QUESTION2)
-                , createQuestion(UNFIXED_QUESTION1), createQuestion(UNFIXED_QUESTION2)
-        );
-        Analysis analysis = createAnalysis(questions);
-
-        Answer answer1 = createAnswer("답변 내용1");
-        Answer answer2 = createAnswer("답변 내용2");
-        Answer answer3 = createAnswer("답변 내용3");
-        Answer answer4 = createAnswer("답변 내용4");
-
-        answer1.connectAnalysis(analysis);
-        answer2.connectAnalysis(analysis);
-        answer3.connectAnalysis(analysis);
-        answer4.connectAnalysis(analysis);
-
-        // when
-        boolean result = analysis.hasAllAnswer();
-        // then
-        assertThat(result).isTrue();
-    }
-
     @DisplayName("분석에 대한 감정 분석 시간이 존재합니다.")
     @Test
     void isAlreadyAnalyzed() {
@@ -89,23 +63,6 @@ class AnalysisTest {
         analysisEntity.changeFeelingStateAndAnalyzeTime(0, analyzeDate);
 
         return analysisEntity;
-    }
-
-    private Analysis createAnalysis(List<Question> questions) {
-
-        return Analysis.builder()
-                .questions(questions)
-                .build();
-    }
-
-    private Answer createAnswer(String content) {
-        return Answer.builder()
-                .content(content)
-                .build();
-    }
-
-    private Question createQuestion(QuestionContent questionContent) {
-        return Question.of(questionContent);
     }
 
 }

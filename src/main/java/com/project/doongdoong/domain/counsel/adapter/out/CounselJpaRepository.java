@@ -14,8 +14,8 @@ import java.util.Optional;
 @Repository
 public interface CounselJpaRepository extends JpaRepository<CounselEntity, Long>, CounselCustomJpaRepository {
 
-    @Query("select c from CounselEntity c left outer join fetch c.analysis where c.id = :counselId")
-    Optional<CounselEntity> findWithAnalysisById(@Param("counselId") Long counselId);
+    @Query("select c from CounselEntity c join fetch c.user where c.id = :counselId")
+    Optional<CounselEntity> findCounselWithUserByCounselId(@Param("counselId") Long counselId);
 
     @Query(value = """
             SELECT DATE(created_time) AS date, counsel_type, COUNT(*) AS count

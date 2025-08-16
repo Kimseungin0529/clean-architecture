@@ -1,6 +1,7 @@
-package com.project.doongdoong.domain.voice.adapter.out.persistence;
+package com.project.doongdoong.domain.voice.adapter.out.persistence.repository;
 
 import com.project.doongdoong.domain.question.domain.QuestionContent;
+import com.project.doongdoong.domain.voice.adapter.out.persistence.mapper.VoiceEntityMapper;
 import com.project.doongdoong.domain.voice.application.port.out.VoiceRepository;
 import com.project.doongdoong.domain.voice.domain.Voice;
 import com.project.doongdoong.domain.voice.domain.VoiceEntity;
@@ -14,33 +15,25 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class VoiceRepositoryImpl implements VoiceRepository {
     private final VoiceJpaRepository voiceJpaRepository;
+    private final VoiceEntityMapper voiceEntityMapper;
 
     @Override
     public Voice save(Voice voice) {
-        return voiceJpaRepository.save(VoiceEntity.fromModel(voice)).toModel();
+        VoiceEntity voiceEntity = voiceJpaRepository.save(voiceEntityMapper.fromModel(voice));
+        return voiceEntityMapper.toModel(voiceEntity);
     }
 
     @Override
     public Optional<Voice> findVoiceByQuestionContent(QuestionContent questionContent) {
         return voiceJpaRepository.findVoiceByQuestionContent(questionContent)
-                .map(VoiceEntity::toModel);
+                .map(voiceEntityMapper::toModel);
     }
 
     @Override
     public List<Voice> findVoiceAllByQuestionContentIn(List<QuestionContent> questionContent) {
         return voiceJpaRepository.findVoiceAllByQuestionContentIn(questionContent)
-                .stream().map(VoiceEntity::toModel)
+                .stream().map(voiceEntityMapper::toModel)
                 .toList();
     }
 
-    @Override
-    public Optional<Voice> findVoiceByAccessUrl(String accessUrl) {
-        return voiceJpaRepository.findVoiceByAccessUrl(accessUrl)
-                .map(VoiceEntity::toModel);
-    }
-
-    @Override
-    public void deleteVoicesByUrls(List<Long> voiceIds) {
-        voiceJpaRepository.deleteVoicesByUrls(voiceIds);
-    }
 }

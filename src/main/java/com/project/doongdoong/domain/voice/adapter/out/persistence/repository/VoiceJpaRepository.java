@@ -1,4 +1,4 @@
-package com.project.doongdoong.domain.voice.adapter.out.persistence;
+package com.project.doongdoong.domain.voice.adapter.out.persistence.repository;
 
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.voice.domain.VoiceEntity;
@@ -17,8 +17,6 @@ public interface VoiceJpaRepository extends JpaRepository<VoiceEntity, Long> {
     Optional<VoiceEntity> findVoiceByQuestionContent(QuestionContent questionContent);
 
     List<VoiceEntity> findVoiceAllByQuestionContentIn(List<QuestionContent> questionContent);
-
-    Optional<VoiceEntity> findVoiceByAccessUrl(String accessUrl);
 
     @Modifying(clearAutomatically = true, flushAutomatically = true)
     @Query("delete from VoiceEntity voice where voice.voiceId in :voiceIds")

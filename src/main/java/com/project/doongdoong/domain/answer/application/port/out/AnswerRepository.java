@@ -4,9 +4,6 @@ import com.project.doongdoong.domain.answer.domain.Answer;
 
 public interface AnswerRepository {
 
-    Answer save(Answer answer);
+    Answer save(Answer answer, Long analysisId, Long voiceId);
 
-    void deleteAnswersById(Long analysisId);
-
-    void detachVoiceFromAnswersBy(Long analysisId);
 }

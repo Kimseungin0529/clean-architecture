@@ -105,7 +105,7 @@ public class AnalysisEntityControllerTest extends ControllerTestSupport {
     @WithMockUser(username = "APPLE_whffkaos007@naver.com")
     void getAnalysisList() throws Exception {
         //given
-        AnaylsisResponseDto detailResult = AnaylsisResponseDto.builder()
+        AnalysisResponseDto detailResult = AnalysisResponseDto.builder()
                 .analysisId(1L)
                 .time("test time")
                 .feelingState(30.5)

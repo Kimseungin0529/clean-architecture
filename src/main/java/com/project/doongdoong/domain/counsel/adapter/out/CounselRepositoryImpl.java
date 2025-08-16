@@ -1,8 +1,11 @@
 package com.project.doongdoong.domain.counsel.adapter.out;
 
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.AnalysisEntityMapper;
+import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
 import com.project.doongdoong.domain.counsel.application.port.out.CounselRepository;
 import com.project.doongdoong.domain.counsel.domain.Counsel;
 import com.project.doongdoong.domain.counsel.domain.CounselEntity;
+import com.project.doongdoong.domain.user.adapter.out.persistence.mapper.UserEntityMapper;
 import com.project.doongdoong.domain.user.domain.User;
 import com.project.doongdoong.domain.user.domain.UserEntity;
 import lombok.RequiredArgsConstructor;
@@ -19,20 +22,28 @@ public class CounselRepositoryImpl implements CounselRepository {
 
     private final CounselJpaRepository counselJpaRepository;
 
+    private final CounselEntityMapper counselEntityMapper;
+    private final UserEntityMapper userEntityMapper;
+    private final AnalysisEntityMapper analysisEntityMapper;
+
     @Override
     public Counsel save(Counsel counsel) {
-        return counselJpaRepository.save(CounselEntity.fromModel(counsel)).toModel();
+        UserEntity userEntity = userEntityMapper.fromId(counsel.getUserId());
+        AnalysisEntity analysisEntity = counsel.hasAnalysis() ? analysisEntityMapper.fromId(counsel.getAnalysisId()) : null;
+        CounselEntity counselEntity = counselJpaRepository.save(counselEntityMapper.fromModel(counsel, userEntity, analysisEntity));
+        return counselEntityMapper.toModel(counselEntity);
     }
 
     @Override
-    public Optional<Counsel> findWithAnalysisById(Long counselId) {
-        return counselJpaRepository.findById(counselId).map(counselEntity -> counselEntity.toModel());
+    public Optional<Counsel> findCounselWithUserById(Long counselId) {
+        return counselJpaRepository.findCounselWithUserByCounselId(counselId)
+                .map(counselEntity -> counselEntityMapper.toModel(counselEntity, counselEntity.getId()));
     }
 
     @Override
     public Page<Counsel> searchPageCounselList(User user, Pageable pageable) {
-        return counselJpaRepository.searchPageCounselList(UserEntity.fromModel(user), pageable)
-                .map(CounselEntity::toModel);
+        return counselJpaRepository.searchPageCounselList(userEntityMapper.fromModel(user), pageable)
+                .map(counselEntityMapper::toModel);
     }
 
     @Override

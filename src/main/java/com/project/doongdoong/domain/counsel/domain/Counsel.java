@@ -1,15 +1,20 @@
 package com.project.doongdoong.domain.counsel.domain;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.user.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
 
 @Getter
+@AllArgsConstructor
+@Builder
 public class Counsel {
     private Long id;
+
+    private Long userId;
+
+    private Long analysisId;
 
     private String question;
 
@@ -19,43 +24,25 @@ public class Counsel {
 
     private CounselType counselType;
 
-    private Analysis analysis;
-
-    private User user;
-
     private LocalDateTime createdAt;
 
-    @Builder
-    private Counsel(String question, CounselType counselType, User user, LocalDateTime createdAt) {
-        this.question = question;
-        this.counselType = counselType;
-        this.user = user;
-        this.createdAt = createdAt;
-    }
-
-    public static Counsel of(String question, CounselType counselType, User user, LocalDateTime createdAt) {
+    public static Counsel of(String question, CounselType counselType, Long userId, LocalDateTime createdAt) {
         return Counsel.builder()
                 .question(question)
                 .counselType(counselType)
-                .user(user)
+                .userId(userId)
                 .createdAt(createdAt)
                 .build();
     }
 
-    public static Counsel ofAll(Long id, String question, CounselType counselType, User user, Analysis analysis, LocalDateTime createdAt) {
-        Counsel counsel = Counsel.of(question, counselType, user, analysis, createdAt);
-        counsel.id = id;
+    public static Counsel of(String question, CounselType counselType, Long userId, Long analysisId, LocalDateTime createdAt) {
+        Counsel counsel = Counsel.of(question, counselType, userId, createdAt);
+        counsel.analysisId = analysisId;
         return counsel;
     }
 
-    public static Counsel of(String question, CounselType counselType, User user, Analysis analysis, LocalDateTime createdAt) {
-        Counsel counsel = Counsel.of(question, counselType, user, createdAt);
-        counsel.analysis = analysis;
-        return counsel;
-    }
-
-    public void addAnalysis(Analysis analysis) {
-        this.analysis = analysis;
+    public void addAnalysisId(Long analysisId) {
+        this.analysisId = analysisId;
     }
 
     public void saveAnswer(String answer) {
@@ -63,9 +50,8 @@ public class Counsel {
     }
 
     public boolean hasAnalysis() {
-        return this.getAnalysis() != null;
+        return this.analysisId != null;
     }
-
 
     public void saveImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;

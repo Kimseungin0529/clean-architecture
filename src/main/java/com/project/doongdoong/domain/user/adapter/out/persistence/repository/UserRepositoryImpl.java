@@ -1,5 +1,6 @@
-package com.project.doongdoong.domain.user.adapter.out.persistence;
+package com.project.doongdoong.domain.user.adapter.out.persistence.repository;
 
+import com.project.doongdoong.domain.user.adapter.out.persistence.mapper.UserEntityMapper;
 import com.project.doongdoong.domain.user.application.port.out.UserRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
 import com.project.doongdoong.domain.user.domain.User;
@@ -15,20 +16,18 @@ public class UserRepositoryImpl implements UserRepository {
 
     private final UserJpaRepository userJpaRepository;
 
+    private final UserEntityMapper userEntityMapper;
+
     @Override
     public User save(User user) {
-        return userJpaRepository.save(UserEntity.fromModel(user)).toModel();
+        UserEntity userEntity = userJpaRepository.save(userEntityMapper.fromModel(user));
+        return userEntityMapper.toModel(userEntity);
     }
 
     @Override
     public Optional<User> findBySocialTypeAndSocialId(SocialType socialType, String socialId) {
         return userJpaRepository.findBySocialTypeAndSocialId(socialType, socialId)
-                .map(UserEntity::toModel);
+                .map(userEntityMapper::toModel);
     }
 
-    @Override
-    public Optional<User> findUserWithAnalysisBySocialTypeAndSocialId(SocialType socialType, String socialId) {
-        return userJpaRepository.findUserWithAnalysisBySocialTypeAndSocialId(socialType, socialId)
-                .map(UserEntity::toModel);
-    }
 }
