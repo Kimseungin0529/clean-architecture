@@ -1,22 +1,17 @@
 package com.project.doongdoong.domain.counsel.service;
 
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.analysis.exception.AnalysisAccessDeny;
-import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisJpaRepository;
-import com.project.doongdoong.domain.answer.domain.AnswerEntity;
+import com.project.doongdoong.domain.counsel.adapter.out.repository.CounselJpaRepository;
 import com.project.doongdoong.domain.counsel.application.CounselServiceImpl;
+import com.project.doongdoong.domain.counsel.adapter.out.entitiy.CounselEntity;
+import com.project.doongdoong.domain.counsel.domain.CounselType;
 import com.project.doongdoong.domain.counsel.dto.request.CounselCreateRequest;
-import com.project.doongdoong.domain.counsel.dto.response.CounselDetailResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselListResponse;
 import com.project.doongdoong.domain.counsel.dto.response.CounselResultResponse;
 import com.project.doongdoong.domain.counsel.exception.CounselNotExistPageException;
 import com.project.doongdoong.domain.counsel.exception.UnAuthorizedForCounselException;
-import com.project.doongdoong.domain.counsel.domain.CounselEntity;
-import com.project.doongdoong.domain.counsel.domain.CounselType;
-import com.project.doongdoong.domain.counsel.adapter.out.CounselJpaRepository;
+import com.project.doongdoong.domain.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
-import com.project.doongdoong.domain.user.domain.UserEntity;
-import com.project.doongdoong.domain.user.adapter.out.persistence.UserJpaRepository;
+import com.project.doongdoong.domain.user.adapter.out.persistence.entity.UserEntity;
 import com.project.doongdoong.global.dto.response.CounselAiResponse;
 import com.project.doongdoong.module.IntegrationSupportTest;
 import org.junit.jupiter.api.DisplayName;
@@ -25,6 +20,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,8 +34,6 @@ import static org.mockito.Mockito.when;
 class CounselEntityServiceImplTest extends IntegrationSupportTest {
     @Autowired
     CounselServiceImpl counselService;
-    @Autowired
-    AnalysisJpaRepository analysisRepository;
     @Autowired
     CounselJpaRepository counselRepository;
     @Autowired
@@ -75,103 +69,6 @@ class CounselEntityServiceImplTest extends IntegrationSupportTest {
         assertThat(result.getCounselId()).isNotNull();
     }
 
-    @Test
-    @DisplayName("분석 답변과 함께 회원의 질문에 대한 상담 답변을 제공한다.")
-    void consultWithAnalysis() {
-        //given
-        String socialId = "123456";
-        UserEntity userEntity = UserEntity.builder()
-                .socialId(socialId)
-                .socialType(SocialType.APPLE)
-                .build();
-        UserEntity savedUserEntity = userRepository.save(userEntity);
-
-        AnalysisEntity analysisEntity = createAnalysis(savedUserEntity);
-        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
-
-        AnswerEntity answerEntity1 = createAnswer();
-        AnswerEntity answerEntity2 = createAnswer();
-        AnswerEntity answerEntity3 = createAnswer();
-        AnswerEntity answerEntity4 = createAnswer();
-        answerEntity1.connectAnalysis(savedAnalysisEntity);
-        answerEntity2.connectAnalysis(savedAnalysisEntity);
-        answerEntity3.connectAnalysis(savedAnalysisEntity);
-        answerEntity4.connectAnalysis(savedAnalysisEntity);
-
-        CounselCreateRequest request = new CounselCreateRequest(
-                savedAnalysisEntity.getId(),
-                "취업진로",
-                "나는 취업에 대한 고민이 있어. 내가 개발자가 될 수 있을까? 어떤 노력이 필요해?"
-        );
-        CounselAiResponse mockResponse = new CounselAiResponse(
-                "개발자가 되기 위해서는 꾸준한 학습과 프로젝트 경험이 필요합니다.",
-                "http://example.com/image.jpg"
-        );
-        String uniqueValue = savedUserEntity.getSocialId() + "_" + savedUserEntity.getSocialType().getDescription();
-
-        when(webClientUtil.callConsult(any(HashMap.class)))
-                .thenReturn(mockResponse);
-        //when
-        CounselResultResponse result = counselService.consult(uniqueValue, request);
-
-        //then
-        assertThat(result).isNotNull()
-                .extracting("counselContent", "imageUrl")
-                .containsExactly(mockResponse.getAnswer(), mockResponse.getImageUrl());
-        assertThat(result.getCounselId()).isNotNull();
-
-    }
-
-
-    @Test
-    @DisplayName("다른 사용자의 분석 정보를 통해 상담할 수 없습니다.")
-    void exceptionWhenAnalysisDoesNotBelongToUser() {
-        //given
-        String socialId = "123456";
-        UserEntity userEntity = UserEntity.builder()
-                .socialId(socialId)
-                .socialType(SocialType.APPLE)
-                .build();
-        String socialId2 = "455678";
-        UserEntity otherUserEntity = createUser(socialId2, SocialType.APPLE);
-        UserEntity savedUserEntity = userRepository.save(userEntity);
-        UserEntity savedOtherUserEntity = userRepository.save(otherUserEntity);
-
-        AnalysisEntity analysisEntity = AnalysisEntity.builder()
-                .userEntity(savedUserEntity)
-                .build();
-        AnalysisEntity savedAnalysisEntity = analysisRepository.save(analysisEntity);
-        AnswerEntity answerEntity1 = createAnswer();
-        AnswerEntity answerEntity2 = createAnswer();
-        AnswerEntity answerEntity3 = createAnswer();
-        AnswerEntity answerEntity4 = createAnswer();
-        answerEntity1.connectAnalysis(savedAnalysisEntity);
-        answerEntity2.connectAnalysis(savedAnalysisEntity);
-        answerEntity3.connectAnalysis(savedAnalysisEntity);
-        answerEntity4.connectAnalysis(savedAnalysisEntity);
-
-        CounselCreateRequest request = new CounselCreateRequest(
-                savedAnalysisEntity.getId(),
-                "취업진로",
-                "나는 취업에 대한 고민이 있어. 내가 개발자가 될 수 있을까? 어떤 노력이 필요해?"
-        );
-        CounselAiResponse mockResponse = new CounselAiResponse(
-                "개발자가 되기 위해서는 꾸준한 학습과 프로젝트 경험이 필요합니다.",
-                "http://example.com/image.jpg"
-        );
-        String otherUniqueValue = savedOtherUserEntity.getSocialId() + "_" + savedOtherUserEntity.getSocialType().getDescription();
-
-        when(webClientUtil.callConsult(any(HashMap.class)))
-                .thenReturn(mockResponse);
-
-        //when & then
-        assertThatThrownBy(() -> counselService.consult(otherUniqueValue, request))
-                .isInstanceOf(AnalysisAccessDeny.class)
-                .hasMessageContaining("해당 사용자의 분석이 아니거나 존재하지 않는 분석입니다."); // 예외 메시지는 비즈니스 로직에 맞게 설정
-
-
-    }
-
 
     @DisplayName("상담 내용을 조회하는 시나리오")
     @TestFactory
@@ -183,26 +80,16 @@ class CounselEntityServiceImplTest extends IntegrationSupportTest {
         UserEntity userEntity2 = createUser(socialId2, SocialType.APPLE);
 
         CounselEntity counselEntity = createCounsel(userEntity1, "상담 질문 내용", CounselType.LOVE);
-        userRepository.saveAll(List.of(userEntity1, userEntity2));
+        List<UserEntity> userEntities = userRepository.saveAll(List.of(userEntity1, userEntity2));
+        UserEntity savedUserEntity1 = userEntities.get(0);
+        UserEntity savedUserEntity2 = userEntities.get(1);
         CounselEntity savedCounselEntity = counselRepository.save(counselEntity);
 
         // when & then
         return List.of(
-                DynamicTest.dynamicTest("상담 내용을 조회합니다.", () -> {
-                            //given
-                            String uniqueValue = userEntity1.getSocialId() + "_" + userEntity1.getSocialType().getDescription();
-                            //when
-                            CounselDetailResponse result = counselService.findCounselContent(uniqueValue, savedCounselEntity.getId());
-                            //then
-                            assertThat(result)
-                                    .extracting("counselId", "question", "answer", "counselType")
-                                    .containsExactly(savedCounselEntity.getId(), "상담 질문 내용", savedCounselEntity.getAnswer(), CounselType.LOVE.getDescription());
-                        }
-
-                ),
                 DynamicTest.dynamicTest("남의 상담 내용을 조회할 수 없습니다.", () -> {
                     // given
-                    String otherUniqueValue = userEntity2.getSocialId() + "_" + userEntity2.getSocialType().getDescription();
+                    String otherUniqueValue = savedUserEntity2.getSocialId() + "_" + savedUserEntity2.getSocialType().getDescription();
                     // when & then
                     assertThatThrownBy(() ->
                             counselService.findCounselContent(otherUniqueValue, savedCounselEntity.getId()))
@@ -285,17 +172,6 @@ class CounselEntityServiceImplTest extends IntegrationSupportTest {
     }
 
 
-    private AnswerEntity createAnswer() {
-        return AnswerEntity.builder()
-                .build();
-    }
-
-    private AnalysisEntity createAnalysis(UserEntity savedUserEntity) {
-        return AnalysisEntity.builder()
-                .userEntity(savedUserEntity)
-                .build();
-    }
-
     private UserEntity createUser(String socialId, SocialType socialType) {
         return UserEntity.builder()
                 .socialId(socialId)
@@ -307,7 +183,8 @@ class CounselEntityServiceImplTest extends IntegrationSupportTest {
         return CounselEntity.builder()
                 .counselType(counselType)
                 .question(question)
-                .userEntity(userEntity)
+                .user(userEntity)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 

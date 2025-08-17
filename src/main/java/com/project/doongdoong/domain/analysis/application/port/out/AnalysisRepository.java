@@ -1,9 +1,8 @@
 package com.project.doongdoong.domain.analysis.application.port.out;
 
 import com.project.doongdoong.domain.analysis.adapter.in.dto.FeelingStateResponseDto;
-import com.project.doongdoong.domain.analysis.domain.AnalysisEntity;
-import com.project.doongdoong.domain.analysis.exception.AnalysisNotFoundException;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.analysis.domain.Analysis;
+import com.project.doongdoong.domain.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -12,26 +11,16 @@ import java.util.List;
 import java.util.Optional;
 
 public interface AnalysisRepository {
-    AnalysisEntity findById(Long analysisId);
 
-    AnalysisEntity save(AnalysisEntity analysisEntity);
+    Analysis save(Analysis analysis);
 
-    Optional<AnalysisEntity> findByUserAndId(UserEntity userEntity, Long analysisId);
+    Optional<Analysis> findByUserIdAndId(Long userId, Long analysisId);
 
-    Page<AnalysisEntity> findAllByUserOrderByCreatedTime(UserEntity userEntity, Pageable pageable);
+    Page<Analysis> findAllByUserIdOrderByCreatedTime(Long userId, Pageable pageable);
 
-    List<FeelingStateResponseDto> findAllByDateBetween(UserEntity userEntity, LocalDate startTime, LocalDate endTime);
+    List<FeelingStateResponseDto> findAllByDateBetween(Long userId, LocalDate startTime, LocalDate endTime);
 
-    Optional<AnalysisEntity> findFirstByUserOrderByAnalyzeTimeDesc(UserEntity userEntity);
+    Optional<Analysis> findFirstByUserOrderByAnalyzeTimeDesc(User user);
 
-    Optional<AnalysisEntity> findAnalysisWithQuestion(Long analysisId);
-
-    Optional<AnalysisEntity> findAnalysis(Long id);
-
-    void deleteAnalysis(Long id);
-
-    Optional<AnalysisEntity> searchFullAnalysisBy(Long analysisId);
-
-    Optional<AnalysisEntity> searchAnalysisWithVoiceOfAnswer(Long analysisId);
 
 }

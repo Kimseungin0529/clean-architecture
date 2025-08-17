@@ -1,7 +1,13 @@
 package com.project.doongdoong.domain.answer.adapter.out.persistence.repository;
 
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.mapper.AnalysisEntityMapper;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.AnalysisEntity;
+import com.project.doongdoong.domain.answer.adapter.out.persistence.mapper.AnswerEntityMapper;
 import com.project.doongdoong.domain.answer.application.port.out.AnswerRepository;
-import com.project.doongdoong.domain.answer.domain.AnswerEntity;
+import com.project.doongdoong.domain.answer.domain.Answer;
+import com.project.doongdoong.domain.answer.adapter.out.persistence.entity.AnswerEntity;
+import com.project.doongdoong.domain.voice.adapter.out.persistence.mapper.VoiceEntityMapper;
+import com.project.doongdoong.domain.voice.adapter.out.persistence.entity.VoiceEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 
@@ -9,19 +15,18 @@ import org.springframework.stereotype.Repository;
 @RequiredArgsConstructor
 public class AnswerRepositoryImpl implements AnswerRepository {
     private final AnswerJpaRepository answerJpaRepository;
+    private final AnswerEntityMapper answerEntityMapper;
+    private final AnalysisEntityMapper analysisEntityMapper;
+    private final VoiceEntityMapper voiceEntityMapper;
+
 
     @Override
-    public AnswerEntity save(AnswerEntity answerEntity) {
-        return answerJpaRepository.save(answerEntity);
+    public Answer save(Answer answer, Long analysisId, Long voiceId) {
+        AnalysisEntity analysisEntity = analysisEntityMapper.fromId(analysisId);
+        VoiceEntity voiceEntity = voiceEntityMapper.fromId(voiceId);
+
+        AnswerEntity savedAnswerEntity = answerJpaRepository.save(answerEntityMapper.fromModel(answer, analysisEntity, voiceEntity));
+        return answerEntityMapper.toModel(savedAnswerEntity);
     }
 
-    @Override
-    public void deleteAnswersById(Long analysisId) {
-        answerJpaRepository.deleteById(analysisId);
-    }
-
-    @Override
-    public void detachVoiceFromAnswersBy(Long analysisId) {
-        answerJpaRepository.detachVoiceFromAnswersBy(analysisId);
-    }
 }

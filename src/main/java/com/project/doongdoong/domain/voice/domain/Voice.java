@@ -20,20 +20,6 @@ public class Voice {
     private QuestionContent questionContent;
 
 
-    @Builder(builderClassName = "CommonBuilder", builderMethodName = "commonBuilder")
-    public Voice(String originName) {
-        this.originName = originName;
-        this.storedName = gainRandomFileName(originName);
-        this.accessUrl = "";
-    }
-
-    @Builder(builderClassName = "InitVoiceContentBuilder", builderMethodName = "initVoiceContentBuilder")
-    public Voice(String originName, QuestionContent questionContent) {
-        this.originName = originName;
-        this.storedName = gainRandomFileName() + originName;
-        this.accessUrl = "";
-        this.questionContent = questionContent;
-    }
 
     public void changeAccessUrl(String accessUrl) {
         this.accessUrl = accessUrl;
@@ -51,4 +37,31 @@ public class Voice {
         int index = originName.lastIndexOf('.');
         return originName.substring(index);
     }
+
+
+    @Builder(builderClassName = "CommonBuilder", builderMethodName = "commonBuilder")
+    public Voice(String originName) {
+        this.originName = originName;
+        this.storedName = gainRandomFileName(originName);
+        this.accessUrl = "";
+    }
+
+    @Builder(builderClassName = "InitVoiceContentBuilder", builderMethodName = "initVoiceContentBuilder")
+    private Voice(String originName, QuestionContent questionContent) {
+        this.originName = originName;
+        this.storedName = gainRandomFileName() + originName;
+        this.accessUrl = "";
+        this.questionContent = questionContent;
+
+    }
+
+    @Builder
+    public Voice(Long voiceId, String originName, String storedName, String accessUrl, QuestionContent questionContent) {
+        this.voiceId = voiceId;
+        this.originName = originName;
+        this.storedName = storedName;
+        this.accessUrl = accessUrl;
+        this.questionContent = questionContent;
+    }
+
 }

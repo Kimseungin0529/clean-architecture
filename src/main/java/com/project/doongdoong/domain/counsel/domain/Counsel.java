@@ -1,13 +1,20 @@
 package com.project.doongdoong.domain.counsel.domain;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.user.domain.User;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
+import java.time.LocalDateTime;
+
 @Getter
+@AllArgsConstructor
+@Builder
 public class Counsel {
     private Long id;
+
+    private Long userId;
+
+    private Long analysisId;
 
     private String question;
 
@@ -17,20 +24,25 @@ public class Counsel {
 
     private CounselType counselType;
 
-    private Analysis analysis;
+    private LocalDateTime createdAt;
 
-    private User user;
-
-    @Builder
-    public Counsel(String question, CounselType counselType, User user) {
-        this.question = question;
-        this.counselType = counselType;
-        this.user = user;
-
+    public static Counsel of(String question, CounselType counselType, Long userId, LocalDateTime createdAt) {
+        return Counsel.builder()
+                .question(question)
+                .counselType(counselType)
+                .userId(userId)
+                .createdAt(createdAt)
+                .build();
     }
 
-    public void addAnalysis(Analysis analysis) {
-        this.analysis = analysis;
+    public static Counsel of(String question, CounselType counselType, Long userId, Long analysisId, LocalDateTime createdAt) {
+        Counsel counsel = Counsel.of(question, counselType, userId, createdAt);
+        counsel.analysisId = analysisId;
+        return counsel;
+    }
+
+    public void addAnalysisId(Long analysisId) {
+        this.analysisId = analysisId;
     }
 
     public void saveAnswer(String answer) {
@@ -38,9 +50,8 @@ public class Counsel {
     }
 
     public boolean hasAnalysis() {
-        return this.getAnalysis() != null;
+        return this.analysisId != null;
     }
-
 
     public void saveImageUrl(String imageUrl) {
         this.imageUrl = imageUrl;

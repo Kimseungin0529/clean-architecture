@@ -1,6 +1,6 @@
 package com.project.doongdoong.domain.user.domain;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -9,6 +9,8 @@ import java.util.Collections;
 import java.util.List;
 
 @Getter
+@AllArgsConstructor
+@Builder
 public class User {
 
     private Long id;
@@ -21,19 +23,10 @@ public class User {
 
     private SocialType socialType; // KAKAO, NAVER, GOOGLE
 
-    private long emotionGrowth = 0L;
+    private long emotionGrowth;
 
     private List<String> roles = new ArrayList<>();
 
-    private List<Analysis> analysisList = new ArrayList<>();
-
-    @Builder
-    public User(String socialId, String nickname, String email, SocialType socialType) {
-        this.socialId = socialId;
-        this.nickname = nickname;
-        this.email = email;
-        this.socialType = socialType;
-    }
 
     public void changeEmail(String email) {
         this.email = email;

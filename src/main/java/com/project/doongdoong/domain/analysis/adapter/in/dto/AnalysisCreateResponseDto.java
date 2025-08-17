@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.analysis.adapter.in.dto;
 
+import com.project.doongdoong.domain.question.domain.QuestionContent;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -15,11 +16,12 @@ public class AnalysisCreateResponseDto {
     private List<String> questionTexts;
     private List<String> accessUrls;
 
-    public static AnalysisCreateResponseDto of(Long analysisId, List<Long> questionIds, List<String> questionTexts, List<String> accessUrls) {
+    public static AnalysisCreateResponseDto of(Long analysisId, List<Long> questionIds, List<QuestionContent> questionContents, List<String> accessUrls) {
         return AnalysisCreateResponseDto.builder()
                 .analysisId(analysisId)
                 .questionIds(questionIds)
-                .questionTexts(questionTexts)
+                .questionTexts(questionContents.stream().map(QuestionContent::getText)
+                        .toList())
                 .accessUrls(accessUrls)
                 .build();
     }

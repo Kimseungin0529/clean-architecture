@@ -1,7 +1,7 @@
 package com.project.doongdoong.domain.counsel.application.port.out;
 
-import com.project.doongdoong.domain.counsel.domain.CounselEntity;
-import com.project.doongdoong.domain.user.domain.UserEntity;
+import com.project.doongdoong.domain.counsel.domain.Counsel;
+import com.project.doongdoong.domain.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
@@ -10,11 +10,11 @@ import java.util.Optional;
 
 public interface CounselRepository {
 
-    CounselEntity save(CounselEntity counselEntity);
+    Counsel save(Counsel counsel);
 
-    Optional<CounselEntity> findWithAnalysisById(Long counselId);
+    Optional<Counsel> findCounselWithUserById(Long counselId);
 
-    Page<CounselEntity> searchPageCounselList(UserEntity userEntity, Pageable pageable);
+    Page<Counsel> searchPageCounselList(User user, Pageable pageable);
 
     List<Object[]> countCounselGroupByDateAndType();
 }

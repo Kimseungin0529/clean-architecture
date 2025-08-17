@@ -1,7 +1,6 @@
 package com.project.doongdoong.domain.question.domain;
 
-import com.project.doongdoong.domain.analysis.domain.Analysis;
-import com.project.doongdoong.domain.answer.domain.Answer;
+import lombok.Builder;
 import lombok.Getter;
 
 @Getter
@@ -9,12 +8,19 @@ public class Question {
 
     private Long id;
 
+    private Long analysisId;
 
-    private QuestionContent questionContent;
+    private Long answerId;
 
-    private Analysis analysis;
+    private final QuestionContent questionContent;
 
-    private Answer answer;
+    @Builder
+    public Question(Long id, QuestionContent questionContent, Long analysisId, Long answerId) {
+        this.id = id;
+        this.questionContent = questionContent;
+        this.analysisId = analysisId;
+        this.answerId = answerId;
+    }
 
     private Question(QuestionContent questionContent) {
         this.questionContent = questionContent;
@@ -24,19 +30,12 @@ public class Question {
         return new Question(questionContent);
     }
 
-    public void connectAnalysis(Analysis analysis) {
-        if (this.analysis != null) {
-            return;
-        }
-        this.analysis = analysis; // 양방향 연관관계 메서드를 맺지 않아도 되는 이유 -> 생성자에서 이미 questions 객체를 넣어줌. 이미 완료됨.
+    public boolean isSame(Long id) {
+        return this.id.equals(id);
     }
-
-    public void connectAnswer(Answer Answer) {
-        this.answer = Answer;
-    }
-
 
     public boolean hasAnswer() {
-        return answer != null;
+        return answerId != null;
     }
+
 }

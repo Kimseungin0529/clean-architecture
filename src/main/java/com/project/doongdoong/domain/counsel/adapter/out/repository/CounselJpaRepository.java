@@ -1,0 +1,27 @@
+package com.project.doongdoong.domain.counsel.adapter.out.repository;
+
+
+import com.project.doongdoong.domain.counsel.adapter.out.repository.querydsl.CounselCustomJpaRepository;
+import com.project.doongdoong.domain.counsel.adapter.out.entitiy.CounselEntity;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
+import org.springframework.stereotype.Repository;
+
+import java.util.List;
+import java.util.Optional;
+
+@Repository
+public interface CounselJpaRepository extends JpaRepository<CounselEntity, Long>, CounselCustomJpaRepository {
+
+    @Query("select c from CounselEntity c join fetch c.user where c.id = :counselId")
+    Optional<CounselEntity> findCounselWithUserByCounselId(@Param("counselId") Long counselId);
+
+    @Query(value = """
+            SELECT DATE(created_time) AS date, counsel_type, COUNT(*) AS count
+            FROM counselEntity
+            GROUP BY DATE(created_time), counsel_type
+            """, nativeQuery = true)
+    List<Object[]> countCounselGroupByDateAndType();
+
+}
