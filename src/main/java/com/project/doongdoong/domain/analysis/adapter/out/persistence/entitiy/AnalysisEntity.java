@@ -1,5 +1,6 @@
 package com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy;
 
+import com.project.doongdoong.domain.analysis.domain.Analysis;
 import com.project.doongdoong.domain.user.adapter.out.persistence.entity.UserEntity;
 import com.project.doongdoong.global.common.BaseEntity;
 import jakarta.persistence.*;
@@ -30,5 +31,4 @@ public class AnalysisEntity extends BaseEntity {
     private LocalDate analyzeTime;
 
     private boolean isUsed;
-
 }

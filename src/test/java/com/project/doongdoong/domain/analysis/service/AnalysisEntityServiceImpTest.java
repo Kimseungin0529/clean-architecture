@@ -1,6 +1,11 @@
 package com.project.doongdoong.domain.analysis.service;
 
+import com.project.doongdoong.domain.analysis.adapter.in.dto.AnalysisCreateResponseDto;
+import com.project.doongdoong.domain.analysis.adapter.out.persistence.repository.AnalysisRepositoryImpl;
 import com.project.doongdoong.domain.analysis.application.port.in.AnalysisService;
+import com.project.doongdoong.domain.question.application.port.in.QuestionProvidable;
+import com.project.doongdoong.domain.question.application.port.out.QuestionRepository;
+import com.project.doongdoong.domain.question.domain.Question;
 import com.project.doongdoong.domain.question.domain.QuestionContent;
 import com.project.doongdoong.domain.user.adapter.out.persistence.repository.UserJpaRepository;
 import com.project.doongdoong.domain.user.domain.SocialType;
@@ -9,15 +14,20 @@ import com.project.doongdoong.domain.user.exeception.UserNotFoundException;
 import com.project.doongdoong.domain.voice.adapter.out.persistence.repository.VoiceJpaRepository;
 import com.project.doongdoong.domain.voice.adapter.out.persistence.entity.VoiceEntity;
 import com.project.doongdoong.module.IntegrationSupportTest;
+import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.DynamicTest;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestFactory;
+import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
 import java.util.List;
 
+import static org.assertj.core.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import static org.mockito.Mockito.*;
 
 class AnalysisEntityServiceImpTest extends IntegrationSupportTest {
 

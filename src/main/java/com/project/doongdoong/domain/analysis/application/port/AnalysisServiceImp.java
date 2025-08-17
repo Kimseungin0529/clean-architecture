@@ -39,18 +39,13 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class AnalysisServiceImp implements AnalysisService {
 
+    private final AnalysisRepository analysisRepository;
     private final VoiceRepository voiceRepository;
     private final UserRepository userRepository;
-    private final AnalysisRepository analysisRepository;
     private final QuestionProvidable questionProvider;
     private final QuestionRepository questionRepository;
-    private final AnswerRepository answerRepository;
-    private final VoiceService voiceService;
-    private final WebClientUtil webClientUtil;
 
     private final static int ANALYSIS_PAGE_SIZE = 10;
-    private final static double ANALYSIS_VOICE_RATE = 0.65;
-    private final static double ANALYSIS_TEXT_RATE = 0.35;
     private final static String DEFAULT_NO_ANSWER_MESSAGE = "질문에 대한 답변이 없습니다.";
     private final static String DEFAULT_DATE_TIME_FORMAT = "yyyy-MM-dd HH:mm";
 

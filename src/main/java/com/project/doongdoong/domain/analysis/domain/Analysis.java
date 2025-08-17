@@ -19,7 +19,6 @@ import java.time.LocalDate;
 public class Analysis {
     private Long id;
 
-    @Column(name = "user_id", nullable = false)
     private Long userId;
 
     private double feelingState;

@@ -14,7 +14,7 @@ import org.springframework.data.support.PageableExecutionUtils;
 import java.util.List;
 
 import static com.project.doongdoong.domain.analysis.adapter.out.persistence.entitiy.QAnalysisEntity.analysisEntity;
-import static com.project.doongdoong.domain.counsel.domain.QCounselEntity.counselEntity;
+import static com.project.doongdoong.domain.counsel.adapter.out.entitiy.QCounselEntity.counselEntity;
 
 public class CounselCustomJpaRepositoryImpl implements CounselCustomJpaRepository {
 
